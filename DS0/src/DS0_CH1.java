@@ -6,5 +6,5 @@ public class DS0_CH1 {
             if (!numbers.contains(list[i]))
                 numbers.add(list[i]);
         return numbers.size();
-        }
+    }
 }
