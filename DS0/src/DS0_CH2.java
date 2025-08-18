@@ -6,8 +6,8 @@ public class DS0_CH2
             list[0] = 0;
 
         else {
-            if (list[0] == list[1]) {
-            } else list[0] = 0;
+            if (list[0] == list[1]) {}
+            else list[0] = 0;
 
             for (int i = 1; i < list.length; i++) {
                 if (i == list.length-1)
