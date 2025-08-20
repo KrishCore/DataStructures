@@ -4,7 +4,6 @@ public class DS0_CH2
     {
         if (list.length == 1)
             list[0] = 0;
-
         else {
             if (list[0] == list[1]) {}
             else list[0] = 0;
