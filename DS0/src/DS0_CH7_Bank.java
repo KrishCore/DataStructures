@@ -28,7 +28,7 @@ public class DS0_CH7_Bank
     }
     public double closeAccount(long accountNumber)
     {
-        for (int i = accounts.size()-1; i >= 0; i--) {
+        for (int i = 0; i < accounts.size(); i++) {
             if (accounts.get(i).getAccountNumber() == accountNumber)
                 return accounts.remove(i).getBalance();
         }

@@ -20,12 +20,4 @@ public class DS0_CH11
             return false;
         }
     }
-
-    public static void main(String[] args) {
-        char[][] maze = new char[][]{{'-', 'S', '-', '-', '-', '-'}, {'-', '-', '-', '-', 'E', '-'}};
-        boolean[][] bools = new boolean[][]{{false, false, false, false, false, false}, {false, false, false, false, false, false}};
-        System.out.println(isSolvable(maze, bools, 1, 0));
-    }
-
-
 }
