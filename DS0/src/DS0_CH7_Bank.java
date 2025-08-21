@@ -13,12 +13,11 @@ public class DS0_CH7_Bank
     }
     public boolean openAccount(long accountNumber, String customerName, double startingBalance)
     {
-        boolean tf = false;
         for (int i = 0; i < accounts.size(); i++) {
             if (accounts.get(i).getAccountNumber() == accountNumber)
-                tf = true;
+                return false;
         }
-        if (startingBalance <= 0 || tf)
+        if (startingBalance <= 0)
             return false;
         else
         {
