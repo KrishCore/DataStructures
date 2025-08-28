@@ -7,11 +7,10 @@ public class DS0_CH11
                     return true;
                 } else {
                     beenThere[row][col] = true;
-                    boolean u = isSolvable(maze, beenThere, col - 1, row);
-                    boolean r = isSolvable(maze, beenThere, col, row - 1);
-                    boolean d = isSolvable(maze, beenThere, col + 1, row);
-                    boolean l = isSolvable(maze, beenThere, col, row + 1);
-                    return u || r || d || l;
+                    return  isSolvable(maze, beenThere, col - 1, row)
+                            || isSolvable(maze, beenThere, col, row - 1)
+                            || isSolvable(maze, beenThere, col + 1, row)
+                            || isSolvable(maze, beenThere, col, row + 1);
                 }
             } else {
                 return false;
