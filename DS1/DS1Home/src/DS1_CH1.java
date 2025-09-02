@@ -8,14 +8,15 @@ public class DS1_CH1
         ArrayList <Integer> num = new ArrayList<>();
 
         try {
-            Scanner fileSc = new Scanner(new File(fileName));
+            File fileRef = new File(fileName);
+            Scanner fileSc = new Scanner(fileRef);
 
             // read each line
             while (fileSc.hasNextLine()) {
                 String line = fileSc.nextLine();
 
                 // scanner for each specific line
-                Scanner lineSc = new Scanner(line).useDelimiter(",");
+                Scanner lineSc = new Scanner(line).useDelimiter("[ ,]");
 
                 int total = 0;
                 while (lineSc.hasNextInt()) {
