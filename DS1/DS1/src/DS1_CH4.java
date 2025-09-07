@@ -11,6 +11,11 @@ public class DS1_CH4
         try {
             File fileRef = new File(fileName);
             Scanner fileSc = new Scanner(fileRef);
+            String[] size = fileSc.nextLine().split("X");
+            int c = Integer.parseInt(size[0]);
+            int r = Integer.parseInt(size[1]);
+
+            int[][] grid = new int[r][c];
 
             // read each line
             while (fileSc.hasNextLine()) {
@@ -19,15 +24,35 @@ public class DS1_CH4
                 // scanner for each specific line
                 Scanner lineSc = new Scanner(line).useDelimiter("[ ,]");
 
-                int total = 0;
-                while (lineSc.hasNextInt()) {
-                    total += lineSc.nextInt();
+                int row = 0;
+                int col = 0;
+                while (lineSc.hasNextInt() && col < c) {
+                    grid[row][col] = lineSc.nextInt();
+                    System.out.println(grid[row][col]);
+                    c++;
                 }
-
-                num.add(total);
+                r++;
                 lineSc.close();
             }
 
+            for (int i = 0; i < r; i++) {
+                for (int j = 0; j < c; j++) {
+                    if (i == 0)
+                    {
+                        if (j == 0)
+                            num.add(grid[i][j] + grid[i+1][j] + grid[i][j+1]);
+                        else if (j == c-1)
+                            num.add(grid[i][j] + grid[i+1][j] + grid[i][j-1]);
+                    } else if (i == r - 1)
+                    {
+                        if (j == 0)
+                            num.add(grid[i][j] + grid[i-1][j] + grid[i][j+1]);
+                        else if (j == c-1)
+                            num.add(grid[i][j] + grid[i-1][j] + grid[i][j-1]);
+                    }
+                    else num.add(grid[i][j] + grid[i-1][j] + grid[i+1][j] + grid[i][j+1] + grid[i][j-1]);
+                }
+            }
             fileSc.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,11 +63,11 @@ public class DS1_CH4
 //                arr[i] = num.get(i);
 //            }
 //        }
-        int total = 0;
+        int max = 0;
         for (int i = 0; i < num.size(); i++) {
-            total += num.get(i);
+            if (num.get(i) < max)
+                max = num.get(i);
         }
-
-        return total;
+        return max;
     }
 }
