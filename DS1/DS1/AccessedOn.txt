@@ -1,0 +1,36 @@
+8 SEPTEMBER 2025
+MONDAY SEPTEMBER 2025
+MONDAY SEPTEMBER 2025 251
+MONDAY SEPTEMBER 2025 8
+MONDAY SEPTEMBER 8 2025
+MONDAY SEPTEMBER 8 2025
+MONDAY SEPTEMBER 8 2025 9:59:10
+MONDAY SEPTEMBER 8 2025 10:6:21  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:1:18  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:1:24  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:1:56  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:2:5  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:2:13  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:6:48  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+MONDAY SEPTEMBER 8 2025 17:6:52  sun.util.calendar.ZoneInfo[id="America/Chicago",offset=-21600000,dstSavings=3600000,useDaylight=true,transitions=361,lastRule=java.util.SimpleTimeZone[id=America/Chicago,offset=-21600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+SEPTEMBER 8 2025 17:27:57
+SEPTEMBER 8 2025 17:28:42
+2025-09-08 ___ 17:28:42.144811200
+SEPTEMBER 8 2025 17:30:59.580976
+2025-09-08 ___ 17:30:59.580976
+SEPTEMBER 8 2025 17:32:33 Central Standard Time
+2025-09-08 ___ 17:32:33.231436200
+SEPTEMBER 8 2025 18:13:30 Central Standard Time
+MONDAY SEPTEMBER 8 2025:18:36 48
+MONDAY SEPTEMBER 8 2025 18:37:15 Central Standard Time
+MO SEPTEMBER 8 18:41:23 Central Standard Time 2025
+Mon SEPTEMBER 8 18:41:35 Central Standard Time 2025
+Mon Sep 8 18:42:16 Central Standard Time 2025
+Mon Sep 8 18:46:44 ZIACSDRSTZACSDYMMDDOWTTMMMDDOWTTM 2025
+Mon Sep 8 18:48:59 ZIACSDRSTZACSDYMMDDOWTTMMMDDOWTTM 2025
+Mon Sep 8 18:49:28 ZIACSDRSTZACSDYMMDDOWTTMMMDDOWTTM 2025
+Mon Sep 8 18:49:56 CST 2025
+Mon Sep 8 18:51:15 CST 2025
+Mon Sep 8 18:51:36 CST 2025
+Mon Sep 8 18:59:55 CST 2025
+Mon Sep 8 19:00:03 CST 2025
