@@ -37,7 +37,7 @@ public class AccessedOn
             String mon = month.toString().charAt(0)+month.toString().substring(1,3).toLowerCase();
             String print = String.format("%s %s %d %02d:%02d:%02d %s %d", dow, mon, day, hour, min, sec, zu , year);
             printWriter.println(print);
-            System.out.printf("%s %s %d %02d:%02d:%02d %s %d%n", dow, mon, day, hour, min, sec, zu , year);
+            System.out.printf("\n%s %s %d %02d:%02d:%02d %s %d%n", dow, mon, day, hour, min, sec, zu , year);
 
             //dayOfWeek+" "+month+" "+day1+" "+year+" "+hour+":"+min+":"+sec+"  ");//+ zone);
 //            printWriter.println(date + " ___ " + time);
