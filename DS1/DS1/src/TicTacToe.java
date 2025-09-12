@@ -11,31 +11,64 @@ public class TicTacToe
 
         Scanner scan = new Scanner(System.in);
         String[][] board = {{" "," "," "},
-                            {" "," "," "},
-                            {" "," "," "}};
+                {" "," "," "},
+                {" "," "," "}};
         try {
             File file = new File("TicTacToe.txt");
-            if (!file.exists())
-                file.createNewFile();
+            Scanner fileSc = new Scanner(file).useDelimiter("\n");
+            System.out.println(file.exists()); // returns true
+            if (!file.exists()) {
+                System.out.println(file.createNewFile());
+            }
+            int r =0;
+            while (fileSc.hasNextLine())
+            {
+                int c = 0;
+                String line = fileSc.nextLine();
+                Scanner ls = new Scanner(line).useDelimiter(" ");
+
+                while (ls.hasNextInt()) // either it's not copying properly or line 63
+                {
+                    board[r][c] = String.valueOf(ls.nextInt());
+                    c++;
+                }
+                r++;
+            }
+
             FileWriter fileWriter = new FileWriter(file,false);
             PrintWriter printWriter = new PrintWriter(fileWriter);
 //            printWriter.print(" , , \n , , \n , , ");
 
 
-            // scnning file
-            Scanner fileSc = new Scanner(file).useDelimiter("\n");
-            for (int i = 0; i < 0; i++) { // needs fixing
-                String line = fileSc.nextLine();
-                System.out.println(line);
-                // scanner for each specific line
-                Scanner lineSc = new Scanner(line).useDelimiter("[ ,]");
-                String[] arr = new String[3];
-                for (int j = 0; j < 3; j++) {
-//                    if ()
-                    arr[i] = lineSc.next();
-                    System.out.println(arr[i]);
-                }
-                board[i] = arr;
+            // scanning file
+
+//            int r =0;
+//            while (fileSc.hasNextLine())
+//            {
+//                int c = 0;
+//                String line = fileSc.nextLine();
+//                Scanner ls = new Scanner(line).useDelimiter(" ");
+//
+//                while (ls.hasNextInt())
+//                {
+//                    board[r][c] = String.valueOf(ls.nextInt());
+//                    System.out.println(String.valueOf(ls.nextInt()));
+//                    c++;
+//                }
+//                r++;
+//            }
+
+            for (int i = 0; i < board.length; i++) { // needs fixing
+                System.out.println(":::" +fileSc.hasNextLine()); // returns false cuz it deletes after append = false
+                    for (int j = 0; j < 3; j++) { // probably not changing properly
+                        if (board[i][j].equals("0"))
+                            board[i][j] = "X";
+                        if (board[i][j].equals("1"))
+                            board[i][j] = "0";
+                        if (board[i][j].equals("3"))
+                            board[i][j] = " ";
+                    }
+//                }
             }
             String player = "X";
             while (true) {
@@ -75,22 +108,23 @@ public class TicTacToe
                         System.out.println("Enter a row from 0 to 2:");
                         row = scan.nextInt();
                         if (col == 3)
-                        {
+                        { // i think the error is here - copying wrong after 2 saves
                             for (int i = 0; i < 3; i++) {
                                 for (int j = 0; j < 3; j++) {
                                     if (board[i][j].equals(" "))
                                         board[i][j] = "3";
-                                    if (board[i][j].equals("X"))
+                                    else if (board[i][j].equals("X"))
                                         board[i][j] = "0";
-                                    if (board[i][j].equals("O"))
+                                    else if (board[i][j].equals("O"))
                                         board[i][j] = "1";
                                 }
                             }
                             // prints game to txt file
                             String game = board[0][0] + " " + board[0][1] + " " + board[0][2] + "\n" +
-                                    board[1][0] + " " + board[1][1] + " " + board[1][2] + "\n" +
-                                    board[2][0] + " " + board[2][1] + " " + board[2][2] + "";
-                            printWriter.println(game); // doesn't work
+                                          board[1][0] + " " + board[1][1] + " " + board[1][2] + "\n" +
+                                          board[2][0] + " " + board[2][1] + " " + board[2][2] + "";
+
+                            printWriter.println(game);
 //                            printWriter.print(board[0][0] + " " + board[0][1] + " " + board[0][2] + "\n" +
 //                                              board[1][0] + " " + board[1][1] + " " + board[1][2] + "\n" +
 //                                              board[2][0] + " " + board[2][1] + " " + board[2][2] + "");
@@ -99,7 +133,8 @@ public class TicTacToe
                             printWriter.close();
                             System.exit(0);
                         }
-                        if (row >= 0 && row < 3 && col >= 0 && col < 3 && Objects.equals(board[row][col], " ")) {
+                        if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col].equals(" "))
+                        {
                             board[row][col] = "X";
                             break;
                         } else {
@@ -142,8 +177,8 @@ public class TicTacToe
                     else //if (player.equals("O"))
                         player = "X";
                 }
-                printWriter.close();
             }
+            printWriter.close();
         }
         catch (Exception e)
         {
