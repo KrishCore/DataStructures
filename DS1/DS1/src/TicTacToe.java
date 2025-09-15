@@ -15,11 +15,11 @@ public class TicTacToe
                 {" "," "," "}};
         try {
             File file = new File("TicTacToe.txt");
-            Scanner fileSc = new Scanner(file).useDelimiter("\n");
-            System.out.println(file.exists()); // returns true
             if (!file.exists()) {
-                System.out.println(file.createNewFile());
+                file.createNewFile();
             }
+            Scanner fileSc = new Scanner(file).useDelimiter("\n");
+
             int r =0;
             while (fileSc.hasNextLine())
             {
@@ -33,6 +33,7 @@ public class TicTacToe
                     c++;
                 }
                 r++;
+                ls.close();
             }
 
             FileWriter fileWriter = new FileWriter(file,false);
@@ -57,19 +58,29 @@ public class TicTacToe
 //                }
 //                r++;
 //            }
+            boolean gameSave = false;
 
             for (int i = 0; i < board.length; i++) { // needs fixing
-                System.out.println(":::" +fileSc.hasNextLine()); // returns false cuz it deletes after append = false
-                    for (int j = 0; j < 3; j++) { // probably not changing properly
-                        if (board[i][j].equals("0"))
-                            board[i][j] = "X";
-                        if (board[i][j].equals("1"))
-                            board[i][j] = "0";
-                        if (board[i][j].equals("3"))
-                            board[i][j] = " ";
+                for (int j = 0; j < 3; j++) { // probably not changing properly
+                    if (board[i][j].equals("0"))
+                    {
+                        board[i][j] = "X";
+                        gameSave = true;
                     }
-//                }
+                    else if (board[i][j].equals("1"))
+                    {
+                        board[i][j] = "O";
+                        gameSave = true;
+                    }
+                    else if (board[i][j].equals("3"))
+                    {
+                        board[i][j] = " ";
+                    }
+                }
             }
+            if (gameSave)
+                System.out.println("Game save loaded.");
+
             String player = "X";
             while (true) {
                 // computer's move
@@ -128,7 +139,7 @@ public class TicTacToe
 //                            printWriter.print(board[0][0] + " " + board[0][1] + " " + board[0][2] + "\n" +
 //                                              board[1][0] + " " + board[1][1] + " " + board[1][2] + "\n" +
 //                                              board[2][0] + " " + board[2][1] + " " + board[2][2] + "");
-                            System.out.println(game);
+//                            System.out.println(game);
                             System.out.println("Save complete.\nGood bye.");
                             printWriter.close();
                             System.exit(0);
@@ -157,7 +168,11 @@ public class TicTacToe
                             }
                         }
                         System.out.println("\n\n" + player + " WINS!");
-                        printWriter.print(" , , \n , , \n , , ");
+                        scan.close();
+                        fileSc.close();
+                        fileWriter.close();
+                        printWriter.close();
+                        file.delete();
                         break;
                     }
                     if (isDraw(board)) {
@@ -170,6 +185,11 @@ public class TicTacToe
                                 System.out.println("\n-----------");
                         }
                         System.out.println("\n\nDraw game.");
+                        scan.close();
+                        fileSc.close();
+                        fileWriter.close();
+                        printWriter.close();
+                        file.delete();
                         break;
                     }
                     if (player.equals("X"))
