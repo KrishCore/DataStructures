@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class TicTacToe
@@ -89,7 +88,7 @@ public class TicTacToe
                     int r1 = (int) (Math.random() * 3);
                     int r2 = (int) (Math.random() * 3);
 
-                    while (!Objects.equals(board[r1][r2], " ")) {
+                    while (!board[r1][r2].equals(" ")) {
                         r1 = (int) (Math.random() * 3);
                         r2 = (int) (Math.random() * 3);
                     }
@@ -221,7 +220,7 @@ public class TicTacToe
     {
         for (int i = 0; i < board.length; i++)
             for (int j = 0; j < board[i].length; j++)
-                if (Objects.equals(board[i][j], " ") || isWinner(board, "X") || isWinner(board, "O"))
+                if (board[i][j].equals(" ") || isWinner(board, "X") || isWinner(board, "O"))
                     return false;
 
         return true;
