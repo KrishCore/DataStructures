@@ -1,42 +1,36 @@
-import java.util.Queue;
+import java.util.ArrayList;
 
-public class MyQueue<I extends Number> {
-    Queue queue;
+public class MyQueue implements QueueInterface
+{
+    private ArrayList<Object> array = new ArrayList<>();
 
-    public MyQueue()
-    {
-        // needs works
+    @Override
+    public void offer(Object o) {
+        array.add(o);
     }
 
-    public void offer(Integer value)
-    {
-        queue.offer(value);
+    @Override
+    public Object element() {
+        return array.get(0);
     }
 
-    public Integer element()
-    {
-        return (Integer) queue.element();
+    @Override
+    public Object poll() {
+        return array.remove(0);
     }
 
-    public Integer poll()
-    {
-        return (Integer) queue.poll();
+    @Override
+    public int size() {
+        return array.size();
     }
 
-    public int size()
-    {
-        return queue.size();
+    @Override
+    public boolean isEmpty() {
+        return array.isEmpty();
     }
 
-    public boolean isEmpty()
-    {
-        return queue==null || queue.isEmpty();
-    }
-
-    public void clear()
-    {
-        if (queue != null)
-            for (int i = 0; i < queue.size(); i++)
-                queue.poll();
+    @Override
+    public void clear() {
+        array.clear();
     }
 }

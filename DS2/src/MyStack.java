@@ -1,36 +1,41 @@
-import java.util.Stack;
+import java.util.ArrayList;
 
-public class MyStack<String>
+public class MyStack implements StackInterface
 {
-    static Stack stack;
+    public ArrayList<Object> array = new ArrayList<>();
 
-    public MyStack()
-    {
-
+    @Override
+    public void push(Object o) {
+        array.add(o);
     }
 
-    public static int size()
-    {
-        return stack.size();
+    @Override
+    public Object peek() {
+        return array.get(array.size()-1);
     }
 
-    public boolean isEmpty()
-    {
-        return stack.isEmpty();
+    @Override
+    public Object pop() {
+        return array.remove(array.size()-1);
     }
 
-    public void push(String text)
-    {
-        stack.push(text);
+    @Override
+    public int size() {
+        return array.size();
     }
 
-    public String peek()
-    {
-        return (String) stack.peek();
+    @Override
+    public boolean isEmpty() {
+        return array.isEmpty();
     }
 
-    public String pop()
-    {
-        return (String) stack.pop();
+    @Override
+    public void clear() {
+        array.clear();
+    }
+
+//    @Override
+    public String String() {
+        return array.toString();
     }
 }

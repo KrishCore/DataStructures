@@ -7,7 +7,7 @@ public class StackMain
         Scanner keyboard= new Scanner(System.in);
 
         int choice;
-        MyStack<String> stack= new MyStack<String>();
+        MyStack stack= new MyStack();
 
         do
         {
@@ -16,11 +16,11 @@ public class StackMain
 
             if(choice==1)
             {
-                System.out.println("\nCalling the toString produced: " + stack);
+                System.out.println("\nCalling the toString produced: " + stack.toString());
             }
             if(choice==2)
             {
-                System.out.println("\nThe result of your size call is " + MyStack.size());
+                System.out.println("\nThe result of your size call is " + stack.size());
             }
             if(choice==3)
             {

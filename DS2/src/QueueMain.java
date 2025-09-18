@@ -8,17 +8,17 @@ public class QueueMain
 		Scanner keyboard= new Scanner(System.in);
 
 		int choice;
-		MyQueue<Integer> queue= new MyQueue<Integer>();
+		MyQueue queue= new MyQueue();
 
 		do
 		{
-			System.out.print("\n-Menu-\n1. Print\n2. Offer\\Add\n3.Element\n4. Poll\n5. Size\n6. Empty?\n7.clear\n8. Exit\nEnter: ");
+			System.out.print("\n-Menu-\n1. Print\n2. Offer\\Add\n3. Element\n4. Poll\n5. Size\n6. Empty?\n7. Clear\n8. Exit\nEnter: ");
 			choice= keyboard.nextInt();
 			System.out.println("");
 
 			if(choice==1)
 			{
-				System.out.println("\nThe result of your toString call is " + queue);
+				System.out.println("\nThe result of your toString call is " + queue.toString());
 			}
 			if(choice==2)
 			{
