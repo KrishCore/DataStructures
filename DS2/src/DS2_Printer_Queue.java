@@ -46,7 +46,7 @@ public class DS2_Printer_Queue
                 idleTime += cJob.getSubmissionTime() - currentTime;
                 currentTime = cJob.getSubmissionTime();
             }
-            
+
 
         }
     }
