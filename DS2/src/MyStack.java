@@ -34,8 +34,8 @@ public class MyStack implements StackInterface
         array.clear();
     }
 
-    @Override
-    public String toString() {
+    public String toString()
+    {
         return array.toString();
     }
 }
