@@ -17,8 +17,8 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
     public static String infixToPostfix (String infix)
     {
         String[] list = infix.split(" ");
-        ArrayList<Integer> me = new ArrayList<Integer>();
-        String modEqu = list[0] + " ";
+        ArrayList<Double> me = new ArrayList<>();
+        String modEqu = "";
         ArrayList <String> ops = new ArrayList<>();
         for (int i = 0; i < list.length; i++) {
             if (list[i].equals("+")) {
@@ -39,14 +39,17 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
             else if (list[i].equals(")")) {
                 continue;
             }
-            else if (Integer.parseInt(list[i]) >= 0) {
-                me.add(Integer.parseInt(list[i]));
-                modEqu += list[i] + "";
+            else if (list[i].equals("^")) {
+                continue;
+            }
+            else if (Double.parseDouble(list[i]) >= 0) {
+                me.add(Double.parseDouble(list[i]));
+                modEqu += list[i] + " ";
             }
         }
         String temp = modEqu;
         for (int i = 0; i < me.size(); i++) {
-            int num = me.get(i);
+            double num = me.get(i);
             char c = (char) num;
             if (
                     infix.charAt(i) == c){}
@@ -61,7 +64,7 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
         return 1.0;
     }
 
-//     methods if implementing StackInterface
+     // methods if implementing StackInterface
 //    @Override
 //    public void push(E o) {
 //
