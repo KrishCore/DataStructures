@@ -7,11 +7,13 @@ public class DS2_Printer_Queue
     {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter job file name: ");
-        String fileName = scan.next();
+        String fileName = scan.nextLine();
+        if (!fileName.contains(".txt")) //not really needed
+            fileName+=".txt"; // this also
+//        System.out.println(fileName);
 
         // Use MyQueue for storing jobs
         MyQueue queue = new MyQueue();
-        int jobNum = 1; //number of lines in the file
 
         try {
             File file = new File(fileName);
@@ -51,26 +53,25 @@ public class DS2_Printer_Queue
                 currentTime = subTime;
             }
 
-            // Print the job received message
+            // Print "job received" message
             System.out.println("Time " + subTime + "s: Job #" + tJobs + " Received (" + numPages + " pages)");
 
-            // Start buffering
+            //buffering start
             System.out.println("Time " + currentTime + "s: Job #" + tJobs + " Buffering Started");
-            currentTime += 3; // Buffering takes 3 seconds
+            currentTime += 3; // buffering takes 3 secs
 
-            // Finished buffering, start printing
+            // buffering finish, start printing
             System.out.println("Time " + currentTime + "s: Job #" + tJobs + " Finished Buffering and Started Printing");
             tWaitTime += currentTime - subTime;
 
-            // Print job (5 seconds per page)
+            // print the job (5 secs per page)
             currentTime += numPages * 5;
 
-            // Print job finished
-            System.out.println("Time " + currentTime + "s: Job #" + tJobs + " Finished Printing");
-            System.out.println(); // Blank line between jobs
+            // finished printing
+            System.out.println("Time " + currentTime + "s: Job #" + tJobs + " Finished Printing\n");
         }
 
-        // Ensure summary is formatted exactly as expected
+        // summary
         System.out.println("Printing Simulation Complete.");
         System.out.println("Total Print Jobs: " + tJobs);
         System.out.println("Total Pages: " + tPages);
