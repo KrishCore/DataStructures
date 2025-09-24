@@ -21,6 +21,7 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
         String modEqu = "";
         ArrayList <String> ops = new ArrayList<>();
         for (int i = 0; i < list.length; i++) {
+            boolean addOp = false;
             if (list[i].equals("+")) {
                 ops.add("+");
             }
@@ -29,9 +30,11 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
             }
             else if (list[i].equals("*")) {
                 ops.add("*");
+                addOp = true;
             }
             else if (list[i].equals("/")) {
                 ops.add("/");
+                addOp = true;
             }
             else if (list[i].equals("(")) {
                 continue;
@@ -40,19 +43,20 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
                 continue;
             }
             else if (list[i].equals("^")) {
-                continue;
+                addOp = true;
             }
             else if (Double.parseDouble(list[i]) >= 0) {
                 me.add(Double.parseDouble(list[i]));
                 modEqu += list[i] + " ";
             }
+            if (addOp) // need to add after the second nuber is added
+                modEqu += ops.getLast() + " ";
         }
         String temp = modEqu;
         for (int i = 0; i < me.size(); i++) {
             double num = me.get(i);
             char c = (char) num;
-            if (
-                    infix.charAt(i) == c){}
+            if (infix.charAt(i) == c){}
                 // needs work
         }
         return modEqu;      //me.toString();//.substring(0,me.size());
@@ -60,8 +64,16 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
     public static double solvePostfix (String postFix)
     {
         String[] list = postFix.split(" ");
-
-        return 1.0;
+        double sum = 0;
+        for (int i = 0; i < list.length; i++) {
+            if (list[i].equals("^"))
+                sum += (double) Math.pow(Double.parseDouble(list[i-2]), Double.parseDouble(list[i-1]));
+            if (list[i].equals("*"))
+                sum += (double) Double.parseDouble(list[i-2]) * Double.parseDouble(list[i-1]);
+            if (list[i].equals("/"))
+                sum += (double) Double.parseDouble(list[i-2]) / Double.parseDouble(list[i-1]);
+        }
+        return sum;
     }
 
      // methods if implementing StackInterface
