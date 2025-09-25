@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -9,91 +8,111 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
         Scanner scan = new Scanner(System.in);
         System.out.print("Enter an equation in infix form (separating values and operators with spaces): \n");
         String equation = scan.nextLine();
-        String itp = infixToPostfix(equation);
+        String infixToPostfix = infixToPostfix(equation);
         System.out.println("..equation: " + equation);
-        System.out.println("Postfix Form: " + itp);
-        double sp = solvePostfix(itp);
-        System.out.println("Result: " + sp);
+        System.out.println("Postfix Form: " + infixToPostfix);
+        double solvePostfix = solvePostfix(infixToPostfix);
+        System.out.println("Result: " + solvePostfix);
     }
-    public static String infixToPostfix (String infix)
-    {
+    public static String infixToPostfix(String infix) {
         String[] list = infix.split(" ");
-        ArrayList<Double> me = new ArrayList<>();
-        Stack<Object> stack = new Stack<>();
+        Stack<String> stack = new Stack<>();
         String postfixOutput = "";
-//        ArrayList <String> ops = new ArrayList<>();
+
         for (int i = 0; i < list.length; i++) {
-//            boolean addOp = false;
+            String current = list[i];
 
-            if (list[i].equals("("))
-                stack.push("(");
-
-            else if (list[i].equals(")"))
-                while (stack.pop() != "(") {}
-
-            if (list[i].equals("+") && !stack.isEmpty() && stack.peek() != "(" && (stack.peek() == "*" || stack.peek() == "/" || stack.peek() == "+" || stack.peek() == "-" || stack.peek() == "^")) {
-                stack.push("+");
-//                ops.add("+");
-            }
-            else if (list[i].equals("-") && !stack.isEmpty() && stack.peek() != "(" && (stack.peek() == "*" || stack.peek() == "/" || stack.peek() == "+" || stack.peek() == "-" || stack.peek() == "^"))
-            {
-                stack.push("-");
-//                ops.add("-");
-            }
-//            + - * / ^
-//            else if (list[i].equals("+") || list[i].equals("-") || list[i].equals("*") || list[i].equals("/") || list[i].equals("^")) {
-////                while (!stack.isEmpty() && stack.peek() != "(" && stack.peek() != "*" && stack.peek() != "/")
-////                    stack
-//            }
-            else if (list[i].equals("*") && !stack.isEmpty() && stack.peek() != "(" && stack.peek() != "^") {
-                stack.push("*");
-//                ops.add("*");
-            }
-            else if (list[i].equals("/") && !stack.isEmpty() && stack.peek() != "(" && stack.peek() != "^") {
-                stack.push("/");
-//                ops.add("/");
+            // Check if current is a number
+            boolean isNumber = true;
+            try {
+                Double.parseDouble(current);
+            } catch (Exception e) {
+                isNumber = false;
             }
 
-            else if (list[i].equals("^") && !stack.isEmpty() && stack.peek() != "(" || stack.peek()== "^") {
-                stack.push("^");
+            if (isNumber)
+                postfixOutput += current + " "; // ads to stack if number
+            else if (current.equals("(")) // adds  "("
+                stack.push(current);
+            else if (current.equals(")")) {
+                while (!stack.isEmpty() && !stack.peek().equals("(")) //looks for ")"
+                    postfixOutput += stack.pop() + " "; // adds everything up til ")" to String and removes it from stack
+                if (!stack.isEmpty())
+                    stack.pop(); //remove "(" if empty cuz that's the only thing there
+            } else {
+                while (!stack.isEmpty()) {
+                    String top = stack.peek();
+
+                    if (top.equals("("))
+                        break;
+
+                    // precedence senarios:
+                    // if current operator is + or - and passes the precedence test
+                    if ((current.equals("+") || current.equals("-")) && (top.equals("+") || top.equals("-") || top.equals("*") || top.equals("/") || top.equals("^")))
+                        postfixOutput += stack.pop() + " ";
+
+                    // if current operator is * or / and passes the precedence test
+                    else if ((current.equals("*") || current.equals("/")) && (top.equals("*") || top.equals("/") || top.equals("^")))
+                        postfixOutput += stack.pop() + " ";
+
+                    // if current operator is ^ and passes the precedence test
+                    else if (current.equals("^") && top.equals("^"))
+                        postfixOutput += stack.pop() + " ";
+
+                    else break;
+                }
+
+                stack.push(current); //pushes the operator after pushing the number after it
             }
-
-//            else if (Double.parseDouble(list[i]) >= 0) {
-//                me.add(Double.parseDouble(list[i]));
-//                postfixOutput += list[i] + " ";
-//            }
-//            if (addOp) { // need to add after the second nuber is added
-//                postfixOutput += ops.getLast() + " ";
-//                addOp = false;
-//            }
-            System.out.println(stack);
-
+        }
+        while (!stack.isEmpty()) {
+            postfixOutput += stack.pop() + " ";
         }
 
-        String[] temp = postfixOutput.split(" ");
-
-//        for (int i = 0; i < me.size(); i++) {
-//            double num = me.get(i);
-//            char c = (char) num;
-//            if (infix.charAt(i) == c){}
-//                // needs work
-//        }
-        while (!stack.isEmpty())
-            postfixOutput += stack.pop();
-        return stack.toString() + "___" + postfixOutput;      //me.toString();//.substring(0,me.size());
+        return postfixOutput.substring(0, postfixOutput.length() - 1);
     }
+
     public static double solvePostfix (String postFix)
     {
-//        String[] list = postFix.split(" ");
+        String[] list = postFix.split(" ");
+        Stack<Double> stack = new Stack<>();
+
+        for (int i = 0; i < list.length; i++) {
+            String current = list[i];
+
+            // checks if current is a number
+            boolean isNum = true;
+            try {
+                Double.parseDouble(current);
+            } catch (Exception e) {
+                isNum = false;
+            }
+
+            if (isNum)
+                stack.push(Double.parseDouble(current));
+            else
+            {
+                double num2 = stack.pop(); //second number, last number pushed
+                double num1 = stack.pop(); // first number, number before num2
+                double result = 0;
+
+                if (current.equals("+"))
+                    result = num2 + num1;
+                if (current.equals("-"))
+                    result = num2 - num1;
+                if (current.equals("*"))
+                    result = num2 * num1;
+                if (current.equals("/"))
+                    result = num2 / num1;
+                if (current.equals("^"))
+                    result = Math.pow(num2, num1);
+
+                stack.push(result); // puts it on the top of the stack: becomes num2
+            }
+        }
         double sum = 0;
-//        for (int i = 0; i < list.length; i++) {
-//            if (list[i].equals("^"))
-//                sum += (double) Math.pow(Double.parseDouble(list[i-2]), Double.parseDouble(list[i-1]));
-//            if (list[i].equals("*"))
-//                sum += (double) Double.parseDouble(list[i-2]) * Double.parseDouble(list[i-1]);
-//            if (list[i].equals("/"))
-//                sum += (double) Double.parseDouble(list[i-2]) / Double.parseDouble(list[i-1]);
-//        }
+        while (!stack.isEmpty())
+            sum += stack.pop();
         return sum;
     }
 
