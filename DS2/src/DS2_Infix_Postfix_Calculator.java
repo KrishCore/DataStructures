@@ -97,15 +97,15 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
                 double result = 0;
 
                 if (current.equals("+"))
-                    result = num2 + num1;
+                    result = num1 + num2;
                 if (current.equals("-"))
-                    result = num2 - num1;
+                    result = num1 - num2;
                 if (current.equals("*"))
-                    result = num2 * num1;
+                    result = num1 * num2;
                 if (current.equals("/"))
-                    result = num2 / num1;
+                    result = num1 / num2;
                 if (current.equals("^"))
-                    result = Math.pow(num2, num1);
+                    result = Math.pow(num1, num2);
 
                 stack.push(result); // puts it on the top of the stack: becomes num2
             }
