@@ -1,18 +1,18 @@
 import java.util.Scanner;
 import java.util.Stack;
 
-public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
+public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E> // not needed
 {
     public static void main(String[] args)
     {
         Scanner scan = new Scanner(System.in);
-        System.out.print("Enter an equation in infix form (separating values and operators with spaces): \n");
+        System.out.println("Enter an equation in infix form (separating values and operators with spaces): ");
         String equation = scan.nextLine();
         String infixToPostfix = infixToPostfix(equation);
-        System.out.println("..equation: " + equation);
+//        System.out.println("..equation: " + equation);
         System.out.println("Postfix Form: " + infixToPostfix);
         double solvePostfix = solvePostfix(infixToPostfix);
-        System.out.println("Result: " + solvePostfix);
+        System.out.printf("Result: %.2f\n\n", solvePostfix);
     }
     public static String infixToPostfix(String infix) {
         String[] list = infix.split(" ");
@@ -69,7 +69,7 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
             postfixOutput += stack.pop() + " ";
         }
 
-        return postfixOutput.substring(0, postfixOutput.length() - 1);
+        return postfixOutput.substring(0, postfixOutput.length() - 1); // removes [] from the toString
     }
 
     public static double solvePostfix (String postFix)
@@ -88,7 +88,7 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
                 isNum = false;
             }
 
-            if (isNum)
+            if (isNum) // pushes if number
                 stack.push(Double.parseDouble(current));
             else
             {
@@ -96,22 +96,18 @@ public class DS2_Infix_Postfix_Calculator// <E> implements StackInterface<E>
                 double num1 = stack.pop(); // first number, number before num2
                 double result = 0;
 
-                if (current.equals("+"))
-                    result = num1 + num2;
-                if (current.equals("-"))
-                    result = num1 - num2;
-                if (current.equals("*"))
-                    result = num1 * num2;
-                if (current.equals("/"))
-                    result = num1 / num2;
-                if (current.equals("^"))
-                    result = Math.pow(num1, num2);
+                // checks which operator
+                if (current.equals("+")) result = num1 + num2;
+                if (current.equals("-")) result = num1 - num2;
+                if (current.equals("*")) result = num1 * num2;
+                if (current.equals("/")) result = num1 / num2;
+                if (current.equals("^")) result = Math.pow(num1, num2);
 
-                stack.push(result); // puts it on the top of the stack: becomes num2
+                stack.push(result); // puts it on the top of the stack: later becomes num2
             }
         }
         double sum = 0;
-        while (!stack.isEmpty())
+        while (!stack.isEmpty()) // only runs once cuz the only thing there is the sum
             sum += stack.pop();
         return sum;
     }
