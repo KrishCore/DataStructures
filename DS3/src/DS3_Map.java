@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
-public class DS3_Map<Integer, String> implements MapInterface<Integer, String>
-{
+public class DS3_Map<K, V> implements MapInterface<K, V> {
     ArrayList<MapEnt> array = new ArrayList<>();
 
     @Override
@@ -10,28 +9,39 @@ public class DS3_Map<Integer, String> implements MapInterface<Integer, String>
     }
 
     @Override
-    public boolean containsKey(Integer key) {
+    public boolean containsKey(K key) {
         for (int i = 0; i < array.size(); i++) {
-            return array.get(i).getKey().equals(key);
+            if (array.get(i).getKey().equals(key))
+                return true;
         }
         return false;
     }
 
     @Override
-    public boolean containsValue(String value) {
+    public boolean containsValue(V value) {
         for (int i = 0; i < array.size(); i++) {
-            return array.get(i).getValue().equals(value);
+            if (array.get(i).getValue().equals(value))
+                return true;
         }
-        return false;    }
-
-    @Override
-    public DS3_Set<MapEnt<Integer, String>> entrySet() {
-        return null;
+        return false;
     }
 
     @Override
-    public String get(Integer o) {
-        return (String) " ";
+    public DS3_Set<MapEnt<K, V>> entrySet() {
+        DS3_Set set1 = new DS3_Set();
+        for (int i = 0; i < array.size(); i++) {
+            set1.add(array.get(i));
+        }
+        return set1;
+    }
+
+    @Override
+    public V get(K o) {
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getKey().equals(o))
+                return (V) array.get(i).getValue();
+        }
+        return null;
     }
 
     @Override
@@ -40,17 +50,16 @@ public class DS3_Map<Integer, String> implements MapInterface<Integer, String>
     }
 
     @Override
-    public String put(Integer key, String value) { // needs work
+    public V put(K key, V value) {
         for (int i = 0; i < array.size(); i++) {
-            if (array.get(i).getKey().equals(key))
-            {
-                String string = (String) array.get(i).getValue();
+            if (array.get(i).getKey().equals(key)) {
+                V v = (V) array.get(i).getValue();
                 array.get(i).setValue(value);
-                return string;
+                return v;
             }
         }
         array.add(new MapEnt(key, value));
-        return (String) array.get(array.size()-1);
+        return null;
     }
 
     @Override
@@ -59,29 +68,32 @@ public class DS3_Map<Integer, String> implements MapInterface<Integer, String>
     }
 
     @Override
-    public DS3_Set<Integer> keySet() {
-        DS3_Set keySet = new DS3_Set();
+    public DS3_Set<K> keySet() {
+        DS3_Set set = new DS3_Set();
         for (int i = 0; i < array.size(); i++) {
-            keySet.add(array.get(i).getKey());
+            set.add(array.get(i).getKey());
         }
-        return keySet;
+        return set;
     }
 
     @Override
-    public ArrayList<String> values() {
-        ArrayList<String> values = new ArrayList<>();
+    public ArrayList<V> values() {
+        ArrayList<V> arr = new ArrayList<>();
         for (int i = 0; i < array.size(); i++) {
-            values.add((String) array.get(i).getValue());
+            arr.add((V) array.get(i).getValue());
         }
-        return values;
+        return arr;
     }
 
     @Override
-    public String remove(Integer key) {
+    public V remove(K key) {
         for (int i = 0; i < array.size(); i++) {
-            if (array.get(i).getKey().equals(key))
-                return (String) array.remove(i);
+            if (array.get(i).getKey().equals(key)) {
+                V v = (V) array.get(i).getValue();
+                array.remove(i);
+                return v;
+            }
         }
-        return (String) "";
+        return null;
     }
 }
