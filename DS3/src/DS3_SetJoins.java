@@ -1,7 +1,5 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class DS3_SetJoins
 {
@@ -17,8 +15,8 @@ public class DS3_SetJoins
         DS3_Set<Integer> union = new DS3_Set<>();
         DS3_Set<Integer> intersection = new DS3_Set<>();
 
-        DS3_Set<Integer> a_b = new DS3_Set<>();
-        DS3_Set<Integer> b_a = new DS3_Set<>();
+        DS3_Set<Integer> abSet = new DS3_Set<>();
+        DS3_Set<Integer> baSet = new DS3_Set<>();
 
         try {
             File file = new File(fileName);
@@ -54,12 +52,13 @@ public class DS3_SetJoins
             ArrayList<Integer> unionArr = new ArrayList<>(); // makes union
             while (uni.hasNext())
                 unionArr.add(uni.next());
+            Collections.sort(unionArr);
 
             it1 = set1.iterator(); //intersection starts
             while (it1.hasNext()) {
-                Integer i = it1.next();
-                if (set2.contains(i))
-                    intersection.add(i);
+                Integer i1 = it1.next();
+                if (set2.contains(i1))
+                    intersection.add(i1);
             }
             ArrayList<Integer> inter = new ArrayList<>();
             Iterator<Integer> intr = intersection.iterator();
@@ -71,37 +70,37 @@ public class DS3_SetJoins
             {
                 Integer i = it1.next();
                 if (!set2.contains(i))
-                    a_b.add(i);
+                    abSet.add(i);
             }
-            ArrayList<Integer> ab = new ArrayList<>(); // needs work
-            Iterator<Integer> a__b = intersection.iterator();
-            while (a__b.hasNext())
-                ab.add(a__b.next());
+            Collections.sort(inter);
+            ArrayList<Integer> abArr = new ArrayList<>(); // needs work
+            Iterator<Integer> abIter = abSet.iterator();
+            while (abIter.hasNext())
+                abArr.add(abIter.next());
 
             it2 = set2.iterator();
             while (it2.hasNext())
             {
                 Integer i = it2.next();
                 if (!set1.contains(i))
-                    a_b.add(i);
+                    baSet.add(i);
             }
-            ArrayList<Integer> ba = new ArrayList<>(); // needs work
-            Iterator<Integer> b__a = intersection.iterator();
-            while (b__a.hasNext())
-                ba.add(b__a.next());
+            ArrayList<Integer> baArr = new ArrayList<>(); // needs work
+            Iterator<Integer> baIter = baSet.iterator();
+            while (baIter.hasNext())
+                baArr.add(baIter.next());
 
             System.out.println("Set A: " + arr1);
             System.out.println("Set B: " + arr2);
             System.out.println();
             System.out.println("Union: " + unionArr);
             System.out.println("Intersection: " + inter);
-            System.out.println("A - B (Elements in A not in B): " + ab);
-            System.out.println("B - A (Elements in B not in A): " + ba);
+            System.out.println("A - B (Elements in A not in B): " + abArr);
+            System.out.println("B - A (Elements in B not in A): " + baArr);
         }
         catch (Exception e) {
-            System.out.println("File not found");
+//            System.out.println("File not found");
             e.printStackTrace();
         }
-
     }
 }

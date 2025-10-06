@@ -1,0 +1,4 @@
+Programming in Python can be fun and challenging. 
+You can automate tasks, analyze data, and even build games. 
+Learning Python opens many doors.
+
