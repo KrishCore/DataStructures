@@ -7,14 +7,13 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
 
     public DS4_LinkedList()
     {
-        this.first = null;
-        this.last = null;
+        first = last = null;
     }
     public DS4_LinkedList(E data)
     {
         DS4_LinkedList_Node<E> node = new DS4_LinkedList_Node<>(data);
-        this.first = node;
-        this.last = node;
+        first = last = node;
+        size = 1;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     @Override
     public E removeFirst() {
         DS4_LinkedList_Node<E> rf = first;
-        this.first = rf.getNext();
+        first = rf.getNext();
         size--;
         return rf.getData();
     }
@@ -48,7 +47,17 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     @Override
     public E removeLast() {
         DS4_LinkedList_Node<E> rl = last;
-        this.last = null;
+        DS4_LinkedList_Node<E> cur = first;
+        if (size == 1)
+        {
+            first = last = null;
+        }
+        else {
+            for (int i = 0; i < size; i++) {
+                cur = cur.getNext();
+            }
+            last = cur;
+        }
         size--;
         return rl.getData();
     }
@@ -57,34 +66,35 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     @Override
     public void addFirst(E data) {
         DS4_LinkedList_Node<E> node = new DS4_LinkedList_Node<>(data);
-        DS4_LinkedList_Node<E> fn = first;
-        this.first = node;
-        first.setNext(fn);
-        if (last == null)
-            last = node;
+        if (isEmpty())
+        {
+            first = last = node;
+        }
+        else {
+            DS4_LinkedList_Node<E> fn = first;
+            DS4_LinkedList_Node<E> n = first.getNext();
+            first = node;
+            first.setNext(fn);
+            fn.setNext(n);
+            if (last == first)
+                last = node;
+        }
         size++;
     }
 
     @Override
     public void addLast(E data) {
         DS4_LinkedList_Node<E> node = new DS4_LinkedList_Node<>(data);
-        if (last!=null) {
-            DS4_LinkedList_Node<E> ln = last;
-            last.setNext(node);
-            this.last = ln;
-        }
-        else if (isEmpty()) {
+        if (isEmpty())
             first = node;
-            last = node;
-        }
-        else last = new DS4_LinkedList_Node<>(data);
+        else last.setNext(node);
+        last = node;
         size++;
     }
 
     @Override
     public void clear() {
-        this.first = null;
-        this.last = null;
+        first = last = null;
     }
 
     @Override
@@ -122,20 +132,21 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     public E remove(int x) {
         DS4_LinkedList_Node<E> cur = first;
         for (int i = 0; i < x; i++) {
-            cur = first.getNext();
+            cur = cur.getNext();
         }
-//        cur = cur.getNext();
+
         DS4_LinkedList_Node<E> node = cur;
+        if (size == 1)
+            first = last = null;
+
         if (cur.getNext() == null)
         {
-            if (node == last)
-                last = null;
-            else if (node == first) {
-                first = null;
-                last = null;
-            }
+            if (cur == last)
+                removeLast();
+            else if (cur == first)
+                removeFirst();
         }
-        else if (node == first)
+        else if (cur == first)
             first = cur.getNext();
         else cur.setNext(cur.getNext());
         size--;
@@ -148,7 +159,6 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
         for (int i = 0; i < x; i++) {
             cur = cur.getNext();
         }
-        cur = cur.getNext();
         DS4_LinkedList_Node<E> node = cur;
         cur.setData(data);
         return node.getData();
@@ -156,16 +166,16 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
 
     @Override
     public boolean isEmpty() {
-        return first == null && last == null && size == 0;
+        return size == 0;
     }
 
     @Override
     public String toString() {
         DS4_LinkedList_Node<E> cur = first;
-        if (size == 1)
-            return "[" + first.getData() + "]";
-        else if (size == 0)
+        if (size == 0)
             return "[]";
+        else if (size == 1)
+            return "[" + first.getData() + "]";
         String string = "[";
         for (int i = 0; i < size-1; i++) {
             string += cur.getData() + ", ";
