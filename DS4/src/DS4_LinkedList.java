@@ -116,15 +116,18 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
         DS4_LinkedList_Node<E> node = new DS4_LinkedList_Node<>(data);
         DS4_LinkedList_Node<E> cur = first;
         if (x == 0) {
-            node.setNext(cur);
-            first = node;
-        }
-        else {
+            addFirst(data);
+//            node.setNext(cur);
+//            first = node;
+        } else if (x == size - 1) {
+            addLast(data);
+        } else {
             for (int i = 0; i < x-1; i++) {
                 cur = cur.getNext();
             }
             node.setNext(cur.getNext());
             cur.setNext(node);
+            size++;
         }
     }
 
@@ -139,11 +142,12 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
         if (size == 1)
             first = last = null;
 
-        if (cur.getNext() == null)
+
+        else if (cur.getNext() == null)
         {
-            if (cur == last)
+            if (x == size-1)
                 removeLast();
-            else if (cur == first)
+            else if (x == 0)
                 removeFirst();
         }
         else if (cur == first)
