@@ -1,14 +1,22 @@
-public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_LinkedList_Interface<E>
-{
+public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_LinkedList_Interface<E> {
     int size;
     DS4_Doubly_Circular_LinkedList_Node<E> first;
     DS4_Doubly_Circular_LinkedList_Node<E> last;
-    public DS4_Doubly_Circular_LinkedList()
-    {
+
+    public DS4_Doubly_Circular_LinkedList() {
         first = null;
         last = null;
         size = 0;
     }
+    public DS4_Doubly_Circular_LinkedList(E data) {
+        DS4_Doubly_Circular_LinkedList_Node<E> node = new DS4_Doubly_Circular_LinkedList_Node<>(data);
+        first = last = node;
+        node.setNext(node);
+        node.setPrev(node);
+        size = 1;
+    }
+
+
     @Override
     public DS4_Doubly_Circular_LinkedList_Node<E> getFirstNode() {
         return first;
@@ -31,49 +39,51 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
 
     @Override
     public E removeFirst() {
-        DS4_Doubly_Circular_LinkedList_Node<E> rf = first;
-        first = rf.getNext();
-        rf.setPrev(last);
-        last.setNext(rf);
+        if (size == 0) {
+            return null;
+        }
+        E data = first.getData();
+        if (size == 1) {
+            clear();
+            return data;
+        }
+
+        first = first.getNext();
+        first.setPrev(last);
+        last.setNext(first);
         size--;
-        return rf.getData();
+        return data;
     }
 
     @Override
     public E removeLast() {
-        DS4_Doubly_Circular_LinkedList_Node<E> rl = last;
-        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
+        if (isEmpty())
+            return null;
+        E data = last.getData();
         if (size == 1)
-        {
-            first = last = null;
-        }
+            clear();
         else {
-            for (int i = 0; i < size; i++) {
-                cur = cur.getNext();
-            }
-            last = cur;
+            last = last.getPrev();
             last.setNext(first);
             first.setPrev(last);
+            size--;
         }
-        size--;
-        return rl.getData();
+        return data;
     }
 
     @Override
     public void addFirst(E data) {
         DS4_Doubly_Circular_LinkedList_Node<E> node = new DS4_Doubly_Circular_LinkedList_Node<>(data);
-        if (isEmpty())
-        {
+        if (isEmpty()) {
             first = last = node;
-        }
-        else {
-            DS4_Doubly_Circular_LinkedList_Node<E> fn = first;
-            first = node;
-            first.setNext(fn);
+            first.setNext(first);
             first.setPrev(last);
-            last.setNext(first);
-            if (last == first)
-                last = node;
+        } else {
+            node.setNext(first);
+            node.setPrev(last);
+            first.setPrev(node);
+            last.setNext(node);
+            first = node;
         }
         size++;
     }
@@ -82,14 +92,15 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
     public void addLast(E data) {
         DS4_Doubly_Circular_LinkedList_Node<E> node = new DS4_Doubly_Circular_LinkedList_Node<>(data);
         if (isEmpty()) {
-            first = node;
-            last = node;
-        }
-        else {
+            first = last = node;
+            node.setNext(node);
+            node.setPrev(node);
+        } else {
+            node.setPrev(last);
+            node.setNext(first);
             last.setNext(node);
+            first.setPrev(node);
             last = node;
-            last.setNext(first);
-            first.setPrev(last);
         }
 
         size++;
@@ -98,6 +109,7 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
     @Override
     public void clear() {
         first = last = null;
+        size = 0;
     }
 
     @Override
@@ -116,49 +128,57 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
 
     @Override
     public void add(int x, E data) {
+        if (x == 0)
+            addFirst(data);
+        else if (x == size)
+            addLast(data);
+        else {
+            DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
+            for (int i = 0; i < x; i++) {
+                cur = cur.getNext();
+            }
+            DS4_Doubly_Circular_LinkedList_Node<E> node = new DS4_Doubly_Circular_LinkedList_Node<>(data);
+            DS4_Doubly_Circular_LinkedList_Node<E> prev = cur.getPrev();
 
+            node.setNext(cur);
+            node.setPrev(prev);
+            prev.setNext(node);
+            cur.setPrev(node);
+
+            size++;
+        }
     }
 
     @Override
     public E remove(int x) {
+
+        if (x == 0)
+            return removeFirst();
+        else if (x == size - 1)
+            return removeLast();
+
         DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
         for (int i = 0; i < x; i++) {
             cur = cur.getNext();
         }
+        DS4_Doubly_Circular_LinkedList_Node<E> prev = cur.getPrev();
+        DS4_Doubly_Circular_LinkedList_Node<E> next = cur.getNext();
 
-        DS4_Doubly_Circular_LinkedList_Node<E> node = cur;
-        if (size == 1)
-            first = last = null;
-
-
-        else if (cur.getNext() == null)
-        {
-            if (x == size-1) {
-                removeLast();
-            }
-            else if (x == 0) {
-                removeFirst();
-            }
-        }
-        else if (cur == first) {
-            first = cur.getNext();
-        }
-        else {
-            cur.setNext(cur.getNext());
-        }
+        prev.setNext(next);
+        next.setPrev(prev);
         size--;
-        return node.getData();
+        return cur.getData();
     }
 
     @Override
     public E set(int x, E data) {
-        DS4_Doubly_Circular_LinkedList_Node<E> node = first;
+        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
         for (int i = 0; i < x; i++) {
-            node = node.getNext();
+            cur = cur.getNext();
         }
-        DS4_Doubly_Circular_LinkedList_Node<E> ph = node;
-        node.setData(data);
-        return ph.getData();
+        E old = cur.getData();
+        cur.setData(data);
+        return old;
     }
 
     @Override
@@ -167,37 +187,33 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
     }
 
     @Override
-    public String backwardsToString() {DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
-        if (size == 0)
+    public String backwardsToString() {
+        if (isEmpty())
             return "[]";
-        else if (size == 1)
-            return "[" + first.getData() + "]";
         String string = "[";
-        for (int i = size-1; i >= 0 ; i--) {
-            string += cur.getData() + ", ";
+        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
+        for (int i = 0; i < size; i++) {
+            string += cur.getData();
+            if (i < size-1)
+                string += ", ";
             cur = cur.getNext();
         }
-//        string += cur.getData();
-        string = string.substring(0, string.length()-1);
-//        string = string.substring(0, string.length()-1);
-        return string+"]";
+        return string + "]";
     }
 
-//    @Override
+    //    @Override
     public String toString() {
-        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
-        if (size == 0)
+        if (isEmpty())
             return "[]";
-        else if (size == 1)
-            return "[" + first.getData() + "]";
         String string = "[";
-        for (int i = size-1; i >= 0 ; i--) {
-            string += cur.getData() + ", ";
+        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
+        for (int i = 0; i < size; i++) {
+            string += cur.getData();
+            if (i < size-1)
+                string += ", ";
             cur = cur.getNext();
         }
-//        string += cur.getData();
-        string = string.substring(0, string.length()-1);
-//        string = string.substring(0, string.length()-1);
-        return string+"]";
+        return string + "]";
     }
 }
+
