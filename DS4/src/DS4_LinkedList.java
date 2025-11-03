@@ -72,10 +72,10 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
         }
         else {
             DS4_LinkedList_Node<E> fn = first;
-            DS4_LinkedList_Node<E> n = first.getNext();
+//            DS4_LinkedList_Node<E> n = first.getNext();
             first = node;
             first.setNext(fn);
-            fn.setNext(n);
+//            fn.setNext(n);
             if (last == first)
                 last = node;
         }
@@ -134,25 +134,42 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     @Override
     public E remove(int x) {
         DS4_LinkedList_Node<E> cur = first;
-        for (int i = 0; i < x; i++) {
+        for (int i = 0; i < x-1; i++) {
             cur = cur.getNext();
         }
 
         DS4_LinkedList_Node<E> node = cur;
-        if (size == 1)
+        if (size == 1) {
             first = last = null;
-
-
+            System.out.println("1");
+        }
         else if (cur.getNext() == null)
         {
             if (x == size-1)
                 removeLast();
             else if (x == 0)
                 removeFirst();
+            System.out.println("2");
+
         }
-        else if (cur == first)
-            first = cur.getNext();
-        else cur.setNext(cur.getNext());
+        else if (cur == first) {
+            removeFirst();
+//            first = cur.getNext();
+            System.out.println("3");
+            size--;
+        }
+        else if (x == size - 1) {
+            removeLast();
+            System.out.println("4");
+        } else {
+            node = node.getNext();
+            E n = node.getData();
+            System.out.println("5 ++ " + n);
+            cur.setNext(node.getNext());
+//            System.out.println(toString());
+            size--;
+            return n;
+        }
         size--;
         return node.getData();
     }
