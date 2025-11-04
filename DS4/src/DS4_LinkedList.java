@@ -38,9 +38,6 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
 
     @Override
     public E removeFirst() {
-        if (isEmpty())
-            return null;
-
         E data = first.getData();
         first = first.getNext();
         size--;
@@ -51,10 +48,6 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
 
     @Override
     public E removeLast() {
-        if (isEmpty())
-            return null;
-
-        DS4_LinkedList_Node<E> rl = last;
         DS4_LinkedList_Node<E> cur = first;
         if (size == 1)
         {
@@ -62,15 +55,14 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
             clear();
             return data;
         }
-        else {
-            while (cur.getNext() != last)
-                cur = cur.getNext();
-            E data = last.getData();
-            cur.setNext(null);
-            last = cur;
-            size--;
-            return data;
-        }
+        while (cur.getNext() != last)
+            cur = cur.getNext();
+        E data = last.getData();
+        cur.setNext(null);
+        last = cur;
+        size--;
+        return data;
+
     }
 
 
@@ -78,15 +70,11 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     public void addFirst(E data) {
         DS4_LinkedList_Node<E> node = new DS4_LinkedList_Node<>(data);
         if (isEmpty())
-        {
             first = last = node;
-        }
         else {
             DS4_LinkedList_Node<E> fn = first;
-//            DS4_LinkedList_Node<E> n = first.getNext();
             first = node;
             first.setNext(fn);
-//            fn.setNext(n);
             if (last == first)
                 last = node;
         }
@@ -127,13 +115,11 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
     public void add(int x, E data) {
         DS4_LinkedList_Node<E> node = new DS4_LinkedList_Node<>(data);
         DS4_LinkedList_Node<E> cur = first;
-        if (x == 0) {
+        if (x == 0)
             addFirst(data);
-//            node.setNext(cur);
-//            first = node;
-        } else if (x == size) {
+        else if (x == size)
             addLast(data);
-        } else {
+        else {
             for (int i = 0; i < x-1; i++) {
                 cur = cur.getNext();
             }
@@ -145,11 +131,13 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
 
     @Override
     public E remove(int x) {
-        if (x == 0) return removeFirst();
-        if (x == size - 1) return removeLast();
+        if (x == 0)
+            return removeFirst();
+        if (x == size-1)
+            return removeLast();
 
         DS4_LinkedList_Node<E> cur = first;
-        for (int i = 0; i < x - 1; i++) {
+        for (int i = 0; i < x-1; i++) {
             cur = cur.getNext();
         }
         E data = cur.getNext().getData();
@@ -187,6 +175,6 @@ public class DS4_LinkedList<E> implements DS4_LinkedList_Interface<E>
             cur = cur.getNext();
         }
         string += cur.getData();
-        return string+"]";
+        return string + "]";
     }
 }

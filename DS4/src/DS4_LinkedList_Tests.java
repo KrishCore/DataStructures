@@ -832,7 +832,7 @@ public class DS4_LinkedList_Tests
                 }
                 String message = "Called addFirst multiples using these values:"+thingsToAdd;
                 int index = (int)(Math.random()*correct.size());
-                Assert.assertEquals(message + index,correct.remove(index),remove.invoke(check,index));
+                Assert.assertEquals(message,correct.remove(index),remove.invoke(check,index));
                 message += ", and then calling remove("+index+")";
                 assertFalse(message,(Boolean)isEmpty.invoke(check));
                 assertNotNull(message, getFirstNode.invoke(check));

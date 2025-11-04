@@ -3,6 +3,10 @@ public class DS4_HashTable<K, V> implements DS4_HashTable_Interface<K, V>
 
     int size = 0;
 
+    public DS4_HashTable(K i, K i1, K i2) {
+
+    }
+
     @Override
     public void clear() {
 

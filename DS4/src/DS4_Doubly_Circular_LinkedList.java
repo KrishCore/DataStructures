@@ -39,9 +39,6 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
 
     @Override
     public E removeFirst() {
-        if (size == 0) {
-            return null;
-        }
         E data = first.getData();
         if (size == 1) {
             clear();
@@ -57,8 +54,6 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
 
     @Override
     public E removeLast() {
-        if (isEmpty())
-            return null;
         E data = last.getData();
         if (size == 1)
             clear();
@@ -102,7 +97,6 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
             first.setPrev(node);
             last = node;
         }
-
         size++;
     }
 
@@ -151,10 +145,9 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
 
     @Override
     public E remove(int x) {
-
         if (x == 0)
             return removeFirst();
-        else if (x == size - 1)
+        else if (x == size-1)
             return removeLast();
 
         DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
@@ -190,30 +183,32 @@ public class DS4_Doubly_Circular_LinkedList<E> implements DS4_Doubly_Circular_Li
     public String backwardsToString() {
         if (isEmpty())
             return "[]";
+        else if (size == 1)
+            return "[" + first.getData() + "]";
         String string = "[";
         DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
-        for (int i = 0; i < size; i++) {
-            string += cur.getData();
-            if (i < size-1)
-                string += ", ";
+        for (int i = 0; i < size-1; i++) {
+            string += cur.getData() + ", ";
             cur = cur.getNext();
         }
+        string += last.getData();
         return string + "]";
     }
 
-    //    @Override
+    @Override
     public String toString() {
-        if (isEmpty())
-            return "[]";
-        String string = "[";
-        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
-        for (int i = 0; i < size; i++) {
-            string += cur.getData();
-            if (i < size-1)
-                string += ", ";
-            cur = cur.getNext();
-        }
-        return string + "]";
+        return backwardsToString();
+//        if (isEmpty())
+//            return "[]";
+//        String string = "[";
+//        DS4_Doubly_Circular_LinkedList_Node<E> cur = first;
+//        for (int i = 0; i < size; i++) {
+//            string += cur.getData();
+//            if (i < size-1)
+//                string += ", ";
+//            cur = cur.getNext();
+//        }
+//        return string + "]";
     }
 }
 
