@@ -79,7 +79,7 @@ public class DS4_HashTable<K, V> implements DS4_HashTable_Interface<K, V>
 
     @Override
     public V remove(K key) {
-        V val = null;
+//        V val = null;
 //        if (!contains(key))
 //            return null;
 //        else
@@ -88,10 +88,10 @@ public class DS4_HashTable<K, V> implements DS4_HashTable_Interface<K, V>
                 for (int j = 0; j < arr.get(i).size(); j++) {
                     if (arr.get(i).get(j).key == key)
                     {
-                        val = arr.get(i).get(j).value;
-                        arr.get(i).get(j).value = null;
+                        V val = arr.get(i).get(j).value;
+                        arr.get(i).set(j, new DS4_Entry<>(arr.get(i).get(j).key, null));
                         tombstones++;
-                        return val;
+                        return (V) "X"; // change this
                     }
                 }
             }
@@ -114,12 +114,23 @@ public class DS4_HashTable<K, V> implements DS4_HashTable_Interface<K, V>
 
     private int hash(K key)
     {
-        hashCode()
         return 0;
     }
 
     private void rebuild()
     {
-
+        tableSize *= 2;
+        loadFactor *= 2;
+        ArrayList<ArrayList<DS4_Entry<K, V>>> temp = new ArrayList<>();
+        for (int i = 0; i < arr.size(); i++) {
+            for (int j = 0; j < arr.get(i).size(); j++) {
+                temp.add(arr.get(i));
+            }
+        }
+        // double the arraylist
+        arr.clear();
+        for (int i = 0; i < temp.size(); i++) {
+            arr.add(temp.get(i));
+        }
     }
 }
