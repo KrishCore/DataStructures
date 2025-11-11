@@ -765,7 +765,7 @@ public class DS4_HashTable_Tests {
         assertEquals(0, ht.tombstones());
         assertEquals(4, ht.tableSize()); // table size preserved on clear
     }
-
+    
     // 45 — Rebuilds after many inserts; ensure (a) no bucket exceeds capacity and (b) no nulls remain
     @Test
     public void test45_Rebuilds_NoBucketExceedsCapacity_PostConditions() {
