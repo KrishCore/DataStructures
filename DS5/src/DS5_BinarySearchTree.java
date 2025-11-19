@@ -2,6 +2,7 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 {
     DS5_BinarySearchTree_Node<E> root;
     int size;
+    String arr;
 
     public DS5_BinarySearchTree()
     {
@@ -40,17 +41,36 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 
     @Override
     public String inOrder() {
+        if (size == 0)
+            return "[]";
+        else if (size == 1)
+            return "[" + root.getData() + "]";
         return "";
     }
 
     @Override
     public String postOrder() {
-        return "";
+        if (size == 0)
+            return "[]";
+        else if (size == 1)
+            return "[" + root.getData() + "]";
+        String[] string = traversal(root).split(" ");
+        return "[" + string + "]";
     }
 
     @Override
     public E minValue() {
-        return null;
+        E max = root.getData();
+        DS5_BinarySearchTree_Node<E> cur = root;
+        boolean found = false;
+        while (!found)
+        {
+            if (cur.getRight() != null)
+            {}
+            else if (cur.getLeft() != null)
+                cur = cur.getLeft();
+        }
+        return max;
     }
 
     @Override
@@ -62,8 +82,11 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
     public int nodeDepth(E value) {
         if (!contains(value))
             return -1;
-        else // code to check where is actually is
+        else { // code to check where is actually is
+            if (root.getData() == value)
+                return 0;
             return 1;
+        }
     }
 
     @Override
@@ -73,6 +96,12 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 
     @Override
     public int maxDepth() {
+        if (size == 0)
+            return -1;
+        else if (size == 1)
+            return 0;
+        else if (size == 2)
+            return 1;
         return 0;
     }
 
@@ -94,27 +123,41 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 
     @Override
     public boolean contains(E data) {
+        return contains(data, root);
+    }
+
+    @Override
+    public boolean contains(E data, DS5_BinarySearchTree_Node<E> cur) {
+        //this will be a helping recursive method
+
+        if (cur.getData() == data)
+            return true;
+        else if (cur.getLeft() != null) {
+            return contains(data, cur.getLeft());
+        }
+        else if (cur.getRight() != null) {
+            return contains(data, cur.getRight());
+        }
+
         DS5_BinarySearchTree_Node<E> node = new DS5_BinarySearchTree_Node<>(data);
         boolean bool = false;
         if (root == null || data == null)
             return false;
         if (root.getData().equals(data))
             return true;
-        DS5_BinarySearchTree_Node<E> cur = root;
-        while (!bool)
-        {
-            if (cur.getData().compareTo(data) < 0) {
-                cur = cur.getRight();
-                if (cur == null)
+        DS5_BinarySearchTree_Node<E> cur1 = root;
+        while (!bool) {
+            if (cur1.getData().compareTo(data) < 0) {
+                cur1 = cur1.getRight();
+                if (cur1 == null)
                     return false;
-                if (node.getData().equals(cur.getData()))
+                if (node.getData().equals(cur1.getData()))
                     return true;
-            }
-            else if (cur.getData().compareTo(data) > 0) {
-                cur = cur.getLeft();
-                if (cur == null)
+            } else if (cur1.getData().compareTo(data) > 0) {
+                cur1 = cur1.getLeft();
+                if (cur1 == null)
                     return false;
-                if (node.getData().equals(cur.getData()))
+                if (node.getData().equals(cur1.getData()))
                     return true;
             }
         }
@@ -158,17 +201,42 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 
     @Override
     public boolean remove(E data) {
-        traversal(root);
+        if (!contains(data))
+            return false;
+        boolean removed = false;
+        DS5_BinarySearchTree_Node<E> cur = root;
+        while (!removed)
+        {
+            if (cur.getData().compareTo(data) < 0) {
+                if (cur.getRight() == null) {
+                    cur.setRight(null);
+                    size++;
+                    removed = true;
+                }
+                else cur = cur.getRight();
+            }
+            else if (cur.getData().compareTo(data) > 0) {
+                if (cur.getLeft() == null) {
+                    cur.setLeft(null);
+                    size++;
+                    removed = true;
+                }
+                else cur = cur.getLeft();
+            }
+            else return false;
+        }
 
         return false;
     }
 
-    public void traversal(DS5_BinarySearchTree_Node<E> t)
+    public String traversal(DS5_BinarySearchTree_Node<E> t)
     {
         if(t==null)
-            return;
-        traversal(t.getLeft());
-        traversal(t.getRight());
+            return "";
+        arr += traversal(t.getLeft()) + " ";
+        arr += traversal(t.getRight()) + " ";
+        return arr;
     }
+
 
 }
