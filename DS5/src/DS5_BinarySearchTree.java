@@ -2,7 +2,6 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 {
     DS5_BinarySearchTree_Node<E> root;
     int size;
-//    String arr;
 
     public DS5_BinarySearchTree()
     {
@@ -24,134 +23,98 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
     @Override
     public String preOrder()
     {
-        if(root==null)
+        if(root == null)
             return "[]";
         return "["+preOrderHelper(root).substring(2)+"]";
     }
 
     public String preOrderHelper(DS5_BinarySearchTree_Node<E> temp)
     {
-        if(temp==null)
+        if(temp == null)
             return "";
-        else
-            return ", " + temp.getData() +
-                    preOrderHelper(temp.getLeft()) +
-                    preOrderHelper(temp.getRight());
+        else return ", " + temp.getData() + preOrderHelper(temp.getLeft()) + preOrderHelper(temp.getRight());
     }
 
     @Override
     public String inOrder() {
-        {
-        if (size == 0)
+        if (root == null)
             return "[]";
-        if (size == 1)
-            return "[" + root.getData() + "]";
-        if (size == 2)
-            if (root.getLeft() != null)
-                return "[" + root.getLeft().getData() + ", " + root.getData() + "]";
-            else return "[" + root.getData() + ", " + root.getRight().getData() + "]";
-        if (size == 3)
-            return "[" + root.getLeft().getData() + ", " + root.getData() + ", " + root.getRight().getData() + "]"; } // if size is 0, 1, 2, or 3
-        return "inOrder error";
+        return "[" + inOrderHelper(root).substring(2) + "]";
+    }
+    public String inOrderHelper(DS5_BinarySearchTree_Node<E> temp)
+    {
+        if(temp == null)
+            return "";
+        else return inOrderHelper(temp.getLeft()) + ", " + temp.getData() + inOrderHelper(temp.getRight());
     }
 
     @Override
     public String postOrder() {
-        {
-        if (size == 0)
+        if (root == null)
             return "[]";
-        if (size == 1)
-            return "[" + root.getData() + "]";
-        if (size == 2)
-            if (root.getLeft() != null)
-                return "[" + root.getLeft().getData() + ", " + root.getData() + "]";
-            else return "[" + root.getData() + ", " + root.getRight().getData() + "]";
-        if (size == 3)
-            return "[" + root.getLeft().getData() + ", " + root.getRight().getData() + ", " + root.getData() + "]"; } // if size is 0, 1, 2, or 3
-        return "[" + postOrderHelper(root).substring(4) + "]";
+        return "[" + postOrderHelper(root).substring(2) + "]";
     }
     public String postOrderHelper(DS5_BinarySearchTree_Node<E> temp)
     {
-        if(temp==null)
+        if(temp == null)
             return "";
-//        if (temp.getLeft() == null && temp.getRight() != null)
-//            return preOrderHelper(temp.getRight());
-//        else
-            return ", " + preOrderHelper(temp.getLeft()) +
-                    preOrderHelper(temp.getRight()) + ", " +
-                    temp.getData();
+        return postOrderHelper(temp.getLeft()) + postOrderHelper(temp.getRight()) + ", " + temp.getData();
     }
 
     @Override
     public E minValue() {
+        if (root == null)
+            return null;
         DS5_BinarySearchTree_Node<E> cur = root;
-        boolean found = false;
-        while (!found)
-        {
-            if (cur.getRight() == null)
-            {
-                if (cur.getLeft() != null)
-                    cur = cur.getLeft();
-                else found = true;
-            }
-            else if (cur.getLeft() != null)
+        while (cur.getLeft() != null)
                 cur = cur.getLeft();
-            else found = true;
-        }
         return cur.getData();
     }
 
     @Override
     public E maxValue() {
+        if (root == null)
+            return null;
         DS5_BinarySearchTree_Node<E> cur = root;
-        boolean found = false;
-        while (!found)
-        {
-            if (cur.getLeft() == null)
-            {
-                if (cur.getRight() != null)
-                    cur = cur.getRight();
-                else found = true;
-            }
-            else if (cur.getRight() != null)
-                cur = cur.getRight();
-            else found = true;
-        }
+        while (cur.getRight() != null)
+            cur = cur.getRight();
         return cur.getData();
     }
 
     @Override
     public int nodeDepth(E value) {
-        if (!contains(value))
+        return nodeDepthHelper(root, value, 0);
+    }
+
+    private int nodeDepthHelper(DS5_BinarySearchTree_Node<E> node, E value, int d) {
+        if (node == null)
             return -1;
-        else { // code to check where is actually is
-            if (root.getData() == value)
-                return 0;
-            return 1;
-        }
+        int compare = node.getData().compareTo(value);
+        if (compare == 0)
+            return d;
+        if (compare > 0)
+            return nodeDepthHelper(node.getLeft(), value, d+1);
+        return nodeDepthHelper(node.getRight(), value, d+1); // compare < 0
     }
 
     @Override
     public int height() { // is this done? most likely but check
-        if (size == 0)
+        if (root == null)
             return 0;
-        if (size == 1)
-            return 1;
-        if (size == 2)
-            return 2;
-        return maxDepth()-1;
+        return maxDepth()+1;
     }
 
     @Override
     public int maxDepth() {
-        if (size == 0)
+        if (root == null)
             return -1;
-        else if (size == 1)
-            return 0;
-        else if (size == 2)
-            return 1;
-        // needs work
-        return 0;
+        return Math.max(maxDepthHelper(root), 0);
+    }
+
+    private int maxDepthHelper(DS5_BinarySearchTree_Node<E> node) {
+        if (node == null)
+            return -1;
+        return 1 + Math.max(maxDepthHelper(node.getRight()), maxDepthHelper(node.getLeft()));
     }
 
     @Override
@@ -179,105 +142,96 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
 
     @Override
     public boolean contains(E data) {
-        if (root == null)
-            return false;
-        if (root.getData() == data)
-            return true;
-
         DS5_BinarySearchTree_Node<E> cur = root;
-        DS5_BinarySearchTree_Node<E> temp = cur;
-        DS5_BinarySearchTree_Node<E> node = new DS5_BinarySearchTree_Node<>(data);
-        boolean bool = false;
-        {
-        if (root == null || data == null)
-            return false;
-        if (root.getData().equals(data))
-            return true;
+        while (cur != null) {
+            int compare = cur.getData().compareTo(data);
+            if (compare == 0)
+                return true;
+            if (compare > 0)
+                cur = cur. getLeft();
+            else cur = cur.getRight(); // compare < 0
         }
-        while (true) {
-            if (cur.getData().compareTo(data) < 0) {
-                cur = cur.getRight();
-                if (cur == null)
-                    return false;
-                if (data.equals(cur.getData()))
-                    return true;
-            } else if (cur.getData().compareTo(data) > 0) {
-                cur = cur.getLeft();
-                if (cur == null)
-                    return false;
-                if (data.equals(cur.getData()))
-                    return true;
-            }
-        }
-//        return false;
+        return false;
     }
 
     @Override
     public boolean insert(E data) { //needs work
-        DS5_BinarySearchTree_Node<E> node = new DS5_BinarySearchTree_Node<>(data);
-        boolean inserted = false;
-        if (root == null) {
-            root = new DS5_BinarySearchTree_Node<>(data);
-            size++;
-            return true;
-        }
         if (data == null)
             return false;
-        DS5_BinarySearchTree_Node<E> cur = root;
-        while (!inserted)
+        if (contains(data))
+            return false;
+        if (root == null)
         {
-            if (cur.getData().compareTo(data) < 0) {
-                if (cur.getRight() == null) {
-                    cur.setRight(node);
-                    size++;
-                    inserted = true;
-                }
-                else cur = cur.getRight();
-            }
-            else if (cur.getData().compareTo(data) > 0) {
-                if (cur.getLeft() == null) {
-                    cur.setLeft(node);
-                    size++;
-                    inserted = true;
-                }
-                else cur = cur.getLeft();
-            }
-            else return false;
+            root = new DS5_BinarySearchTree_Node<>(data);
+            size = 1;
+            return true;
         }
-        return inserted;
+        DS5_BinarySearchTree_Node<E> cur =root;
+        while (true)
+        {
+            int compare = cur.getData().compareTo(data);
+            if (compare == 0)
+                return false;
+            if (compare > 0)
+            {
+                if (cur.getLeft() == null) {
+                    cur.setLeft(new DS5_BinarySearchTree_Node<>(data));
+                    size++;
+                    return true;
+                }
+                cur = cur.getLeft();
+            }
+            if (compare < 0)
+            {
+                if (cur.getRight() == null){
+                    cur.setRight(new DS5_BinarySearchTree_Node<>(data));
+                    size++;
+                    return true;
+                }
+                cur = cur.getRight();
+            }
+        }
     }
 
     @Override
     public boolean remove(E data) {
         if (data == null || !contains(data))
             return false;
-        if (root.getData() == data) {
-            root = null;
-            size = 0;
-            return true;
-        }
-
-        boolean removed = false;
-        DS5_BinarySearchTree_Node<E> cur = root;
-        while (!removed)
-        {
-            if (cur.getData().compareTo(data) < 0) {
-                if (cur.getRight() != null)
-                    cur = cur.getRight();
-                else return false;
-            }
-            else if (cur.getData().compareTo(data) > 0) {
-                if (cur.getLeft() != null)
-                    cur = cur.getLeft();
-                else return false;
-            }
-            else if (cur.getData().compareTo(data) == 0) {
-                cur = null;
-                size--;
-                removed = true;
-            }
-        }
+        root = removeHelper(root, data);
+        size--;
         return true;
+    }
+
+    private DS5_BinarySearchTree_Node<E> removeHelper(DS5_BinarySearchTree_Node<E> node, E data) {
+        if (node == null)
+            return null;
+        int compare = node.getData().compareTo(data);
+
+        if (compare > 0)
+            node.setLeft(removeHelper(node.getLeft(), data));
+
+        else if (compare < 0)
+            node.setRight(removeHelper(node.getRight(), data));
+        else { // compare == 0
+            if (node.getLeft() == null && node.getRight() == null)
+                return null;
+            if (node.getLeft() == null)
+                return node.getRight();
+            if (node.getRight() == null)
+                return node.getLeft();
+
+            DS5_BinarySearchTree_Node<E> successor = getMinNode(node.getRight());
+            node.setData(successor.getData());
+            node.setRight(removeHelper(node.getRight(), successor.getData()));
+        }
+        return node;
+    }
+
+    public DS5_BinarySearchTree_Node<E> getMinNode(DS5_BinarySearchTree_Node<E> node) {
+        while (node != null && node.getLeft() != null) {
+            node = node.getLeft();
+        }
+        return node;
     }
 
     public void traversal(DS5_BinarySearchTree_Node<E> t)
@@ -287,6 +241,4 @@ public class DS5_BinarySearchTree<E extends Comparable> implements DS5_BinarySea
         traversal(t.getLeft());
         traversal(t.getRight());
     }
-
 }
-
