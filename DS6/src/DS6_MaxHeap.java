@@ -86,6 +86,8 @@ public class DS6_MaxHeap<E extends Comparable> implements DS6_HeapInterface<E>
 
     public String toString()
     {
+        if (isEmpty())
+            return "[]";
         String s = "[";
         for (int i = 0; i < size-1; i++) {
             s += heap.get(i) + ", ";

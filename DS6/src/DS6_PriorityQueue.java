@@ -15,16 +15,16 @@ public class DS6_PriorityQueue<E extends Comparable> implements DS6_PriorityQueu
     public void offer(E o) {
         pq.add(o);
         size++;
-        int index = size-1;
+        int index = size-1; //last index
         while (index > 0)
         {
             int pIndex = (index-1)/2;
-            if (pq.get(index).compareTo(pq.get(pIndex)) > 0)
+            if (pq.get(index).compareTo(pq.get(pIndex)) < 0)
             {
                 E temp = pq.get(pIndex);
                 pq.set(pIndex, pq.get(index));
                 pq.set(index, temp);
-                index = pIndex;
+                index = pIndex; //index decreases
             } else break;
         }
     }
@@ -34,8 +34,31 @@ public class DS6_PriorityQueue<E extends Comparable> implements DS6_PriorityQueu
         if (size == 0)
             return null;
         E removed = pq.get(0);
-        //sdfghkjgftd
-        return pq.remove(0);
+        E last = pq.get(size-1);
+        pq.set(0, last);
+        pq.remove(size-1);
+        size--;
+        int index = 0;
+        while (true)
+        {
+            int left = index*2+1;
+            int right = left+1; //index*2+2
+            int smallest = index;
+
+            if (left < size && pq.get(left).compareTo(pq.get(smallest)) < 0)
+                smallest = left;
+            if (right < size && pq.get(right).compareTo(pq.get(smallest)) < 0)
+                smallest = right;
+            if (smallest == index)
+                break;
+
+            E temp = pq.get(index);
+            pq.set(index, pq.get(smallest));
+            pq.set(smallest, temp);
+
+            index = smallest;
+        }
+        return removed;
     }
 
     @Override
@@ -68,6 +91,8 @@ public class DS6_PriorityQueue<E extends Comparable> implements DS6_PriorityQueu
     
     public String toString()
     {
+        if (isEmpty())
+            return"[]";
         String s = "[";
         for (int i = 0; i < size - 1; i++) {
             s += pq.get(i) + ", ";
