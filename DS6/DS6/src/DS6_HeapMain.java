@@ -7,7 +7,7 @@ public class DS6_HeapMain
         Scanner keyboard= new Scanner(System.in);
 
         int choice;
-        DS6_MaxHeap<Integer> heap= new DS6_MaxHeap<Integer>();
+        DS6_MinHeap<Integer> heap= new DS6_MinHeap<Integer>();
 
         do
         {
