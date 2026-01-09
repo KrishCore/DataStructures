@@ -34,10 +34,10 @@ public class DS7_Sorts
         if (tempData == null || data.length != tempData.length)
             tempData = new int[data.length];
 
-        if (to == from)
+        if (from == to)
             return;
 
-        int middle = (from+to )/2;
+        int middle = (from+to)/2;
         mergeSort(data, from, middle);
         mergeSort(data, middle+1, to);
 
@@ -51,7 +51,6 @@ public class DS7_Sorts
                 tempData[k++] = data[i++];
             else
                 tempData[k++] = data[j++];
-
         }
         while (i <= middle)
             tempData[k++] = data[i++];
@@ -59,8 +58,8 @@ public class DS7_Sorts
         while (j <= to)
             tempData[k++] = data[j++];
 
-        for (int a = from; a < to; a++)
-            data[a] = tempData[a];
+        for (k = from; k <= to; k++)
+            data[k] = tempData[k];
     }
 
     public static void quickSort(int[] data, int from, int to)
@@ -80,7 +79,7 @@ public class DS7_Sorts
             else {
                 int temp = data[j];
                 data[j] = data[i];
-                data[i] = data[j];
+                data[i] = temp;
                 i++;
                 j--;
             }
@@ -100,5 +99,16 @@ public class DS7_Sorts
 
         quickSort(data, from, p-1);
         quickSort(data, p+1, to);
+    }
+
+    public static void heapSort(int[] list)
+    {
+        DS7_MinHeap<Integer> heap = new DS7_MinHeap<>();
+        for (int i = 0; i < list.length; i++) {
+            heap.insert(list[i]);
+        }
+        for (int i = 0; i < list.length; i++) {
+            list[i] = heap.remove();
+        }
     }
 }
