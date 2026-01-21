@@ -1,4 +1,3 @@
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class DS8_Dijkstras_Weighted_Tests
 {

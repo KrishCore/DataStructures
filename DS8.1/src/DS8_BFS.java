@@ -2,9 +2,9 @@ public class DS8_BFS
 {
     public static int breadthFirstSearch_Portals (char[][]maze)
     {
+        int coll = maze.length;
         boolean[][] bt = new boolean[maze.length][maze[0].length];
         DS8_Queue<Integer> queue = new DS8_Queue<>();
-        int coll = maze.length;
 
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[0].length; j++) {
@@ -15,6 +15,7 @@ public class DS8_BFS
                 }
             }
         }
+
 
         int count = 0;
         while (!queue.isEmpty())
