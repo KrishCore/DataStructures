@@ -27,10 +27,11 @@ public class DS8_BFS
             char start;
             if ("aAbBcCdD".contains(maze[r][c]+"")) {
                 start = maze[r][c];
-                if (Character.isUpperCase(start)) {
+                if (Character.isUpperCase(start))
                     for (int i = 0; i < maze.length; i++) {
                         for (int j = 0; j < maze[0].length; j++) {
-                            if (!bt[i][j] && maze[i][j] == Character.toLowerCase(start)) {
+                            if (!bt[i][j] && (maze[i][j] == Character.toLowerCase(start)
+                                    || maze[i][j] == Character.toUpperCase(start))) {
                                 bt[i][j] = true;
                                 Point[] np = new Point[s.length+1];
                                 for (int k = 0; k < np.length-1; k++) {
@@ -41,23 +42,7 @@ public class DS8_BFS
                             }
                         }
                     }
-                } else {
-                    for (int i = 0; i < maze.length; i++) {
-                        for (int j = 0; j < maze[0].length; j++) {
-                            if (!bt[i][j] && maze[i][j] == Character.toUpperCase(start)) {
-                                bt[i][j] = true;
-                                Point[] np = new Point[s.length+1];
-                                for (int k = 0; k < np.length-1; k++) {
-                                    np[k] = s[k];
-                                }
-                                np[np.length-1] = new Point(i,j);
-                                queue.add(np);
-                            }
-                        }
-                    }
-                }
             }
-
             //up
             if (r-1 >= 0 && !bt[r-1][c] && maze[r-1][c] != 'W')
             {
@@ -108,7 +93,6 @@ public class DS8_BFS
     public static String breadthFirstSearch_Unweighted (String[] edges, String vertices, char start, char end)
     {
         {
-            //check adjacent ones, fori through edges, if start is next to end return start+end
             boolean[] bt = new boolean[vertices.length()];
             DS8_Queue<char[]> queue = new DS8_Queue<>();
             queue.add(new char[] {start});
@@ -117,32 +101,32 @@ public class DS8_BFS
             while (!queue.isEmpty())
             {
                 char[] path = queue.poll();
-//                System.out.println( "path" +path.toString());
                 char lastLetter = path[path.length-1];
                 bt[vertices.indexOf(lastLetter)] = true;
-//                System.out.println("bt" + bt.toString());
 
-                if (bt[vertices.indexOf(end)])
-                    return path.toString(); // may need changes
+                if (lastLetter == end)
+                    return new String(path);
                 DS8_Queue<Character> add = new DS8_Queue<>();
                 for (int i = 0; i < edges.length; i++) {
                     if (edges[i].contains(lastLetter +""))
                     {
+                        char next;
                         if (edges[i].startsWith(lastLetter +""))
-                            if (!bt[vertices.indexOf(edges[i].charAt(1))])
-                                add.add(edges[i].charAt(1));
-                        else if (edges[i].endsWith(lastLetter +""))
-                            if (!bt[vertices.indexOf(edges[i].charAt(0))])
-                                add.add(edges[i].charAt(0));
+                            next = edges[i].charAt(1);
+                        else next = edges[i].charAt(0);
+
+                        if (!bt[vertices.indexOf(next)])
+                            add.add(next);
+                        if (!bt[vertices.indexOf(next)]){
+                            bt[vertices.indexOf(next)] = true;
+                            char[] newPath = new char [path.length+1];
+                            for (int k = 0; k < path.length; k++) {
+                                newPath[k] = path[k];
+                            }
+                            newPath[newPath.length-1] = add.poll();
+                            queue.add(newPath);
+                        }
                     }
-                }
-                for (int i = 0; i < add.size(); i++) {
-                    char[] newPath = new char [path.length+1];
-                    for (int k = 0; k < path.length; k++) {
-                        newPath[k] = path[k];
-                    }
-                    newPath[newPath.length-1] = add.poll();
-                    queue.add(newPath);
                 }
             }
             return null;
