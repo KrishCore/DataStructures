@@ -5,22 +5,15 @@ public class DS8_BFS
     public static int breadthFirstSearch_Portals (char[][]maze)
     {
         boolean[][] bt = new boolean[maze.length][maze[0].length];
-//        int[][] v = new int[maze.length][maze[0].length];
-//        for (int i = 0; i < v.length; i++) {
-//            for (int j = 0; j < v[i].length; j++) {
-//                v[i][j] = -1;
-//            }
-//        }
         DS8_Queue<Point[]> queue = new DS8_Queue<>();
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                if (maze[i][j] == 'S' || maze[i][j] == 's') {
+                if (maze[i][j] == 'S') {
                     queue.add(new Point[]{new Point(i,j)});
                     bt[i][j] = true;
                 }
             }
         }
-        int count = 0;
         while (!queue.isEmpty())
         {
             Point[] s = queue.poll();
@@ -29,8 +22,7 @@ public class DS8_BFS
             bt[r][c] = true;
 
             if (maze[r][c] == 'E')
-                return queue.size();
-            count++;
+                return s.length-1;
 
             char start;
             if ("aAbBcCdD".contains(maze[r][c]+"")) {
@@ -38,18 +30,28 @@ public class DS8_BFS
                 if (Character.isUpperCase(start)) {
                     for (int i = 0; i < maze.length; i++) {
                         for (int j = 0; j < maze[0].length; j++) {
-                            if (maze[i][j] == Character.toLowerCase(start) && !bt[i][j]) {
+                            if (!bt[i][j] && maze[i][j] == Character.toLowerCase(start)) {
                                 bt[i][j] = true;
-                                queue.add(new Point[]{new Point(i,j)});
+                                Point[] np = new Point[s.length+1];
+                                for (int k = 0; k < np.length-1; k++) {
+                                    np[k] = s[k];
+                                }
+                                np[np.length-1] = new Point(i,j);
+                                queue.add(np);
                             }
                         }
                     }
                 } else {
                     for (int i = 0; i < maze.length; i++) {
                         for (int j = 0; j < maze[0].length; j++) {
-                            if (maze[i][j] == Character.toUpperCase(start) && !bt[i][j]) {
+                            if (!bt[i][j] && maze[i][j] == Character.toUpperCase(start)) {
                                 bt[i][j] = true;
-                                queue.add(new Point[]{new Point(i,j)});
+                                Point[] np = new Point[s.length+1];
+                                for (int k = 0; k < np.length-1; k++) {
+                                    np[k] = s[k];
+                                }
+                                np[np.length-1] = new Point(i,j);
+                                queue.add(np);
                             }
                         }
                     }
@@ -60,28 +62,90 @@ public class DS8_BFS
             if (r-1 >= 0 && !bt[r-1][c] && maze[r-1][c] != 'W')
             {
                 bt[r-1][c] = true;
-                queue.add(new Point[]{new Point(r-1,c)});
+                Point[] np = new Point[s.length+1];
+                for (int k = 0; k < np.length-1; k++) {
+                    np[k] = s[k];
+                }
+                np[np.length-1] = new Point(r-1,c);
+                queue.add(np);
             }
             //down
             if (r+1 < maze.length && !bt[r+1][c] && maze[r+1][c] != 'W')
             {
                 bt[r+1][c] = true;
-                queue.add(new Point[]{new Point(r+1,c)});
+                Point[] np = new Point[s.length+1];
+                for (int k = 0; k < np.length-1; k++) {
+                    np[k] = s[k];
+                }
+                np[np.length-1] = new Point(r+1,c);
+                queue.add(np);
             }
             //left
             if (c-1 >= 0 && !bt[r][c-1] && maze[r][c-1] != 'W')
             {
                 bt[r][c-1] = true;
-                queue.add(new Point[]{new Point(r,c-1)});
-
+                Point[] np = new Point[s.length+1];
+                for (int k = 0; k < np.length-1; k++) {
+                    np[k] = s[k];
+                }
+                np[np.length-1] = new Point(r,c-1);
+                queue.add(np);
             }
             //right
             if (c+1 < maze[0].length && !bt[r][c+1] && maze[r][c+1] != 'W')
             {
                 bt[r][c+1] = true;
-                queue.add(new Point[]{new Point(r,c+1)});
+                Point[] np = new Point[s.length+1];
+                for (int k = 0; k < np.length-1; k++) {
+                    np[k] = s[k];
+                }
+                np[np.length-1] = new Point(r,c+1);
+                queue.add(np);
             }
         }
         return -1;
+    }
+    public static String breadthFirstSearch_Unweighted (String[] edges, String vertices, char start, char end)
+    {
+        {
+            //check adjacent ones, fori through edges, if start is next to end return start+end
+            boolean[] bt = new boolean[vertices.length()];
+            DS8_Queue<char[]> queue = new DS8_Queue<>();
+            queue.add(new char[] {start});
+            bt[vertices.indexOf(start)] = true;
+
+            while (!queue.isEmpty())
+            {
+                char[] path = queue.poll();
+//                System.out.println( "path" +path.toString());
+                char lastLetter = path[path.length-1];
+                bt[vertices.indexOf(lastLetter)] = true;
+//                System.out.println("bt" + bt.toString());
+
+                if (bt[vertices.indexOf(end)])
+                    return path.toString(); // may need changes
+                DS8_Queue<Character> add = new DS8_Queue<>();
+                for (int i = 0; i < edges.length; i++) {
+                    if (edges[i].contains(lastLetter +""))
+                    {
+                        if (edges[i].startsWith(lastLetter +""))
+                            if (!bt[vertices.indexOf(edges[i].charAt(1))])
+                                add.add(edges[i].charAt(1));
+                        else if (edges[i].endsWith(lastLetter +""))
+                            if (!bt[vertices.indexOf(edges[i].charAt(0))])
+                                add.add(edges[i].charAt(0));
+                    }
+                }
+                for (int i = 0; i < add.size(); i++) {
+                    char[] newPath = new char [path.length+1];
+                    for (int k = 0; k < path.length; k++) {
+                        newPath[k] = path[k];
+                    }
+                    newPath[newPath.length-1] = add.poll();
+                    queue.add(newPath);
+                }
+            }
+            return null;
+        }
     }
 }
