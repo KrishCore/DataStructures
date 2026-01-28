@@ -4,41 +4,37 @@ import java.util.Collections;
 public class DS8_Dijkstras
 {
     public static int dijkstras_Weighted(String[] edges, String vertices, char start, char end) {
-        ArrayList<DS8_Weighted_Node> list = new ArrayList<>();
-        list.add(new DS8_Weighted_Node(start, 0));
+        ArrayList<DS8_Weighted_Node> sorted = new ArrayList<>();
+        sorted.add(new DS8_Weighted_Node(start, 0));
         for (int i = 0; i < vertices.length(); i++) {
             char a = vertices.charAt(i);
-            if (a != list.getFirst().getLocation())
-                list.add(new DS8_Weighted_Node(a, Integer.MAX_VALUE));
+            if (a != sorted.getFirst().getLocation())
+                sorted.add(new DS8_Weighted_Node(a, Integer.MAX_VALUE));
         }
+        Collections.sort(sorted);
 
-        DS8_Weighted_Node[] nodes = new DS8_Weighted_Node[list.size()];
-        for (int i = 0; i < nodes.length; i++) {
-            nodes[i] = list.get(i);
-        }
-        ArrayList<DS8_Weighted_Node> sorted = new ArrayList<>(list);
-        quickSort(nodes, 0, list.size()-1);
-        Collections.addAll(sorted, nodes);
 
         while (!sorted.isEmpty())
         {
             DS8_Weighted_Node n = sorted.removeFirst();
+            if (n.getDistance() == Integer.MAX_VALUE)
+                return -1;
             if (n.getLocation() == end)
                 return n.getDistance();
-            if (n.getDistance() == Integer.MAX_VALUE)
-                break;
 
+            //arraylist to find adjacent nodes from string[] edges
             ArrayList<DS8_Weighted_Node> adj = new ArrayList<>();
             for (String edge : edges) {
                 if (edge.charAt(0) == n.getLocation())
-                    adj.add(new DS8_Weighted_Node(edge.charAt(1), Integer.parseInt(edge.charAt(2) + "")));
-                int d = n.getDistance();// + adj.getFirst().getDistance();
+                    adj.add(new DS8_Weighted_Node(edge.charAt(1), Integer.parseInt(edge.substring(2))));
             }
-            
-            ArrayList<DS8_Weighted_Node> tsorted = new ArrayList<>(list);
-            quickSort(nodes, 0, list.size()-1);
-            Collections.addAll(tsorted, nodes);
-            System.out.println(adj);
+            for (DS8_Weighted_Node temp: adj) {
+                int newDistance = n.getDistance() + temp.getDistance();
+                for (DS8_Weighted_Node node : sorted)
+                    if (node.getLocation() == temp.getLocation() && newDistance < node.getDistance())
+                        node.setDistance(newDistance);
+            }
+            Collections.sort(sorted);
         }
         return -1;
     }
@@ -81,4 +77,3 @@ public class DS8_Dijkstras
         quickSort(data, p+1, to);
     }
 }
-    
