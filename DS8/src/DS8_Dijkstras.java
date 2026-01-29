@@ -1,46 +1,79 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class DS8_Dijkstras
 {
-    public static int dijkras_weighted (char[] edges, String vertices, char start, char end)
-    {
-        // take code from DS8_BSF class breadthFirstSearch_Unweighted method
-        // and then implement a way to add numbers
-        boolean[] bt = new boolean[vertices.length()];
-        DS8_Queue<char[]> queue = new DS8_Queue<>();
-        queue.add(new char[] {start});
-        bt[vertices.indexOf(start)] = true;
+    public static int dijkstras_Weighted(String[] edges, String vertices, char start, char end) {
+        ArrayList<DS8_Weighted_Node> sorted = new ArrayList<>();
+        sorted.add(new DS8_Weighted_Node(start, 0));
+        for (int i = 0; i < vertices.length(); i++) {
+            char a = vertices.charAt(i);
+            if (a != sorted.getFirst().getLocation())
+                sorted.add(new DS8_Weighted_Node(a, Integer.MAX_VALUE));
+        }
+        Collections.sort(sorted);
 
-        while (!queue.isEmpty())
+
+        while (!sorted.isEmpty())
         {
-            char[] path = queue.poll();
-            char lastLetter = path[path.length-1];
-            bt[vertices.indexOf(lastLetter)] = true;
+            DS8_Weighted_Node n = sorted.removeFirst();
+            if (n.getDistance() == Integer.MAX_VALUE)
+                return -1;
+            if (n.getLocation() == end)
+                return n.getDistance();
 
-            if (lastLetter == end)
-                return new String(path);
-            DS8_Queue<Character> add = new DS8_Queue<>();
-            for (int i = 0; i < edges.length; i++) {
-                if (edges[i].contains(lastLetter +""))
-                {
-                    char next;
-                    if (edges[i].startsWith(lastLetter +""))
-                        next = edges[i].charAt(1);
-                    else next = edges[i].charAt(0);
-
-                    if (!bt[vertices.indexOf(next)])
-                        add.add(next);
-                    if (!bt[vertices.indexOf(next)]){
-                        bt[vertices.indexOf(next)] = true;
-                        char[] newPath = new char [path.length+1];
-                        for (int k = 0; k < path.length; k++) {
-                            newPath[k] = path[k];
-                        }
-                        newPath[newPath.length-1] = add.poll();
-                        queue.add(newPath);
-                    }
-                }
+            //arraylist to find adjacent nodes from string[] edges
+            ArrayList<DS8_Weighted_Node> adj = new ArrayList<>();
+            for (String edge : edges) {
+                if (edge.charAt(0) == n.getLocation())
+                    adj.add(new DS8_Weighted_Node(edge.charAt(1), Integer.parseInt(edge.substring(2))));
             }
+            for (DS8_Weighted_Node temp: adj) {
+                int newDistance = n.getDistance() + temp.getDistance();
+                for (DS8_Weighted_Node node : sorted)
+                    if (node.getLocation() == temp.getLocation() && newDistance < node.getDistance())
+                        node.setDistance(newDistance);
+            }
+            Collections.sort(sorted);
         }
         return -1;
     }
+
+    public static void quickSort(DS8_Weighted_Node[] data, int from, int to)
+    {
+        if (from >= to)
+            return;
+
+        int p = (from+to)/2;
+        int i=from;
+        int j=to;
+
+        while (i<=j) {
+            if (data[i].compareTo(data[p]) <= 0)
+                i++;
+            else if (data[j].compareTo(data[p]) >= 0)
+                j--;
+            else {
+                DS8_Weighted_Node temp = data[j];
+                data[j] = data[i];
+                data[i] = temp;
+                i++;
+                j--;
+            }
+        }
+        if (p < j) {
+            DS8_Weighted_Node temp = data[p];
+            data[p] = data[j];
+            data[j] = temp;
+            p = j;
+        }
+        else if (p > i) {
+            DS8_Weighted_Node temp = data[p];
+            data[p] = data[i];
+            data[i] = temp;
+            p = i;
+        }
+        quickSort(data, from, p-1);
+        quickSort(data, p+1, to);
+    }
 }
-    
