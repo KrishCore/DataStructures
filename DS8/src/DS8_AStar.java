@@ -3,6 +3,7 @@ import java.awt.Point;
 import java.util.Collections;
 
 public class DS8_AStar {
+    public static int number = 0;
     public static DS8_Path_Solution aStar_Simple (char[][] maze)
     {
         ArrayList<DS8_AStar_Node<Point>> open = new ArrayList<>();
@@ -97,6 +98,7 @@ public class DS8_AStar {
     }
 
     public static int aStar_JetPack(char[][] maze) {
+        System.out.println("started----------------------------------- " + ++number);
         int rows = maze.length;
         int cols = maze[0].length;
 
@@ -110,24 +112,19 @@ public class DS8_AStar {
             }
         }
 
-        start.setH(Math.max(Math.abs(start.getLocation().y - end.getLocation().y),
-                Math.abs(start.getLocation().x - end.getLocation().x)));
         start.fixF();
-
         ArrayList<DS8_AStar_Node<Point>> open = new ArrayList<>();
         ArrayList<DS8_AStar_Node<Point>> closed = new ArrayList<>();
         open.add(start);
 
         while (!open.isEmpty()) {
-            DS8_AStar_Node<Point> current = open.get(0);
-            for (DS8_AStar_Node<Point> n : open)
-                if (n.getF() < current.getF() || (n.getF() == current.getF() && n.getH() < current.getH()))
-                    current = n;
-
-            if (current.getLocation().equals(end.getLocation()))
+            Collections.sort(open);
+            DS8_AStar_Node<Point> current = open.removeFirst();
+            System.out.println("while " + current);
+            if (current.getLocation().equals(end.getLocation())) {
+                System.out.println("end: " + current);
                 return current.getG();
-
-            open.remove(current);
+            }
             closed.add(current);
 
             for (int dr = -1; dr <= 1; dr++) {
@@ -139,6 +136,18 @@ public class DS8_AStar {
 
                     if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
 
+                    if (dr == -1){
+                        if (dc == -1) System.out.println(" up left");
+                        if (dc == 0) System.out.println(" up");
+                        if (dc == 1) System.out.println(" up right");
+                    } else if (dr == 0) {
+                        if (dc == -1) System.out.println("left");
+                        if (dc == 1) System.out.println("right");
+                    } else if (dr == 1) {
+                        if (dc == -1) System.out.println(" down left");
+                        if (dc == 0) System.out.println(" down");
+                        if (dc == 1) System.out.println(" down right");
+                    }
                     Point neighborPoint = new Point(nc, nr);
                     boolean inClosed = false;
                     for (DS8_AStar_Node<Point> n : closed)
@@ -156,13 +165,10 @@ public class DS8_AStar {
                         int newG = current.getG() + moveCost;
                         if (newG < neighbor.getG()) {
                             open.remove(neighbor);
-                            int h = neighbor.getH();
-                            open.add(new DS8_AStar_Node<>(neighborPoint, current, newG, h));
+                            open.add(new DS8_AStar_Node<>(neighborPoint, current, newG, 0));
                         }
-                    } else {
-                        int h = Math.max(Math.abs(nr - end.getLocation().y), Math.abs(nc - end.getLocation().x));
-                        open.add(new DS8_AStar_Node<>(neighborPoint, current, current.getG() + moveCost, h));
-                    }
+                    } else
+                        open.add(new DS8_AStar_Node<>(neighborPoint, current, current.getG() + moveCost, 0));
                 }
             }
         }
