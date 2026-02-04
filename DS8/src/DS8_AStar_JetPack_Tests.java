@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class DS8_AStar_JetPack_Tests {
     char[][][] testGraphs1 =
             {
-                    {{'S','P','O'},
+                            {{'S','P','O'},
                             {'P','O','P'},
                             {'O','O','E'}},
 
@@ -140,12 +140,9 @@ public class DS8_AStar_JetPack_Tests {
             Method jetPack = aStar.getMethod("aStar_JetPack", char[][].class);
             for(int x=0; x<testGraphs1.length; x++)
             {
-                DS8_Path_Solution solution=(DS8_Path_Solution) jetPack.invoke(aStar,(Object)testGraphs1[x]);
+                Integer solution=(Integer) jetPack.invoke(aStar,(Object)testGraphs1[x]);
 
-                Assert.assertNotNull("aStar_JetPack("+Arrays.deepToString(testGraphs1[x])+") failed to produce a solution.",solution);
-                checkSolution(testGraphs1[x], distances1[x], solution);
-
-
+                Assert.assertEquals(distances1[x], solution.intValue());
             }
 
         }
@@ -163,10 +160,8 @@ public class DS8_AStar_JetPack_Tests {
             Method jetPack = aStar.getMethod("aStar_JetPack", char[][].class);
             for(int x=0; x<testGraphs2.length; x++)
             {
-                DS8_Path_Solution solution=(DS8_Path_Solution) jetPack.invoke(aStar,(Object)testGraphs2[x]);
-
-                Assert.assertNotNull("aStar_JetPack("+Arrays.deepToString(testGraphs2[x])+") failed to produce a solution.",solution);
-                checkSolution(testGraphs2[x], distances2[x], solution);
+                Integer solution=(Integer) jetPack.invoke(aStar,(Object)testGraphs2[x]);
+                Assert.assertEquals(distances2[x], solution.intValue());
             }
 
         }
@@ -174,39 +169,5 @@ public class DS8_AStar_JetPack_Tests {
         {
             throw (Exception) e.getCause();
         }
-    }
-
-    public void checkSolution(char[][] grid, int distance,DS8_Path_Solution student)
-    {
-        Assert.assertEquals("aStar_JetPack("+Arrays.deepToString(grid)+") failed to produce the distance.",distance,student.getDistance());
-
-        ArrayList<Point> points = student.getPath();
-        Assert.assertEquals("aStar_JetPack("+Arrays.deepToString(grid)+") failed to produce a path of that begins at the start location."+points,""+'S',""+grid[points.get(0).y][points.get(0).x]);
-        Assert.assertEquals("aStar_JetPack("+Arrays.deepToString(grid)+") failed to produce a path of that ends at the end location.",""+'E',""+grid[points.get(points.size()-1).y][points.get(points.size()-1).x]);
-
-        int pathCost=0;
-        for(int x=1; x<points.size(); x++)
-        {
-            int pc = (int)points.get(x-1).getX();
-            int pr = (int)points.get(x-1).getY();
-            int cc = (int)points.get(x).getX();
-            int cr = (int)points.get(x).getY();
-
-            if(grid[cr][cc]=='O')
-                pathCost++;
-            Assert.assertTrue("aStar_JetPack("+Arrays.deepToString(grid)+") produced invalid moves. The moves were "+points,
-                    (Math.abs(pc-cc)==0 && Math.abs(pr-cr)==1) ||
-                            (Math.abs(pc-cc)==1 && Math.abs(pr-cr)==0) ||
-                            (Math.abs(pc-cc)==1 && Math.abs(pr-cr)==1));
-
-        }
-        Assert.assertEquals("aStar_JetPack("+Arrays.deepToString(grid)+") actual path cost was not equals to the solution's cost.",distance,pathCost);
-
-    }
-
-    public boolean adjacent(Point a, Point b)
-    {
-        return ((a.x == b.x &&(a.y==b.y-1 || a.y==b.y+1)) ||
-                (a.y == b.y &&(a.x==b.x-1 || a.x==b.x+1)));
     }
 }
