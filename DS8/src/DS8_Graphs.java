@@ -10,7 +10,6 @@ public class DS8_Graphs
         Collections.addAll(ed, edges);
         for (int i = 0; i < edges.length; i++) {
             String se = ed.remove(i);
-            System.out.println(se);
             String[] arr = new String[ed.size()];
             for (int j = 0; j < arr.length; j++)
                 arr[j] = ed.get(j);
