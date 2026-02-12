@@ -1,13 +1,13 @@
 package Calculator;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CalcFrame extends JFrame
 {
     JTextField txt_operand1 = new JTextField();
     private JLabel lbl_operation = new JLabel();
     private JLabel lbl_operand2 = new JLabel();
-
     private JButton one = new JButton("1");
     private JButton two = new JButton("2");
     private JButton three = new JButton("3");
@@ -24,107 +24,119 @@ public class CalcFrame extends JFrame
     private JButton divide = new JButton("/");
     private JButton equal = new JButton("=");
     private JButton decimal = new JButton(".");
-    private JButton pm = new JButton("√+");
+    private JButton pm = new JButton("-/+");
     private JButton clear = new JButton("C");
+    private JButton backspace = new JButton("⌫");
 
 
     public CalcFrame()
     {
         super("Calculator");
-        setSize(400,400);
+        setSize(325,420);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLayout(null);
 
-        lbl_operand2.setBounds(20,20,210,20);
+        lbl_operand2.setBounds(20,15,255,20);
+        lbl_operand2.setFont(new Font ("Dialog", Font.PLAIN, 16));
+        lbl_operand2.setHorizontalAlignment(JLabel.RIGHT);
         add(lbl_operand2);
 
-        lbl_operation.setBounds(210,40,20,20);
+        lbl_operation.setBounds(270,30,20,20);
+        lbl_operation.setFont(new Font ("Dialog", Font.PLAIN, 12));
         add(lbl_operation);
 
-        txt_operand1.setBounds(20,60,210,20);
+        txt_operand1.setBounds(20,50,265,30);
+        txt_operand1.setHorizontalAlignment(JLabel.RIGHT);
+        txt_operand1.setFont(new Font ("Dialog", Font.PLAIN, 16));
         add(txt_operand1);
         txt_operand1.setEditable(false);
 
         //numbers
         {
-            one.setBounds(20, 90+55, 45, 45);
+            one.setBounds(20, 145, 45, 45);
             add(one);
             one.addActionListener(e -> oneClicked());
 
-            two.setBounds(75, 90+55, 45, 45);
+            two.setBounds(75, 145, 45, 45);
             add(two);
             two.addActionListener(e -> twoClicked());
 
-            three.setBounds(130, 90+55, 45, 45);
+            three.setBounds(130, 145, 45, 45);
             add(three);
             three.addActionListener(e -> threeClicked());
 
-            four.setBounds(20, 145+55, 45, 45);
+            four.setBounds(20, 200, 45, 45);
             add(four);
             four.addActionListener(e -> fourClicked());
 
-            fivr.setBounds(75, 145+55, 45, 45);
+            fivr.setBounds(75, 200, 45, 45);
             add(fivr);
             fivr.addActionListener(e -> fiveClicked());
 
-            six.setBounds(130, 145+55, 45, 45);
+            six.setBounds(130, 200, 45, 45);
             add(six);
             six.addActionListener(e -> sixClicked());
 
-            seven.setBounds(20, 200+55, 45, 45);
+            seven.setBounds(20, 255, 45, 45);
             add(seven);
             seven.addActionListener(e -> sevenClicked());
 
-            eight.setBounds(75, 200+55, 45, 45);
+            eight.setBounds(75, 255, 45, 45);
             add(eight);
             eight.addActionListener(e -> eightClicked());
 
-            nine.setBounds(130, 200+55, 45, 45);
+            nine.setBounds(130, 255, 45, 45);
             add(nine);
             nine.addActionListener(e -> nineClicked());
 
-            zero.setBounds(185, 90+55, 45, 155);
+            zero.setBounds(185, 145, 45, 155);
             add(zero);
             zero.addActionListener(e -> zeroClicked());
         }
 
         //operations
         {
-            plus.setBounds(285, 90, 45, 45);
+            plus.setBounds(240, 90, 45, 45);
             add(plus);
             plus.addActionListener(e -> plusClicked());
 
-            minus.setBounds(285, 145, 45, 45);
+            minus.setBounds(240, 145, 45, 45);
             add(minus);
             minus.addActionListener(e -> minusClicked());
 
-            divide.setBounds(285, 200, 45, 45);
+            divide.setBounds(240, 200, 45, 45);
             add(divide);
             divide.addActionListener(e -> divideClicked());
 
-            multiply.setBounds(285, 255, 45, 45);
+            multiply.setBounds(240, 255, 45, 45);
             add(multiply);
             multiply.addActionListener(e -> multiplyClicked());
 
-            equal.setBounds(20, 310, 45+55*3, 45);
+            equal.setBounds(20, 310, 45+55*4, 45);
             add(equal);
             equal.addActionListener(e -> equalClicked());
         }
 
-        //other (decimals, clear, sqrt)
+        //other (decimals, clear, sign, backspace)
         {
-            decimal.setBounds(285, 90, 45, 45);
+            decimal.setBounds(75, 90, 45, 45);
             add(decimal);
             decimal.addActionListener(e -> decimalClicked());
 
-            pm.setBounds(285, 90, 45, 45);
+            pm.setBounds(130, 90, 45, 45);
+            pm.setFont(new Font("Dialog", Font.PLAIN, 9));
             add(pm);
             pm.addActionListener(e -> pmClicked());
 
-            clear.setBounds(285, 90, 45, 45);
+            clear.setBounds(185, 90, 45, 45);
             add(clear);
             clear.addActionListener(e -> clearClicked());
+
+            backspace.setBounds(20, 90, 45, 45);
+            backspace.setFont(new Font("Dialog", Font.PLAIN, 8));
+            add(backspace);
+            backspace.addActionListener(e -> backspaceClicked());
         }
 
         setVisible(true);
@@ -157,35 +169,46 @@ public class CalcFrame extends JFrame
 
     private void plusClicked()
     {
-        lbl_operand2.setText(txt_operand1.getText());
-        lbl_operation.setText("+");
-        txt_operand1.setText("");
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("+");
+            txt_operand1.setText("");
+        }
+        else lbl_operation.setText("+");
     }
 
     private void minusClicked()
     {
-        lbl_operand2.setText(txt_operand1.getText());
-        lbl_operation.setText("-");
-        txt_operand1.setText("");
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("-");
+            txt_operand1.setText("");
+        }
+        else lbl_operation.setText("-");
+
     }
 
     private void multiplyClicked()
     {
-        lbl_operand2.setText(txt_operand1.getText());
-        lbl_operation.setText("*");
-        txt_operand1.setText("");
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("*");
+            txt_operand1.setText("");
+        } else lbl_operation.setText("*");
     }
 
     private void divideClicked()
     {
-        lbl_operand2.setText(txt_operand1.getText());
-        lbl_operation.setText("/");
-        txt_operand1.setText("");
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("/");
+            txt_operand1.setText("");
+        } else lbl_operation.setText("/");
     }
 
     private void equalClicked()
     {
-        if (!lbl_operand2.getText().equals("") && !txt_operand1.getText().equals(""))
+        if (!lbl_operand2.getText().isEmpty() && !txt_operand1.getText().isEmpty())
         {
             double v1 = Double.parseDouble(txt_operand1.getText());
             double v2 = Double.parseDouble(lbl_operand2.getText());
@@ -203,10 +226,31 @@ public class CalcFrame extends JFrame
         }
     }
 
-    private void decimalClicked() {txt_operand1.setText(txt_operand1.getText() + ".");}
+    private void decimalClicked()
+    {
+        if (!txt_operand1.getText().contains("."))
+            txt_operand1.setText(txt_operand1.getText() + ".");
+    }
 
-    private void pmClicked() {txt_operand1.setText(txt_operand1.getText() + ".");} // change
+    private void pmClicked()
+    {
+        if (txt_operand1.getText().contains("-"))
+            txt_operand1.setText(txt_operand1.getText().substring(1));
+        else txt_operand1.setText("-" + txt_operand1.getText());
+    }
 
-    private void clearClicked() {txt_operand1.setText(txt_operand1.getText() + ".");} // change
+    private void clearClicked()
+    {
+        txt_operand1.setText("");
+        lbl_operand2.setText("");
+        lbl_operation.setText("");
+    }
 
+    private void backspaceClicked()
+    {
+//        if (!lbl_operand2.getText().isEmpty())
+//            lbl_operand2.setText(lbl_operation.getText().substring(0,lbl_operand2.getText().length()-1));
+        if (!txt_operand1.getText().isEmpty())
+            txt_operand1.setText(txt_operand1.getText().substring(0,txt_operand1.getText().length()-1));
+    }
 }
