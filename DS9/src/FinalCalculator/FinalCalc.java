@@ -11,7 +11,7 @@ public class FinalCalc extends JFrame
     private JTextField txt_term1 = new JTextField();
     private JTextField txt_term2 = new JTextField();
     private JTextField finalWeight = new JTextField();
-    private JTextField txt_term2 = new JTextField();
+    private JTextField txt_term3 = new JTextField();
 
     private JLabel lbl_ttw = new JLabel("Total Term Weight:");
     private JLabel lbl_fw = new JLabel("Final Weight:");
