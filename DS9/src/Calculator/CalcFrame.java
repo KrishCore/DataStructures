@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class CalcFrame extends JFrame
 {
-    private JTextField txt_operand1 = new JTextField();
+    JTextField txt_operand1 = new JTextField();
     private JLabel lbl_operation = new JLabel();
     private JLabel lbl_operand2 = new JLabel();
     private JButton one = new JButton("1");
@@ -138,10 +138,16 @@ public class CalcFrame extends JFrame
             add(backspace);
             backspace.addActionListener(e -> backspaceClicked());
         }
+
         setVisible(true);
+
     }
 
-    public void oneClicked () {txt_operand1.setText(txt_operand1.getText() + "1");}
+
+    public void oneClicked ()
+    {
+        txt_operand1.setText(txt_operand1.getText() + "1");
+    }
 
     public void twoClicked () {txt_operand1.setText(txt_operand1.getText() + "2");}
 
@@ -163,94 +169,60 @@ public class CalcFrame extends JFrame
 
     private void plusClicked()
     {
-        if (operationHelper()) {
-            if (lbl_operation.getText().isEmpty()) {
-                if (!txt_operand1.getText().isEmpty()) {
-                    lbl_operand2.setText(txt_operand1.getText());
-                    lbl_operation.setText("+");
-                    txt_operand1.setText("");
-                }
-            } else {
-                equalClicked();
-                lbl_operand2.setText(txt_operand1.getText());
-                txt_operand1.setText("");
-                lbl_operation.setText("+");
-            }
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("+");
+            txt_operand1.setText("");
         }
+        else lbl_operation.setText("+");
     }
 
     private void minusClicked()
     {
-        if (operationHelper()) {
-            if (lbl_operation.getText().isEmpty()) {
-                if (!txt_operand1.getText().isEmpty()) {
-                    lbl_operand2.setText(txt_operand1.getText());
-                    lbl_operation.setText("-");
-                    txt_operand1.setText("");
-                }
-            } else {
-                equalClicked();
-                lbl_operand2.setText(txt_operand1.getText());
-                txt_operand1.setText("");
-                lbl_operation.setText("-");
-            }
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("-");
+            txt_operand1.setText("");
         }
+        else lbl_operation.setText("-");
+
     }
 
     private void multiplyClicked()
     {
-        if (operationHelper()) {
-            if (lbl_operation.getText().isEmpty()) {
-                if (!txt_operand1.getText().isEmpty()) {
-                    lbl_operand2.setText(txt_operand1.getText());
-                    lbl_operation.setText("*");
-                    txt_operand1.setText("");
-                }
-            } else {
-                equalClicked();
-                lbl_operand2.setText(txt_operand1.getText());
-                txt_operand1.setText("");
-                lbl_operation.setText("*");
-            }
-        }
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("*");
+            txt_operand1.setText("");
+        } else lbl_operation.setText("*");
     }
 
     private void divideClicked()
     {
-        if (operationHelper()) {
-            if (lbl_operation.getText().isEmpty()) {
-                if (!txt_operand1.getText().isEmpty()) {
-                    lbl_operand2.setText(txt_operand1.getText());
-                    lbl_operation.setText("/");
-                    txt_operand1.setText("");
-                }
-            } else {
-                equalClicked();
-                lbl_operand2.setText(txt_operand1.getText());
-                txt_operand1.setText("");
-                lbl_operation.setText("/");
-            }
-        }
+        if (lbl_operation.getText().isEmpty()) {
+            lbl_operand2.setText(txt_operand1.getText());
+            lbl_operation.setText("/");
+            txt_operand1.setText("");
+        } else lbl_operation.setText("/");
     }
 
     private void equalClicked()
     {
-        if (equalHelper()) {
-            if (!lbl_operand2.getText().isEmpty() && !txt_operand1.getText().isEmpty()) {
-                double v1 = Double.parseDouble(txt_operand1.getText());
-                double v2 = Double.parseDouble(lbl_operand2.getText());
+        if (!lbl_operand2.getText().isEmpty() && !txt_operand1.getText().isEmpty())
+        {
+            double v1 = Double.parseDouble(txt_operand1.getText());
+            double v2 = Double.parseDouble(lbl_operand2.getText());
 
-                if (lbl_operation.getText().equals("+"))
-                    txt_operand1.setText("" + (v2 + v1));
-                else if (lbl_operation.getText().equals("-"))
-                    txt_operand1.setText("" + (v2 - v1));
-                else if (lbl_operation.getText().equals("*"))
-                    txt_operand1.setText("" + (v2 * v1));
-                else if (lbl_operation.getText().equals("/"))
-                    txt_operand1.setText("" + (v2 / v1));
-                lbl_operation.setText("");
-                lbl_operand2.setText("");
-            }
+            if (lbl_operation.getText().equals("+"))
+                txt_operand1.setText(""+(v2+v1));
+            else if (lbl_operation.getText().equals("-"))
+                txt_operand1.setText(""+(v2-v1));
+            else if (lbl_operation.getText().equals("*"))
+                txt_operand1.setText(""+(v2*v1));
+            else if (lbl_operation.getText().equals("/"))
+                txt_operand1.setText(""+(v2/v1));
+            lbl_operation.setText("");
+            lbl_operand2.setText("");
         }
     }
 
@@ -276,18 +248,9 @@ public class CalcFrame extends JFrame
 
     private void backspaceClicked()
     {
+//        if (!lbl_operand2.getText().isEmpty())
+//            lbl_operand2.setText(lbl_operation.getText().substring(0,lbl_operand2.getText().length()-1));
         if (!txt_operand1.getText().isEmpty())
             txt_operand1.setText(txt_operand1.getText().substring(0,txt_operand1.getText().length()-1));
-    }
-
-    //helper methods
-    public boolean equalHelper()
-    {
-        return !txt_operand1.getText().equals("-") && !txt_operand1.getText().equals(".");
-    }
-
-    public boolean operationHelper()
-    {
-        return !txt_operand1.getText().equals("-") && !txt_operand1.getText().equals(".") && !txt_operand1.getText().equals("-.");
     }
 }
