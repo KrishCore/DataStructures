@@ -143,6 +143,7 @@ public class CalcFrame extends JFrame
 
     }
 
+
     public void oneClicked ()
     {
         txt_operand1.setText(txt_operand1.getText() + "1");
@@ -198,7 +199,7 @@ public class CalcFrame extends JFrame
 
     private void divideClicked()
     {
-        if (!lbl_operand2.getText().isEmpty()) {
+        if (lbl_operation.getText().isEmpty()) {
             lbl_operand2.setText(txt_operand1.getText());
             lbl_operation.setText("/");
             txt_operand1.setText("");
@@ -231,7 +232,8 @@ public class CalcFrame extends JFrame
             txt_operand1.setText(txt_operand1.getText() + ".");
     }
 
-    private void pmClicked() {
+    private void pmClicked()
+    {
         if (txt_operand1.getText().contains("-"))
             txt_operand1.setText(txt_operand1.getText().substring(1));
         else txt_operand1.setText("-" + txt_operand1.getText());
@@ -246,6 +248,8 @@ public class CalcFrame extends JFrame
 
     private void backspaceClicked()
     {
+//        if (!lbl_operand2.getText().isEmpty())
+//            lbl_operand2.setText(lbl_operation.getText().substring(0,lbl_operand2.getText().length()-1));
         if (!txt_operand1.getText().isEmpty())
             txt_operand1.setText(txt_operand1.getText().substring(0,txt_operand1.getText().length()-1));
     }
