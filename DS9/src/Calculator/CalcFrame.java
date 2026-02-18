@@ -27,6 +27,7 @@ public class CalcFrame extends JFrame
     private JButton pm = new JButton("-/+");
     private JButton clear = new JButton("C");
     private JButton backspace = new JButton("⌫");
+    private boolean isAnswer = false;
 
 
     public CalcFrame() {
@@ -146,83 +147,117 @@ public class CalcFrame extends JFrame
 
     public void oneClicked ()
     {
-        if (txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("1");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "1");
     }
 
     public void twoClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("2");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "2");
     }
 
     public void threeClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("3");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "3");
     }
 
     public void fourClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("4");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "4");
     }
 
     public void fiveClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("5");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "5");
     }
 
     public void sixClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("6");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "6");
     }
 
     public void sevenClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("7");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "7");
     }
 
     public void eightClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("8");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "8");
     }
 
     public void nineClicked ()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("9");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "9");
     }
 
     public void zeroClicked ()
     {
-        if (txt_operand1.getText().contains("E"))
+        if (isAnswer || txt_operand1.getText().contains("E"))
+        {
             txt_operand1.setText("0");
+            isAnswer = false;
+        }
         else txt_operand1.setText(txt_operand1.getText() + "0");
     }
 
     private void plusClicked()
     {
-        if (lbl_operand2.getText().contains("Error") || lbl_operand2.getText().contains("Erro") || lbl_operand2.getText().contains("Err") || lbl_operand2.getText().contains("Er") || lbl_operand2.getText().contains("E"))
-        {}
-        else if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
-        {}
+        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+            txt_operand1.setText("");
         else if (txt_operand1.getText().equals("-") || txt_operand1.getText().equals(".") || txt_operand1.getText().equals("-."))
         {}
         else {
+            if (txt_operand1.getText().isEmpty())
+            {
+                lbl_operand2.setText("0");
+                lbl_operation.setText("+");
+                txt_operand1.setText("");
+            }
             if (!txt_operand1.getText().isEmpty()) {
                 if (lbl_operation.getText().isEmpty()) {
                     lbl_operand2.setText(txt_operand1.getText());
@@ -249,10 +284,8 @@ public class CalcFrame extends JFrame
 
     private void minusClicked()
     {
-        if (lbl_operand2.getText().contains("Error") || lbl_operand2.getText().contains("Erro") || lbl_operand2.getText().contains("Err") || lbl_operand2.getText().contains("Er") || lbl_operand2.getText().contains("E"))
-        {}
-        else if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
-        {}
+        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+            txt_operand1.setText("");
         else if (txt_operand1.getText().equals("-") || txt_operand1.getText().equals(".") || txt_operand1.getText().equals("-."))
         {}
         else {
@@ -282,10 +315,8 @@ public class CalcFrame extends JFrame
 
     private void multiplyClicked()
     {
-        if (lbl_operand2.getText().contains("Error") || lbl_operand2.getText().contains("Erro") || lbl_operand2.getText().contains("Err") || lbl_operand2.getText().contains("Er") || lbl_operand2.getText().contains("E"))
-        {}
-        else if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
-        {}
+        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+            txt_operand1.setText("");
         else if (txt_operand1.getText().equals("-") || txt_operand1.getText().equals(".") || txt_operand1.getText().equals("-."))
         {}
         else {
@@ -315,10 +346,8 @@ public class CalcFrame extends JFrame
 
     private void divideClicked()
     {
-        if (lbl_operand2.getText().contains("Error") || lbl_operand2.getText().contains("Erro") || lbl_operand2.getText().contains("Err") || lbl_operand2.getText().contains("Er") || lbl_operand2.getText().contains("E"))
-        {}
-        else if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
-        {}
+        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+            txt_operand1.setText("");
         else if (txt_operand1.getText().equals("-") || txt_operand1.getText().equals(".") || txt_operand1.getText().equals("-."))
         {}
         else {
@@ -350,12 +379,11 @@ public class CalcFrame extends JFrame
     {
         if (!lbl_operand2.getText().isEmpty() && !txt_operand1.getText().isEmpty())
         {
+            isAnswer = true;
             if (lbl_operand2.getText().contains("Error") || lbl_operand2.getText().contains("Erro") || lbl_operand2.getText().contains("Err") || lbl_operand2.getText().contains("Er") || lbl_operand2.getText().contains("E"))
                 txt_operand1.setText("Error");
             else if (txt_operand1.getText().equals("-") || txt_operand1.getText().equals(".") || txt_operand1.getText().equals("-."))
-            {
                 txt_operand1.setText("Error");
-            }
             else {
                 double v1 = Double.parseDouble(txt_operand1.getText());
                 double v2 = Double.parseDouble(lbl_operand2.getText());
@@ -368,13 +396,9 @@ public class CalcFrame extends JFrame
                     txt_operand1.setText(""+(v2*v1));
                 else if (lbl_operation.getText().equals("/"))
                 {
-                    System.out.println("/");
-                    if (v1 == 0) {
-                        System.out.println("/0");
+                    if (v1 == 0)
                         txt_operand1.setText("Error");
-                    }
                     else txt_operand1.setText("" + (v2 / v1));
-
                 }
             }
             lbl_operation.setText("");
@@ -385,15 +409,24 @@ public class CalcFrame extends JFrame
     private void decimalClicked()
     {
         if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
-            txt_operand1.setText(".");
+            txt_operand1.setText("0.");
+        else if (txt_operand1.getText().isEmpty())
+            txt_operand1.setText("0.");
+        else if (isAnswer)
+        {
+            txt_operand1.setText("0.");
+            isAnswer = false;
+        }
         else if (!txt_operand1.getText().contains("."))
             txt_operand1.setText(txt_operand1.getText() + ".");
     }
 
     private void pmClicked()
     {
-        if (txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
-            txt_operand1.setText("-");
+        if (txt_operand1.getText().isEmpty() || txt_operand1.getText().contains("Error") || txt_operand1.getText().contains("Erro") || txt_operand1.getText().contains("Err") || txt_operand1.getText().contains("Er") || txt_operand1.getText().contains("E"))
+            txt_operand1.setText("");
+        if (Double.parseDouble(txt_operand1.getText()) == 0)
+        {}
         else if (txt_operand1.getText().contains("-"))
             txt_operand1.setText(txt_operand1.getText().substring(1));
         else txt_operand1.setText("-" + txt_operand1.getText());
