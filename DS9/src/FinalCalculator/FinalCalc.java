@@ -2,7 +2,6 @@ package FinalCalculator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -15,12 +14,12 @@ public class FinalCalc extends JFrame
     private JTextField txt_term3 = new JTextField();
     private JTextField txt_term4 = new JTextField();
     private JTextField txt_term5 = new JTextField();
-    private JTextField txt_ttw = new JTextField();
-    private JTextField txt_fw = new JTextField();
-    private JTextField txt_gw = new JTextField();
+    private JTextField txt_ttw = new JTextField("85");
+    private JTextField txt_fw = new JTextField("15");
+    private JTextField txt_gw = new JTextField("90");
 
-    private JButton txt_calculate = new JButton();
-    private JButton txt_clear = new JButton();
+    private JButton btn_calculate = new JButton("Calculate");
+    private JButton btn_clear = new JButton("Clear");
 
     private JLabel lbl_ttw = new JLabel("Total Term Weight:");
     private JLabel lbl_fw = new JLabel("Final Weight:");
@@ -31,14 +30,14 @@ public class FinalCalc extends JFrame
     private JLabel lbl_term3 = new JLabel("Term 3 Grade:");
     private JLabel lbl_term4 = new JLabel("Term 4 Grade:");
     private JLabel lbl_term5 = new JLabel("Term 5 Grade:");
-    private JLabel lbl_calcGrade = new JLabel("Calculated Grade Needed On Final");
+    private JLabel lbl_cgnof = new JLabel("Calculated Grade Needed On Final");
     private JLabel lbl_grade = new JLabel("");
 
     public FinalCalc() {
         super("Final Calculator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
-        setSize(600, 800);
+        setSize(605, 800);
 
         //Total Term Weight
         {
@@ -155,15 +154,15 @@ public class FinalCalc extends JFrame
         //Term 2
         {
             lbl_term2.setBounds(20, 290, 300, 35);
-            add(lbl_term2);
             lbl_term2.setFont(new Font("Digital", Font.BOLD, 30));
+            add(lbl_term2);
             txt_term2.setBounds(320, 290, 250, 35);
             txt_term2.setFont(new Font("Digital", Font.BOLD, 30));
 
-            txt_term1.addKeyListener(new KeyAdapter() {
+            txt_term2.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term1.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term2.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
                         e.consume();
                         System.out.println(e.getKeyChar());
                     }
@@ -234,24 +233,79 @@ public class FinalCalc extends JFrame
 
         //Grade Needed on Final Exam
         {
-            lbl_calcGrade.setBounds(0,650,super.getWidth(),30);
-            lbl_calcGrade.setFont(new Font("Digital", Font.BOLD, 20));
-            lbl_calcGrade.setHorizontalAlignment(SwingConstants.CENTER);
-            add(lbl_calcGrade);
-        }
-
-        //Grade
-        {
-//            lbl_grade.setBounds();
+            lbl_cgnof.setBounds(0,650,super.getWidth()-10,30);
+            lbl_cgnof.setFont(new Font("Digital", Font.BOLD, 20));
+            lbl_cgnof.setHorizontalAlignment(SwingConstants.CENTER);
+            add(lbl_cgnof);
         }
 
         //Calculate
         {
+            btn_calculate.setBounds(10,550,570,40);
+            btn_calculate.setFont(new Font("Digital", Font.BOLD, 30));
+            add(btn_calculate);
 
+            btn_calculate.addActionListener(e -> {
+                if (Integer.parseInt(txt_ttw.getText()) + Integer.parseInt(txt_fw.getText()) != 100)
+                {
+                    JOptionPane.showConfirmDialog(null, "The provided term weight and final weight are inaccurate\nBe better", "Error Message", JOptionPane.DEFAULT_OPTION);
+                }
+                else {
+                    if ((Integer) cmb_numTerms.getSelectedItem() == 1) {
+                        int avg = (Integer.parseInt(txt_term1.getText()));
+                        System.out.println(avg);
+                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                        System.out.println(fg * 10000);
+                        lbl_grade.setText(fg * 10000 + "");
+                    } else if ((Integer) cmb_numTerms.getSelectedItem() == 2) {
+                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText())) / 2;
+                        System.out.println(avg);
+                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                        System.out.println(fg * 10000);
+                        lbl_grade.setText(fg * 10000 + "");
+                    } else if ((Integer) cmb_numTerms.getSelectedItem() == 3) {
+                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText())) / 3;
+                        System.out.println(avg);
+                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                        System.out.println(fg * 10000);
+                        lbl_grade.setText(fg * 10000 + "");
+                    } else if ((Integer) cmb_numTerms.getSelectedItem() == 4) {
+                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText())) / 4;
+                        System.out.println(avg);
+                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                        System.out.println(fg * 10000);
+                        lbl_grade.setText(fg * 10000 + "");
+
+                    } else if ((Integer) cmb_numTerms.getSelectedItem() == 5) {
+                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText()) + Integer.parseInt(txt_term5.getText())) / 5;
+                        System.out.println(avg);
+                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                        System.out.println(fg * 10000);
+                        lbl_grade.setText(fg * 10000 + "");
+                    }
+                }
+            });
+
+            //Grade
+            {
+                lbl_grade.setBounds(10, 675, 570, 40);
+                lbl_grade.setHorizontalAlignment(JLabel.CENTER);
+                lbl_grade.setFont(new Font("Digital", Font.BOLD, 25));
+                add(lbl_grade);
+            }
         }
         //Clear
         {
-
+            btn_clear.setBounds(10,600,570,40);
+            btn_clear.setFont(new Font("Digital", Font.BOLD, 30));
+            btn_clear.addActionListener(e -> {
+                txt_term1.setText("");
+                txt_term2.setText("");
+                txt_term3.setText("");
+                txt_term4.setText("");
+                txt_term5.setText("");
+            });
+            add(btn_clear);
         }
         setVisible(true);
     }
