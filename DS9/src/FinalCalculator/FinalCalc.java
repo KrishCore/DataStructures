@@ -33,7 +33,8 @@ public class FinalCalc extends JFrame
     private JLabel lbl_cgnof = new JLabel("Calculated Grade Needed On Final");
     private JLabel lbl_grade = new JLabel("");
 
-    public FinalCalc() {
+    public FinalCalc()
+    {
         super("Final Calculator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -51,10 +52,8 @@ public class FinalCalc extends JFrame
             txt_ttw.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_ttw.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_ttw.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_ttw);
@@ -72,15 +71,11 @@ public class FinalCalc extends JFrame
             txt_fw.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_fw.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_fw.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_fw);
-
-            System.out.println(txt_fw.getText());
         }
 
         //Number of Terms
@@ -122,10 +117,8 @@ public class FinalCalc extends JFrame
             txt_gw.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_gw.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_gw.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_gw);
@@ -142,10 +135,8 @@ public class FinalCalc extends JFrame
             txt_term1.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term1.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term1.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_term1);
@@ -162,10 +153,8 @@ public class FinalCalc extends JFrame
             txt_term2.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term2.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term2.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_term2);
@@ -182,10 +171,8 @@ public class FinalCalc extends JFrame
             txt_term3.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term3.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term3.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_term3);
@@ -202,10 +189,8 @@ public class FinalCalc extends JFrame
             txt_term4.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term4.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term4.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_term4);
@@ -222,10 +207,8 @@ public class FinalCalc extends JFrame
             txt_term5.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term5.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0) {
+                    if (!Character.isDigit(e.getKeyChar()) || Integer.parseInt(txt_term5.getText() + e.getKeyChar()) > 100 || e.getKeyChar() == 0)
                         e.consume();
-                        System.out.println(e.getKeyChar());
-                    }
                 }
             });
             add(txt_term5);
@@ -246,43 +229,113 @@ public class FinalCalc extends JFrame
             add(btn_calculate);
 
             btn_calculate.addActionListener(e -> {
-                if (Integer.parseInt(txt_ttw.getText()) + Integer.parseInt(txt_fw.getText()) != 100)
-                {
-                    JOptionPane.showConfirmDialog(null, "The provided term weight and final weight are inaccurate\nBe better", "Error Message", JOptionPane.DEFAULT_OPTION);
-                }
+                if (txt_ttw.getText().isEmpty())
+                    JOptionPane.showConfirmDialog(null, "Enter a value for Total Term Weight", "Error Message", JOptionPane.DEFAULT_OPTION);
+                else if (txt_fw.getText().isEmpty())
+                    JOptionPane.showConfirmDialog(null, "Enter a value for Final Weight", "Error Message", JOptionPane.DEFAULT_OPTION);
+                else if (txt_gw.getText().isEmpty())
+                    JOptionPane.showConfirmDialog(null, "Enter a value for Grade Wanted", "Error Message", JOptionPane.DEFAULT_OPTION);
+                else if (Integer.parseInt(txt_ttw.getText()) + Integer.parseInt(txt_fw.getText()) != 100)
+                    JOptionPane.showConfirmDialog(null, "The provided term weight and final weight don't add up to 100\nBe better", "Error Message", JOptionPane.DEFAULT_OPTION);
                 else {
                     if ((Integer) cmb_numTerms.getSelectedItem() == 1) {
-                        int avg = (Integer.parseInt(txt_term1.getText()));
-                        System.out.println(avg);
-                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
-                        System.out.println(fg * 10000);
-                        lbl_grade.setText(fg * 10000 + "");
+                        if (txt_term1.getText().isEmpty())
+                            JOptionPane.showConfirmDialog(null, "Term grade requirements are not met", "Error Message", JOptionPane.DEFAULT_OPTION);
+                        else{
+                            int avg = (Integer.parseInt(txt_term1.getText()));
+                            double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                            lbl_grade.setText(fg * 10000 + "");
+//                            int i = 20;
+//                            if (Integer.parseInt(txt_gw.getText()) < 70) {
+//                                i = JOptionPane.showConfirmDialog(null, "Hold on\nWhy are you trying to fail", "Message", JOptionPane.YES_NO_OPTION);
+//                                if (i == 0)
+//                                    lbl_grade.setText(fg * 10000 + "");
+//                                else {
+//                                    lbl_grade.setText("");
+//                                    JOptionPane.showConfirmDialog(null, "Then get better grades", "Message", JOptionPane.DEFAULT_OPTION);
+//                                }
+//                            }
+//                            else lbl_grade.setText(fg * 10000 + "");
+                        }
                     } else if ((Integer) cmb_numTerms.getSelectedItem() == 2) {
-                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText())) / 2;
-                        System.out.println(avg);
-                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
-                        System.out.println(fg * 10000);
-                        lbl_grade.setText(fg * 10000 + "");
+                        if (txt_term1.getText().isEmpty() || txt_term2.getText().isEmpty())
+                            JOptionPane.showConfirmDialog(null, "Term grade requirements are not met", "Error Message", JOptionPane.DEFAULT_OPTION);
+                        else {
+                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText())) / 2;
+                            double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                            lbl_grade.setText(fg * 10000 + "");
+//                            int i = 20;
+//                            if (Integer.parseInt(txt_gw.getText()) < 70) {
+//                                i = JOptionPane.showConfirmDialog(null, "Hold on\nWhy are you trying to fail", "Message", JOptionPane.YES_NO_OPTION);
+//                                if (i == 0)
+//                                    lbl_grade.setText(fg * 10000 + "");
+//                                else {
+//                                    lbl_grade.setText("");
+//                                    JOptionPane.showConfirmDialog(null, "Then get better grades", "Message", JOptionPane.DEFAULT_OPTION);
+//                                }
+//                            }
+//                            else lbl_grade.setText(fg * 10000 + "");
+                        }
                     } else if ((Integer) cmb_numTerms.getSelectedItem() == 3) {
-                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText())) / 3;
-                        System.out.println(avg);
-                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
-                        System.out.println(fg * 10000);
-                        lbl_grade.setText(fg * 10000 + "");
+                        if (txt_term1.getText().isEmpty() || txt_term2.getText().isEmpty() || txt_term3.getText().isEmpty())
+                            JOptionPane.showConfirmDialog(null, "Term grade requirements are not met", "Error Message", JOptionPane.DEFAULT_OPTION);
+                        else {
+                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText())) / 3;
+                            double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                            lbl_grade.setText(fg * 10000 + "");
+//                            int i = 20;
+//                            if (Integer.parseInt(txt_gw.getText()) < 70) {
+//                                i = JOptionPane.showConfirmDialog(null, "Hold on\nWhy are you trying to fail", "Message", JOptionPane.YES_NO_OPTION);
+//                                if (i == 0)
+//                                    lbl_grade.setText(fg * 10000 + "");
+//                                else {
+//                                    lbl_grade.setText("");
+//                                    JOptionPane.showConfirmDialog(null, "Then get better grades", "Message", JOptionPane.DEFAULT_OPTION);
+//                                }
+//                            }
+//                            else lbl_grade.setText(fg * 10000 + "");
+                        }
                     } else if ((Integer) cmb_numTerms.getSelectedItem() == 4) {
-                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText())) / 4;
-                        System.out.println(avg);
-                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
-                        System.out.println(fg * 10000);
-                        lbl_grade.setText(fg * 10000 + "");
-
+                        if (txt_term1.getText().isEmpty() || txt_term2.getText().isEmpty() || txt_term3.getText().isEmpty() || txt_term4.getText().isEmpty())
+                            JOptionPane.showConfirmDialog(null, "Term grade requirements are not met", "Error Message", JOptionPane.DEFAULT_OPTION);
+                        else {
+                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText())) / 4;
+                            double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                            lbl_grade.setText(fg * 10000 + "");
+//                            int i = 20;
+//                            if (Integer.parseInt(txt_gw.getText()) < 70) {
+//                                i = JOptionPane.showConfirmDialog(null, "Hold on\nWhy are you trying to fail", "Message", JOptionPane.YES_NO_OPTION);
+//                                if (i == 0)
+//                                    lbl_grade.setText(fg * 10000 + "");
+//                                else {
+//                                    lbl_grade.setText("");
+//                                    JOptionPane.showConfirmDialog(null, "Then get better grades", "Message", JOptionPane.DEFAULT_OPTION);
+//                                }
+//                            }
+//                            else lbl_grade.setText(fg * 10000 + "");
+                        }
                     } else if ((Integer) cmb_numTerms.getSelectedItem() == 5) {
-                        int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText()) + Integer.parseInt(txt_term5.getText())) / 5;
-                        System.out.println(avg);
-                        double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
-                        System.out.println(fg * 10000);
-                        lbl_grade.setText(fg * 10000 + "");
+                        if (txt_term1.getText().isEmpty() || txt_term2.getText().isEmpty() || txt_term3.getText().isEmpty() || txt_term4.getText().isEmpty() || txt_term5.getText().isEmpty())
+                            JOptionPane.showConfirmDialog(null, "Term grade requirements are not met", "Error Message", JOptionPane.DEFAULT_OPTION);
+                        else {
+                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText()) + Integer.parseInt(txt_term5.getText())) / 5;
+                            double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
+                            lbl_grade.setText(fg * 10000 + "");
+//                            int i = 20;
+//                            if (Integer.parseInt(txt_gw.getText()) < 70) {
+//                                i = JOptionPane.showConfirmDialog(null, "Hold on\nWhy are you trying to fail", "Message", JOptionPane.YES_NO_OPTION);
+//                                if (i == 0)
+//                                    lbl_grade.setText(fg * 10000 + "");
+//                                else {
+//                                    lbl_grade.setText("");
+//                                    JOptionPane.showConfirmDialog(null, "Then get better grades", "Message", JOptionPane.DEFAULT_OPTION);
+//                                }
+//                            }
+//                            else lbl_grade.setText(fg * 10000 + "");
+                        }
                     }
+//                    if (Double.parseDouble(lbl_grade.getText()) > 100)
+//                        JOptionPane.showConfirmDialog(null, "You can't get this grade\nBe better", "Message", JOptionPane.DEFAULT_OPTION);
                 }
             });
 
@@ -313,8 +366,7 @@ public class FinalCalc extends JFrame
     private void changeTerms()
     {
         if ((Integer) cmb_numTerms.getSelectedItem() == 1)
-        {            System.out.println(txt_fw.getText());
-
+        {
             txt_term2.setText("");
             txt_term2.setEnabled(false);
             lbl_term2.setEnabled(false);
@@ -378,6 +430,5 @@ public class FinalCalc extends JFrame
             txt_term5.setEnabled(true);
             lbl_term5.setEnabled(true);
         }
-
     }
 }
