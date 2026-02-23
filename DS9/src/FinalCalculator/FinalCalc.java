@@ -236,7 +236,7 @@ public class FinalCalc extends JFrame
                 else if (txt_gw.getText().isEmpty())
                     JOptionPane.showConfirmDialog(null, "Enter a value for Grade Wanted", "Error Message", JOptionPane.DEFAULT_OPTION);
                 else if (Integer.parseInt(txt_ttw.getText()) + Integer.parseInt(txt_fw.getText()) != 100)
-                    JOptionPane.showConfirmDialog(null, "The provided term weight and final weight don't add up to 100\nBe better", "Error Message", JOptionPane.DEFAULT_OPTION);
+                    JOptionPane.showConfirmDialog(null, "The provided term weight and final weight don't add up to 100", "Error Message", JOptionPane.DEFAULT_OPTION);
                 else {
                     if ((Integer) cmb_numTerms.getSelectedItem() == 1) {
                         if (txt_term1.getText().isEmpty())
