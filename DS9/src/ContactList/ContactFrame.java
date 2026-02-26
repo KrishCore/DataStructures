@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 
 
@@ -29,6 +30,7 @@ public class ContactFrame extends JFrame
     private JButton btn_saveChanges = new JButton("Save Changes");
     private JButton btn_delete = new JButton("Delete Contact");
     private JButton btn_clearSelection = new JButton("Clear");
+    private JButton btn_new = new JButton("New");
 
     private ArrayList<Person> contacts = new ArrayList<>();
 
@@ -48,8 +50,8 @@ public class ContactFrame extends JFrame
         //contacts
         {
             scr_contacts = new JScrollPane(list_contacts);
-            scr_contacts.setBounds(10,10,270,200);
-            scr_contacts.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scr_contacts.setBounds(10,10,270,500);
+            scr_contacts.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             scr_contacts.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             add(scr_contacts);
 
@@ -57,31 +59,43 @@ public class ContactFrame extends JFrame
             list_contacts.addListSelectionListener(e -> {
                 System.out.println(list_contacts.getSelectedIndex());
                 if (list_contacts.getSelectedIndex() == -1) {
-                    btn_clearSelection.setEnabled(false);
-                    btn_delete.setEnabled(false);
+                    btn_clearSelection.setVisible(false);
+                    btn_delete.setVisible(false);
+                    btn_clearSelection.setVisible(true);
                     txt_firstName.setText("");
                     txt_lastName.setText("");
+                    txt_number.setText("");
+                    txt_address.setText("");
                 } else {
-                    add(btn_saveChanges);
-                    remove(btn_save);
-                    add(btn_delete);
+                    btn_saveChanges.setVisible(true);
+                    btn_save.setVisible(false);
+                    btn_new.setVisible(false);
+                    btn_delete.setVisible(true);
                     btn_clearSelection.setEnabled(true);
-                    btn_delete.setEnabled(true);
+                    btn_clearSelection.setVisible(true);
+                    btn_delete.setVisible(true);
                     txt_firstName.setText(list_contacts.getSelectedValue().getFirstName());
                     txt_lastName.setText(list_contacts.getSelectedValue().getLastName());
-                    ;
+                    txt_number.setText(list_contacts.getSelectedValue().getNumber() + "");
+                    txt_address.setText(list_contacts.getSelectedValue().getAddress());
                 }
             });
         }
 
         //clear selection
         {
-            btn_clearSelection.setBounds(20, 250, 150, 30);
+            btn_clearSelection.setBounds(65, 520, 150, 30);
+            btn_clearSelection.setEnabled(false);
             btn_clearSelection.addActionListener(e -> {
                 list_contacts.clearSelection();
                 System.out.println(list_contacts.getSelectedIndex() + " clear");
+                btn_clearSelection.setVisible(true);
+                btn_clearSelection.setEnabled(false);
+                btn_saveChanges.setVisible(false);
+                btn_delete.setVisible(false);
+                btn_save.setVisible(true);
+                btn_new.setVisible(true);
             });
-            btn_clearSelection.setEnabled(false);
             add(btn_clearSelection);
         }
         //first name
@@ -147,43 +161,95 @@ public class ContactFrame extends JFrame
             add(txt_address);
         }
 
-        //save
+        //save and new
         {
-            btn_save.setBounds(570, 280, 100, 40);
-            btn_save.addActionListener(e -> {
-                if (txt_firstName.getText().isEmpty() || txt_lastName.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "You must enter both a first name and a last name");
-                    return;
-                } else if (list_contacts.getSelectedIndex() == -1) {
-                    Person p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), txt_address.getText());
-                    contacts.add(p);
+            //save
+            {
+                btn_save.setBounds(500, 280, 195, 40);
+                btn_save.setFont(new Font("Digital", Font.BOLD, 20));
+                btn_save.addActionListener(e -> {
+                    if (txt_firstName.getText().isEmpty() || txt_lastName.getText().isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "You must enter both a first name and a last name");
+                        return;
+                    } else if (list_contacts.getSelectedIndex() == -1) {
+                        Person p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), txt_address.getText());
+                        contacts.add(p);
+                        list_contacts.setListData(contacts.toArray(new Person[0]));
+                    } else {
+                        Person p = list_contacts.getSelectedValue();
+                        p.setFirstName(txt_firstName.getText());
+                        p.setLastName(txt_lastName.getText());
+                        p.setNumber(Integer.parseInt(txt_number.getText()));
+                        p.setAddress(txt_address.getText());
+                        list_contacts.setListData(contacts.toArray(new Person[0]));
+                    }
+                    txt_firstName.setText("");
+                    txt_lastName.setText("");
+                    txt_number.setText("");
+                    txt_address.setText("");
+                });
+                add(btn_save);
+            }
+            //new
+            {
+                btn_new.setBounds(705, 280, 195, 40);
+                btn_new.setFont(new Font("Digital", Font.BOLD, 20));
+                btn_new.addActionListener(e -> {
+                    contacts.clear();
                     list_contacts.setListData(contacts.toArray(new Person[0]));
-                } else {
+                });
+                add(btn_new);
+            }
+        }
+        //save changes and delete
+        {
+            // save Changes
+            {
+                btn_saveChanges.setBounds(500, 350, 400, 50);
+                btn_saveChanges.setFont(new Font("Digital", Font.BOLD, 20));
+                btn_saveChanges.setVisible(false);
+                btn_saveChanges.addActionListener(e->{
                     Person p = list_contacts.getSelectedValue();
                     p.setFirstName(txt_firstName.getText());
                     p.setLastName(txt_lastName.getText());
-                    p.s
-                    list_contacts.setListData(contacts.toArray(new Person[0]));
-                }
-                txt_firstName.setText("");
-                txt_lastName.setText("");
-            });
-            add(btn_save);
-        }
-        // save Changes
-        {
-//            btn_saveChanges.setBounds();
-        }
+                    p.setNumber(Integer.parseInt(txt_number.getText()));
+                    p.setAddress(txt_address.getText());
 
-        //delete
-        {
-            btn_delete.setBounds(270, 120, 80, 30);
-            btn_delete.addActionListener(e -> {
-                contacts.remove(list_contacts.getSelectedIndex());
-                list_contacts.setListData(contacts.toArray(new Person[0]));
-            });
-            btn_delete.setEnabled(false);
-//            add(btn_delete);
+                    btn_saveChanges.setVisible(false);
+                    btn_delete.setVisible(false);
+                    btn_save.setVisible(true);
+                    btn_new.setVisible(true);
+                    btn_clearSelection.setVisible(true);
+                    btn_clearSelection.setVisible(false);
+                    txt_firstName.setText("");
+                    txt_lastName.setText("");
+                    txt_number.setText("");
+                    txt_address.setText("");
+                });
+                add(btn_saveChanges);
+            }
+
+            //delete
+            {
+                btn_delete.setBounds(500, 410, 400, 50);
+                btn_delete.setFont(new Font("Digital", Font.BOLD, 20));
+                btn_delete.addActionListener(e -> {
+                    contacts.remove(list_contacts.getSelectedIndex());
+                    txt_number.setText("");
+                    txt_address.setText("");
+                    btn_saveChanges.setVisible(false);
+                    btn_delete.setVisible(false);
+                    btn_clearSelection.setVisible(true);
+                    btn_save.setVisible(true);
+                    btn_new.setVisible(true);
+                    list_contacts.setListData(contacts.toArray(new Person[0]));
+                });
+                btn_clearSelection.setVisible(true);
+
+                btn_saveChanges.setVisible(false);
+                btn_delete.setVisible(false);
+                add(btn_delete);
+            }
         }
 
         setVisible(true);

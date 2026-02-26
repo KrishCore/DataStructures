@@ -23,14 +23,14 @@ public class Person
         return last;
     }
 
-    public String getNumber()
+    public int getNumber()
     {
-        return last;
+        return number;
     }
 
     public String getAddress()
     {
-        return last;
+        return address;
     }
 
     public void setFirstName(String first)
