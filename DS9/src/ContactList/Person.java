@@ -1,9 +1,30 @@
 package ContactList;
 
-public class Person
+public class Person implements Comparable<Person>
 {
-    String first, last, address;
-    int number;
+    private String first, last, address;
+    private int number = -1;
+
+
+    public Person(String first, String last)
+    {
+        this.first = first;
+        this.last = last;
+    }
+
+    public Person(String first, String last, int number)
+    {
+        this.first = first;
+        this.last = last;
+        this.number = number;
+    }
+
+    public Person(String first, String last, String address)
+    {
+        this.first = first;
+        this.last = last;
+        this.address = address;
+    }
 
     public Person(String first, String last, int number, String address)
     {
@@ -58,5 +79,10 @@ public class Person
     public String toString()
     {
         return last + ", " + first;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return toString().compareTo(o.toString());
     }
 }

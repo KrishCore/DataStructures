@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-
+import java.util.*;
 
 public class ContactFrame extends JFrame
 {
@@ -41,217 +39,289 @@ public class ContactFrame extends JFrame
         setLayout(null);
         setSize(1000, 600);
 
-        File file = new File("Rolodex.txt");
-        FileWriter fw = new FileWriter(file,true);
-        PrintWriter pw = new PrintWriter(fw);
-        if (!file.exists())
-            file.createNewFile();
-
-        //contacts
-        {
-            scr_contacts = new JScrollPane(list_contacts);
-            scr_contacts.setBounds(10,10,270,500);
-            scr_contacts.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scr_contacts.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            add(scr_contacts);
-
-            //selection change
-            list_contacts.addListSelectionListener(e -> {
-                System.out.println(list_contacts.getSelectedIndex());
-                if (list_contacts.getSelectedIndex() == -1) {
-                    btn_clearSelection.setVisible(false);
-                    btn_delete.setVisible(false);
-                    btn_clearSelection.setVisible(true);
-                    txt_firstName.setText("");
-                    txt_lastName.setText("");
-                    txt_number.setText("");
-                    txt_address.setText("");
-                } else {
-                    btn_saveChanges.setVisible(true);
-                    btn_save.setVisible(false);
-                    btn_new.setVisible(false);
-                    btn_delete.setVisible(true);
-                    btn_clearSelection.setEnabled(true);
-                    btn_clearSelection.setVisible(true);
-                    btn_delete.setVisible(true);
-                    txt_firstName.setText(list_contacts.getSelectedValue().getFirstName());
-                    txt_lastName.setText(list_contacts.getSelectedValue().getLastName());
-                    txt_number.setText(list_contacts.getSelectedValue().getNumber() + "");
-                    txt_address.setText(list_contacts.getSelectedValue().getAddress());
-                }
-            });
-        }
-
-        //clear selection
-        {
-            btn_clearSelection.setBounds(65, 520, 150, 30);
-            btn_clearSelection.setEnabled(false);
-            btn_clearSelection.addActionListener(e -> {
-                list_contacts.clearSelection();
-                System.out.println(list_contacts.getSelectedIndex() + " clear");
-                btn_clearSelection.setVisible(true);
-                btn_clearSelection.setEnabled(false);
-                btn_saveChanges.setVisible(false);
-                btn_delete.setVisible(false);
-                btn_save.setVisible(true);
-                btn_new.setVisible(true);
-            });
-            add(btn_clearSelection);
-        }
-        //first name
-        {
-            lbl_firstName.setBounds(300, 40, 170, 35);
-            System.out.println(lbl_firstName.getFont().getSize());
-            lbl_firstName.setFont(new Font("Digital", Font.BOLD, 20));
-            add(lbl_firstName);
-            txt_firstName.setBounds(500, 45, 470, 35);
-            txt_firstName.setFont(new Font("Digital", Font.BOLD, 20));
-            txt_firstName.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyTyped(KeyEvent e) {
-                    if (!Character.isLetter(e.getKeyChar()))
-                        e.consume();
-                }
-            });
-            add(txt_firstName);
-        }
-
-        //last name
-        {
-            lbl_lastName.setBounds(300, 95, 170, 40);
-            lbl_lastName.setFont(new Font("Digital", Font.BOLD, 20));
-            add(lbl_lastName);
-            txt_lastName.setBounds(500, 100, 470, 35);
-            txt_lastName.setFont(new Font("Digital", Font.BOLD, 20));
-            txt_lastName.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyTyped(KeyEvent e) {
-                    if (!Character.isLetter(e.getKeyChar()))
-                        e.consume();
-                }
-            });
-            add(txt_lastName);
-        }
-
-        //phone Number
-        {
-            lbl_number.setBounds(300, 145, 170, 40);
-            lbl_number.setFont(new Font("Digital", Font.BOLD, 20));
-            add(lbl_number);
-            txt_number.setBounds(500, 150, 470, 35);
-            txt_number.setFont(new Font("Digital", Font.BOLD, 20));
-            txt_number.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyTyped(KeyEvent e) {
-                    if (!Character.isDigit(e.getKeyChar()))
-                        e.consume();
-                }
-            });
-            add(txt_number);
-        }
-
-        //address
-        {
-            lbl_address.setBounds(300, 195, 170, 40);
-            lbl_address.setFont(new Font("Digital", Font.BOLD, 20));
-            add(lbl_address);
-            txt_address.setBounds(500, 200, 470, 35);
-            txt_address.setFont(new Font("Digital", Font.BOLD, 20));
-            txt_address.addKeyListener(new KeyAdapter() {});
-            add(txt_address);
-        }
-
-        //save and new
-        {
-            //save
+        try {
+            File file = new File("Rolodex.txt");
+            FileWriter fw = new FileWriter(file,true);
+            PrintWriter pw = new PrintWriter(fw);
+            if (!file.exists())
+                file.createNewFile();
+            Scanner fs = new Scanner(file);
+            while (fs.hasNext())
             {
-                btn_save.setBounds(500, 280, 195, 40);
-                btn_save.setFont(new Font("Digital", Font.BOLD, 20));
-                btn_save.addActionListener(e -> {
-                    if (txt_firstName.getText().isEmpty() || txt_lastName.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "You must enter both a first name and a last name");
-                        return;
-                    } else if (list_contacts.getSelectedIndex() == -1) {
-                        Person p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), txt_address.getText());
-                        contacts.add(p);
-                        list_contacts.setListData(contacts.toArray(new Person[0]));
+                String[] p = fs.nextLine().split(", ");
+                if (p.length == 2)
+                    contacts.add(new Person(p[0], p[1]));
+                else if (p.length == 3) {
+                    for (char a : p[2].toCharArray())
+                        if (Character.isLetter(a))
+                            contacts.add(new Person(p[0], p[1], p[2]));
+                        else contacts.add(new Person(p[0], p[1], Integer.parseInt(p[2])));
+                }
+                else if (p.length == 4)
+                    contacts.add(new Person(p[0], p[1], Integer.parseInt(p[2]), p[3]));
+                {
+                    System.out.println(Arrays.toString(contacts.toArray()));
+                    System.out.println("#: " + contacts.getFirst().getNumber());
+                    System.out.println("address: " + contacts.getFirst().getAddress());
+                }
+            }
+            list_contacts.setListData(contacts.toArray(new Person[0]));
+            Collections.sort(contacts);
+            //contacts
+            {
+                scr_contacts = new JScrollPane(list_contacts);
+                scr_contacts.setBounds(10,10,270,500);
+                scr_contacts.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                scr_contacts.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                add(scr_contacts);
+
+                //selection change
+                list_contacts.addListSelectionListener(e -> {
+                    System.out.println("gsi; " + list_contacts.getSelectedIndex());
+                    if (list_contacts.getSelectedIndex() == -1) {
+                        btn_clearSelection.setVisible(false);
+                        btn_delete.setVisible(false);
+                        btn_clearSelection.setVisible(true);
+                        txt_firstName.setText("");
+                        txt_lastName.setText("");
+                        txt_number.setText("");
+                        txt_address.setText("");
                     } else {
+                        //setVisibles
+                        {
+                            btn_saveChanges.setVisible(true);
+                            btn_save.setVisible(false);
+                            btn_new.setVisible(false);
+                            btn_delete.setVisible(true);
+                            btn_clearSelection.setEnabled(true);
+                            btn_clearSelection.setVisible(true);
+                            btn_delete.setVisible(true);
+                        }
+                        txt_firstName.setText(list_contacts.getSelectedValue().getFirstName());
+                        System.out.println("------" + list_contacts.getSelectedValue().getFirstName());
+                        txt_lastName.setText(list_contacts.getSelectedValue().getLastName());
+                        System.out.println(list_contacts.getSelectedValue().getLastName());
+                        if (list_contacts.getSelectedValue().getNumber() != -1)
+                            txt_number.setText(list_contacts.getSelectedValue().getNumber() + "");
+                        else txt_number.setText("");
+                        System.out.println(list_contacts.getSelectedValue().getNumber());
+                        if (list_contacts.getSelectedValue().getAddress() != null && !list_contacts.getSelectedValue().getAddress().isEmpty())
+                            txt_address.setText(list_contacts.getSelectedValue().getAddress());
+                        else txt_address.setText("");
+                        System.out.println(list_contacts.getSelectedValue().getAddress());
+                    }
+                });
+            }
+
+            //clear selection
+            {
+                btn_clearSelection.setBounds(65, 520, 150, 30);
+                btn_clearSelection.setEnabled(false);
+                btn_clearSelection.addActionListener(e -> {
+                    System.out.println(list_contacts.getSelectedIndex() + " clear");
+                    list_contacts.clearSelection();
+                    //setVisibles
+                    {
+                        btn_clearSelection.setVisible(true);
+                        btn_clearSelection.setEnabled(false);
+                        btn_saveChanges.setVisible(false);
+                        btn_delete.setVisible(false);
+                        btn_save.setVisible(true);
+                        btn_new.setVisible(true);
+                    }
+                });
+                add(btn_clearSelection);
+            }
+            //first name
+            {
+                lbl_firstName.setBounds(300, 40, 170, 35);
+                lbl_firstName.setFont(new Font("Digital", Font.BOLD, 20));
+                add(lbl_firstName);
+                txt_firstName.setBounds(500, 45, 470, 35);
+                txt_firstName.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_firstName.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        if (!Character.isLetter(e.getKeyChar()))
+                            e.consume();
+                    }
+                });
+                add(txt_firstName);
+            }
+
+            //last name
+            {
+                lbl_lastName.setBounds(300, 95, 170, 40);
+                lbl_lastName.setFont(new Font("Digital", Font.BOLD, 20));
+                add(lbl_lastName);
+                txt_lastName.setBounds(500, 100, 470, 35);
+                txt_lastName.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_lastName.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        if (!Character.isLetter(e.getKeyChar()))
+                            e.consume();
+                    }
+                });
+                add(txt_lastName);
+            }
+
+            //phone Number
+            {
+                lbl_number.setBounds(300, 145, 170, 40);
+                lbl_number.setFont(new Font("Digital", Font.BOLD, 20));
+                add(lbl_number);
+                txt_number.setBounds(500, 150, 470, 35);
+                txt_number.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_number.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        if (!Character.isDigit(e.getKeyChar()))
+                            e.consume();
+                    }
+                });
+                add(txt_number);
+            }
+
+            //address
+            {
+                lbl_address.setBounds(300, 195, 170, 40);
+                lbl_address.setFont(new Font("Digital", Font.BOLD, 20));
+                add(lbl_address);
+                txt_address.setBounds(500, 200, 470, 35);
+                txt_address.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_address.addKeyListener(new KeyAdapter() {});
+                add(txt_address);
+            }
+
+            //save and new
+            {
+                //save
+                {
+                    btn_save.setBounds(500, 280, 195, 40);
+                    btn_save.setFont(new Font("Digital", Font.BOLD, 20));
+                    btn_save.addActionListener(e -> {
+                        if (txt_firstName.getText().isEmpty() || txt_lastName.getText().isEmpty()) {
+                            JOptionPane.showMessageDialog(this, "You must enter both a first name and a last name");
+                            return;
+                        } else if (list_contacts.getSelectedIndex() == -1) {
+                            Person p = getPerson();
+
+                            contacts.add(p);
+                            Collections.sort(contacts);
+                            list_contacts.setListData(contacts.toArray(new Person[0]));
+                            pw.println(p.getFirstName() + ", " + p.getFirstName() + ", " + p.getLastName() + ", " + p.getNumber() + ", " + p.getAddress());
+                        } else {
+                            Person p = list_contacts.getSelectedValue();
+                            p.setFirstName(txt_firstName.getText());
+                            p.setLastName(txt_lastName.getText());
+                            p.setNumber(Integer.parseInt(txt_number.getText()));
+                            p.setAddress(txt_address.getText());
+                            Collections.sort(contacts);
+                            list_contacts.setListData(contacts.toArray(new Person[0]));
+                        }
+                        txt_firstName.setText("");
+                        txt_lastName.setText("");
+                        txt_number.setText("");
+                        txt_address.setText("");
+                    });
+                    add(btn_save);
+                }
+                //new
+                {
+                    btn_new.setBounds(705, 280, 195, 40);
+                    btn_new.setFont(new Font("Digital", Font.BOLD, 20));
+                    btn_new.addActionListener(e -> {
+                        contacts.clear();
+                        //add this person to the txt File
+                        //reorder
+                        list_contacts.setListData(contacts.toArray(new Person[0]));
+                    });
+                    add(btn_new);
+                }
+            }
+            //save changes and delete
+            {
+                // save Changes
+                {
+                    btn_saveChanges.setBounds(500, 350, 400, 50);
+                    btn_saveChanges.setFont(new Font("Digital", Font.BOLD, 20));
+                    btn_saveChanges.setVisible(false);
+                    btn_saveChanges.addActionListener(e->{
                         Person p = list_contacts.getSelectedValue();
                         p.setFirstName(txt_firstName.getText());
                         p.setLastName(txt_lastName.getText());
-                        p.setNumber(Integer.parseInt(txt_number.getText()));
+                        if (!txt_number.getText().isEmpty())
+                            p.setNumber(Integer.parseInt(txt_number.getText()));
                         p.setAddress(txt_address.getText());
+                        System.out.println(p.getAddress());
+                        list_contacts.clearSelection();
+                        btn_clearSelection.setVisible(true);
+                        //find the person in the txt File and change it
+                        //reorder
+
+                        //setVisibles
+                        {
+                            btn_saveChanges.setVisible(false);
+                            btn_delete.setVisible(false);
+                            btn_save.setVisible(true);
+                            btn_new.setVisible(true);
+                            btn_clearSelection.setVisible(true);
+                            btn_clearSelection.setVisible(false);
+                        }
+                        txt_firstName.setText("");
+                        txt_lastName.setText("");
+                        txt_number.setText("");
+                        txt_address.setText("");
+                    });
+                    add(btn_saveChanges);
+                }
+
+                //delete
+                {
+                    btn_delete.setBounds(500, 410, 400, 50);
+                    btn_delete.setFont(new Font("Digital", Font.BOLD, 20));
+                    btn_delete.addActionListener(e -> {
+                        contacts.remove(list_contacts.getSelectedIndex());
+                        txt_number.setText("");
+                        txt_address.setText("");
+                        //setVisibles
+                        {
+                            btn_saveChanges.setVisible(false);
+                            btn_delete.setVisible(false);
+                            btn_clearSelection.setVisible(true);
+                            btn_save.setVisible(true);
+                            btn_new.setVisible(true);
+                        }
+                        //find this contact in the txt File and remove it
                         list_contacts.setListData(contacts.toArray(new Person[0]));
+                    });
+                    //setVisibles
+                    {
+                        btn_clearSelection.setVisible(true);
+                        btn_saveChanges.setVisible(false);
+                        btn_delete.setVisible(false);
                     }
-                    txt_firstName.setText("");
-                    txt_lastName.setText("");
-                    txt_number.setText("");
-                    txt_address.setText("");
-                });
-                add(btn_save);
+                    add(btn_delete);
+                }
             }
-            //new
-            {
-                btn_new.setBounds(705, 280, 195, 40);
-                btn_new.setFont(new Font("Digital", Font.BOLD, 20));
-                btn_new.addActionListener(e -> {
-                    contacts.clear();
-                    list_contacts.setListData(contacts.toArray(new Person[0]));
-                });
-                add(btn_new);
-            }
-        }
-        //save changes and delete
-        {
-            // save Changes
-            {
-                btn_saveChanges.setBounds(500, 350, 400, 50);
-                btn_saveChanges.setFont(new Font("Digital", Font.BOLD, 20));
-                btn_saveChanges.setVisible(false);
-                btn_saveChanges.addActionListener(e->{
-                    Person p = list_contacts.getSelectedValue();
-                    p.setFirstName(txt_firstName.getText());
-                    p.setLastName(txt_lastName.getText());
-                    p.setNumber(Integer.parseInt(txt_number.getText()));
-                    p.setAddress(txt_address.getText());
-
-                    btn_saveChanges.setVisible(false);
-                    btn_delete.setVisible(false);
-                    btn_save.setVisible(true);
-                    btn_new.setVisible(true);
-                    btn_clearSelection.setVisible(true);
-                    btn_clearSelection.setVisible(false);
-                    txt_firstName.setText("");
-                    txt_lastName.setText("");
-                    txt_number.setText("");
-                    txt_address.setText("");
-                });
-                add(btn_saveChanges);
-            }
-
-            //delete
-            {
-                btn_delete.setBounds(500, 410, 400, 50);
-                btn_delete.setFont(new Font("Digital", Font.BOLD, 20));
-                btn_delete.addActionListener(e -> {
-                    contacts.remove(list_contacts.getSelectedIndex());
-                    txt_number.setText("");
-                    txt_address.setText("");
-                    btn_saveChanges.setVisible(false);
-                    btn_delete.setVisible(false);
-                    btn_clearSelection.setVisible(true);
-                    btn_save.setVisible(true);
-                    btn_new.setVisible(true);
-                    list_contacts.setListData(contacts.toArray(new Person[0]));
-                });
-                btn_clearSelection.setVisible(true);
-
-                btn_saveChanges.setVisible(false);
-                btn_delete.setVisible(false);
-                add(btn_delete);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
         }
 
         setVisible(true);
+    }
+
+    private Person getPerson() {
+        Person p;
+        if (txt_number.getText().isEmpty() && txt_address.getText().isEmpty())
+            p = new Person(txt_firstName.getText(), txt_lastName.getText());
+        else if (txt_number.getText().isEmpty())
+            p = new Person(txt_firstName.getText(), txt_lastName.getText(), txt_address.getText());
+        else if (txt_address.getText().isEmpty())
+            p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()));
+        else p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), txt_address.getText());
+        return p;
     }
 }
