@@ -228,6 +228,9 @@ public class FinalCalc extends JFrame
             btn_calculate.setFont(new Font("Digital", Font.BOLD, 30));
             add(btn_calculate);
 
+            // totalTermWeight*average + finalWeight*final = gradeWanted
+            // final = (gradeWanted - totalTermWeight*average)/finalWeight
+//                            85, 15, 80,     100,80,70 -> 61.11111
             btn_calculate.addActionListener(e -> {
                 if (txt_ttw.getText().isEmpty() || txt_fw.getText().isEmpty() || txt_gw.getText().isEmpty() || Integer.parseInt(txt_ttw.getText()) + Integer.parseInt(txt_fw.getText()) != 100)
                     lbl_grade.setText("");
@@ -246,7 +249,7 @@ public class FinalCalc extends JFrame
                             lbl_grade.setText("");
                         }
                         else{
-                            int avg = (Integer.parseInt(txt_term1.getText()));
+                            double avg = (Integer.parseInt(txt_term1.getText()));
                             double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
                             lbl_grade.setText(fg * 10000 + "");
 //                            int i = 20;
@@ -267,7 +270,7 @@ public class FinalCalc extends JFrame
                             lbl_grade.setText("");
                         }
                         else {
-                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText())) / 2;
+                            double avg = (double) (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText())) / 2;
                             double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
                             lbl_grade.setText(fg * 10000 + "");
 //                            int i = 20;
@@ -288,7 +291,7 @@ public class FinalCalc extends JFrame
                             lbl_grade.setText("");
                         }
                         else {
-                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText())) / 3;
+                            double avg = (double) (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText())) / 3;
                             double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
                             lbl_grade.setText(fg * 10000 + "");
 //                            int i = 20;
@@ -309,7 +312,7 @@ public class FinalCalc extends JFrame
                             lbl_grade.setText("");
                         }
                         else {
-                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText())) / 4;
+                            double avg = (double) (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText())) / 4;
                             double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
                             lbl_grade.setText(fg * 10000 + "");
 //                            int i = 20;
@@ -330,7 +333,7 @@ public class FinalCalc extends JFrame
                             lbl_grade.setText("");
                         }
                         else {
-                            int avg = (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText()) + Integer.parseInt(txt_term5.getText())) / 5;
+                            double avg = (double) (Integer.parseInt(txt_term1.getText()) + Integer.parseInt(txt_term2.getText()) + Integer.parseInt(txt_term3.getText()) + Integer.parseInt(txt_term4.getText()) + Integer.parseInt(txt_term5.getText())) / 5;
                             double fg = (Integer.parseInt(txt_gw.getText()) - Integer.parseInt(txt_ttw.getText()) / 100.0 * (avg)) / Integer.parseInt(txt_fw.getText()) / 100.0;
                             lbl_grade.setText(fg * 10000 + "");
 //                            int i = 20;
