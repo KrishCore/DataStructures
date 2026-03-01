@@ -14,8 +14,12 @@ public class DS8_Graphs
                 arr[j] = ed.get(j);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             if (breadthFirstSearch_Unweighted(arr,vertices, se.charAt(0),
                     se.charAt(1)) == null)
+=======
+            if (breadthFirstSearch_Unweighted(arr,vertices, se.charAt(0), se.charAt(1)) == null)
+>>>>>>> Stashed changes
 =======
             if (breadthFirstSearch_Unweighted(arr,vertices, se.charAt(0), se.charAt(1)) == null)
 >>>>>>> Stashed changes
@@ -29,8 +33,12 @@ public class DS8_Graphs
     }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public static String[] stronglyConnectedRegions (String[] edges, String
             vertices)
+=======
+    public static String[] stronglyConnectedRegions (String[] edges, String vertices)
+>>>>>>> Stashed changes
 =======
     public static String[] stronglyConnectedRegions (String[] edges, String vertices)
 >>>>>>> Stashed changes
@@ -48,8 +56,12 @@ public class DS8_Graphs
                 for (char e : vertices.toCharArray()) {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     if (f != e && dijkstras_Weighted(edges, vertices, f, e) != -1
                             && dijkstras_Weighted(edges, vertices, e, f) != -1) {
+=======
+                    if (f != e && dijkstras_Weighted(edges, vertices, f, e) != -1 && dijkstras_Weighted(edges, vertices, e, f) != -1) {
+>>>>>>> Stashed changes
 =======
                     if (f != e && dijkstras_Weighted(edges, vertices, f, e) != -1 && dijkstras_Weighted(edges, vertices, e, f) != -1) {
 >>>>>>> Stashed changes
@@ -74,8 +86,13 @@ public class DS8_Graphs
     }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public static String breadthFirstSearch_Unweighted (String[] edges, String
             vertices, char start, char end)
+=======
+
+    public static String breadthFirstSearch_Unweighted (String[] edges, String vertices, char start, char end)
+>>>>>>> Stashed changes
 =======
 
     public static String breadthFirstSearch_Unweighted (String[] edges, String vertices, char start, char end)
@@ -92,6 +109,10 @@ public class DS8_Graphs
             bt[vertices.indexOf(start)] = true;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -105,6 +126,10 @@ public class DS8_Graphs
                 bt[vertices.indexOf(lastLetter)] = true;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -123,6 +148,10 @@ public class DS8_Graphs
                         else next = edges[i].charAt(0);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -148,8 +177,13 @@ public class DS8_Graphs
     }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public static int dijkstras_Weighted(String[] edges, String vertices, char
             start, char end)
+=======
+
+    public static int dijkstras_Weighted(String[] edges, String vertices, char start, char end)
+>>>>>>> Stashed changes
 =======
 
     public static int dijkstras_Weighted(String[] edges, String vertices, char start, char end)
@@ -167,6 +201,10 @@ public class DS8_Graphs
         Collections.sort(sorted);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -185,6 +223,7 @@ public class DS8_Graphs
                 if (edge.charAt(0) == n.getLocation())
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     adj.add(new DS8_Weighted_Node(edge.charAt(1),
                             Integer.parseInt(edge.substring(2))));
             for (DS8_Weighted_Node temp: adj)
@@ -194,11 +233,16 @@ public class DS8_Graphs
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                     adj.add(new DS8_Weighted_Node(edge.charAt(1), Integer.parseInt(edge.substring(2))));
             for (DS8_Weighted_Node temp: adj)
                 for (DS8_Weighted_Node node : sorted)
                     if (node.getLocation() == temp.getLocation() && n.getDistance() + temp.getDistance() < node.getDistance())
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
