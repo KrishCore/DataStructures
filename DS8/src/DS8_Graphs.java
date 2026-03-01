@@ -19,6 +19,9 @@ public class DS8_Graphs
 =======
             if (breadthFirstSearch_Unweighted(arr,vertices, se.charAt(0), se.charAt(1)) == null)
 >>>>>>> Stashed changes
+=======
+            if (breadthFirstSearch_Unweighted(arr,vertices, se.charAt(0), se.charAt(1)) == null)
+>>>>>>> Stashed changes
                 bridges.add(se);
             ed.add(i, se);
         }

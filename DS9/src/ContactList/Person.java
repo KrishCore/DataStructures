@@ -5,27 +5,6 @@ public class Person implements Comparable<Person>
     private String first, last, address;
     private int number = -1;
 
-
-    public Person(String first, String last)
-    {
-        this.first = first;
-        this.last = last;
-    }
-
-    public Person(String first, String last, int number)
-    {
-        this.first = first;
-        this.last = last;
-        this.number = number;
-    }
-
-    public Person(String first, String last, String address)
-    {
-        this.first = first;
-        this.last = last;
-        this.address = address;
-    }
-
     public Person(String first, String last, int number, String address)
     {
         this.first = first;
