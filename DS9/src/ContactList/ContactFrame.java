@@ -42,7 +42,6 @@ public class ContactFrame extends JFrame
         setSize(1000, 600);
 
         try {
-            ArrayList<Person> temp = new ArrayList<>();
             File file = new File("Rolodex.txt");
             if (!file.exists())
                 file.createNewFile();
@@ -51,8 +50,7 @@ public class ContactFrame extends JFrame
             {
                 String[] p = fs.nextLine().split(",");
 
-                contacts.add(new Person(p[0], p[1], (p[2].isEmpty() || p[2].equals("_") ? -1 : Integer.parseInt(p[2])), p[3]));
-                temp.add(new Person(p[0], p[1], (p[2].isEmpty() || p[2].equals("_") ? -1 : Integer.parseInt(p[2])), p[3]));
+                contacts.add(new Person(p[0], p[1], (p[2].isEmpty() || p[2].equals("_") ? -1 : Integer.parseInt(p[2])), p[3].equals("_") ? "" : p[2]));
                 {
                     System.out.println(Arrays.toString(contacts.toArray()));
                     System.out.println("#: " + contacts.getFirst().getNumber());
@@ -104,7 +102,9 @@ public class ContactFrame extends JFrame
                 }
             });
 
+            System.out.println(contacts);
             Collections.sort(contacts);
+            System.out.println(contacts);
             list_contacts.setListData(contacts.toArray(new Person[0]));
             //contacts
             {
@@ -130,7 +130,7 @@ public class ContactFrame extends JFrame
                         {
                             btn_saveChanges.setVisible(true);
                             btn_save.setVisible(false);
-                            btn_new.setVisible(false);
+                            btn_new.setBounds(500, 275, 400, 50);
                             btn_delete.setVisible(true);
                             btn_clearSelection.setEnabled(true);
                             btn_clearSelection.setVisible(true);
@@ -158,6 +158,7 @@ public class ContactFrame extends JFrame
                 btn_clearSelection.setEnabled(false);
                 btn_clearSelection.addActionListener(e -> {
                     System.out.println(list_contacts.getSelectedIndex() + " clear");
+                    btn_new.setBounds(705, 275, 195, 50);
                     list_contacts.clearSelection();
                     //setVisibles
                     {
@@ -174,11 +175,11 @@ public class ContactFrame extends JFrame
 
             //first name
             {
-                lbl_firstName.setBounds(300, 40, 170, 35);
+                lbl_firstName.setBounds(300, 40, 170, 40);
                 lbl_firstName.setFont(new Font("Digital", Font.BOLD, 20));
                 add(lbl_firstName);
-                txt_firstName.setBounds(500, 45, 470, 35);
-                txt_firstName.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_firstName.setBounds(500, 40, 470, 40);
+                txt_firstName.setFont(new Font("Digital", Font.ITALIC, 20));
                 txt_firstName.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
@@ -191,11 +192,11 @@ public class ContactFrame extends JFrame
 
             //last name
             {
-                lbl_lastName.setBounds(300, 95, 170, 40);
+                lbl_lastName.setBounds(300, 90, 170, 40);
                 lbl_lastName.setFont(new Font("Digital", Font.BOLD, 20));
                 add(lbl_lastName);
-                txt_lastName.setBounds(500, 100, 470, 35);
-                txt_lastName.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_lastName.setBounds(500, 90, 470, 40);
+                txt_lastName.setFont(new Font("Digital", Font.ITALIC, 20));
                 txt_lastName.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
@@ -208,11 +209,11 @@ public class ContactFrame extends JFrame
 
             //phone Number
             {
-                lbl_number.setBounds(300, 145, 170, 40);
+                lbl_number.setBounds(300, 140, 170, 40);
                 lbl_number.setFont(new Font("Digital", Font.BOLD, 20));
                 add(lbl_number);
-                txt_number.setBounds(500, 150, 470, 35);
-                txt_number.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_number.setBounds(500, 140, 470, 40);
+                txt_number.setFont(new Font("Digital", Font.ITALIC, 20));
                 txt_number.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
@@ -225,11 +226,11 @@ public class ContactFrame extends JFrame
 
             //address
             {
-                lbl_address.setBounds(300, 195, 170, 40);
+                lbl_address.setBounds(300, 190, 170, 40);
                 lbl_address.setFont(new Font("Digital", Font.BOLD, 20));
                 add(lbl_address);
-                txt_address.setBounds(500, 200, 470, 35);
-                txt_address.setFont(new Font("Digital", Font.BOLD, 20));
+                txt_address.setBounds(500, 190, 470, 40);
+                txt_address.setFont(new Font("Digital", Font.ITALIC, 20));
                 txt_address.addKeyListener(new KeyAdapter() {});
                 add(txt_address);
             }
@@ -238,7 +239,7 @@ public class ContactFrame extends JFrame
             {
                 //save
                 {
-                    btn_save.setBounds(500, 280, 195, 40);
+                    btn_save.setBounds(500, 275, 195, 50);
                     btn_save.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_save.addActionListener(e -> {
                         if (txt_firstName.getText().isEmpty() || txt_lastName.getText().isEmpty()) {
@@ -253,31 +254,13 @@ public class ContactFrame extends JFrame
                                 p = new Person(txt_firstName.getText(), txt_lastName.getText(), -1, txt_address.getText());
                             else if (txt_address.getText().isEmpty()) //address empty
                                 p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), "");
-                            else p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), txt_address.getText());
+                            else p = new Person(txt_firstName.getText(), txt_lastName.getText(),
+                                        Integer.parseInt(txt_number.getText()), txt_address.getText());
                             contacts.add(p);
                             Collections.sort(contacts);
                             list_contacts.setListData(contacts.toArray(new Person[0]));
-
-                            if (p.getNumber() != -1 && (p.getAddress() == null || p.getAddress().isEmpty())) //address is empty
-                                pw.println(p.getFirstName() + "," + p.getLastName() + "," + p.getNumber() + ",_");
-                            else if (p.getNumber() == -1 && !(p.getAddress() == null || p.getAddress().isEmpty())) //number is empty
-                                pw.println(p.getFirstName() + "," + p.getLastName() + ",_," + p.getAddress());
-                            else if (p.getNumber() == -1  && (p.getAddress() == null || p.getAddress().isEmpty())) //both are empty
-                                pw.println(p.getFirstName() + "," + p.getLastName() + ",_,_");
-                            else pw.println(p.getFirstName() + "," + p.getLastName() + "," + p.getNumber() + "," + p.getAddress()); //neither are empty
-//                            pw.println(p.getFirstName() + ", + p.getLastName() + ", + p.getNumber() + ", + p.getAddress());
                             System.out.println(p.getFirstName() + "," + p.getLastName() + "," + p.getNumber() + "," + p.getAddress());
                         }
-//                                                else {
-//                            System.out.println("save 2");
-//                            Person p = list_contacts.getSelectedValue();
-//                            p.setFirstName(txt_firstName.getText());
-//                            p.setLastName(txt_lastName.getText());
-//                            p.setNumber(Integer.parseInt(txt_number.getText()));
-//                            p.setAddress(txt_address.getText());
-//                            Collections.sort(contacts);
-//                            list_contacts.setListData(contacts.toArray(new Person[0]));
-//                        }
                         txt_firstName.setText("");
                         txt_lastName.setText("");
                         txt_number.setText("");
@@ -287,13 +270,19 @@ public class ContactFrame extends JFrame
                 }
                 //new
                 {
-                    btn_new.setBounds(705, 280, 195, 40);
+                    btn_new.setBounds(705, 275, 195, 50);
                     btn_new.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_new.addActionListener(e -> {
+                        btn_new.setBounds(705, 275, 195, 50);
                         contacts.clear();
-                        //add this person to the txt File
-                        //reorder
                         list_contacts.setListData(contacts.toArray(new Person[0]));
+                        //setVisibles
+                        {
+                            btn_saveChanges.setVisible(false);
+                            btn_delete.setVisible(false);
+                            btn_save.setVisible(true);
+                            btn_new.setVisible(true);
+                        }
                     });
                     add(btn_new);
                 }
@@ -302,16 +291,21 @@ public class ContactFrame extends JFrame
             {
                 // save Changes
                 {
-                    btn_saveChanges.setBounds(500, 350, 400, 50);
+                    btn_saveChanges.setBounds(500, 340, 400, 50);
                     btn_saveChanges.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_saveChanges.setVisible(false);
                     btn_saveChanges.addActionListener(e->{
+                        btn_new.setBounds(705, 275, 195, 50);
                         Person p = list_contacts.getSelectedValue();
                         p.setFirstName(txt_firstName.getText());
                         p.setLastName(txt_lastName.getText());
                         if (!txt_number.getText().isEmpty())
                             p.setNumber(Integer.parseInt(txt_number.getText()));
                         p.setAddress(txt_address.getText());
+                        contacts.remove(list_contacts.getSelectedIndex());
+                        contacts.add(p);
+                        Collections.sort(contacts);
+                        list_contacts.setListData(contacts.toArray(new Person[0]));
                         System.out.println(p.getAddress());
                         list_contacts.clearSelection();
                         btn_clearSelection.setVisible(true);
@@ -329,16 +323,16 @@ public class ContactFrame extends JFrame
                                         list_contacts.getSelectedValue().getNumber() == Integer.parseInt(line.split(",")[2]) &&
                                         list_contacts.getSelectedValue().getAddress().equals(line.split(",")[3]))
                                     line = txt_firstName + "," + txt_lastName + "," + txt_number + "," + txt_address;
-                                fileLines.add(line);
+                                contacts.add(new Person(line.split(",")[0], line.split(",")[0],
+                                        (Integer.parseInt(line.split(",")[0]) == -1 ? -1 : Integer.parseInt(line.split(",")[0])),
+                                        (line.split(",")[0].isEmpty() ? "" : line.split(",")[3])));
                             }
                             System.out.println("fileLines" + fileLines);
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
-                        Collections.sort(fileLines);
-                        for (String s : fileLines)
-                            pw.println(s);
-
+                        Collections.sort(contacts);
+                        list_contacts.setListData(contacts.toArray(new Person[0]));
                         //setVisibles
                         {
                             btn_saveChanges.setVisible(false);
@@ -358,10 +352,11 @@ public class ContactFrame extends JFrame
 
                 //delete
                 {
-                    btn_delete.setBounds(500, 410, 400, 50);
+                    btn_delete.setBounds(500, 405, 400, 50);
                     btn_delete.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_delete.addActionListener(e -> {
                         contacts.remove(list_contacts.getSelectedIndex());
+                        btn_new.setBounds(705, 275, 195, 50);
                         txt_number.setText("");
                         txt_address.setText("");
                         //setVisibles
