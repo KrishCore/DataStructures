@@ -4,13 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.*;
 import java.util.*;
 
-public class ContactFrame extends JFrame
-{
+public class ContactFrame extends JFrame {
     private JList<Person> list_contacts = new JList<>();
     private JScrollPane scr_contacts;
 
@@ -34,10 +31,9 @@ public class ContactFrame extends JFrame
 
     private ArrayList<Person> contacts = new ArrayList<>();
 
-    public ContactFrame() throws IOException
-    {
+    public ContactFrame() throws IOException {
         super("Contact List");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setSize(1000, 600);
 
@@ -46,70 +42,26 @@ public class ContactFrame extends JFrame
             if (!file.exists())
                 file.createNewFile();
             Scanner fs = new Scanner(file);
-            while (fs.hasNextLine())
-            {
-                String[] p = fs.nextLine().split(",");
+            while (fs.hasNextLine()) {
+                String[] p = fs.nextLine().split(";");
 
-                contacts.add(new Person(p[0], p[1], (p[2].isEmpty() || p[2].equals("_") ? -1 : Integer.parseInt(p[2])), p[3].equals("_") ? "" : p[2]));
+                contacts.add(new Person(p[0], p[1], (p[2].isEmpty() || p[2].equals("📇") ? -1 : Long.parseLong(p[2])), p[3].equals("📇") ? "" : p[2]));
                 {
                     System.out.println(Arrays.toString(contacts.toArray()));
                     System.out.println("#: " + contacts.getFirst().getNumber());
                     System.out.println("address: " + contacts.getFirst().getAddress());
                 }
             }
-            FileWriter fw = new FileWriter(file, false);
-            PrintWriter pw = new PrintWriter(fw);
-            addWindowListener(new WindowListener() {
-                @Override
-                public void windowOpened(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowClosing(WindowEvent e) {
-
-                    for (Person contact : contacts)
-                        pw.println(contact.getFirstName() + "," + contact.getLastName() + "," +
-                                (contact.getNumber() == -1 ? "_" : contact.getNumber()) + "," +
-                                (contact.getAddress().isEmpty() ? "_" : contact.getAddress()));
-                    pw.close();
-                    System.exit(0);
-                }
-
-                @Override
-                public void windowClosed(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowIconified(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowDeiconified(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowActivated(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowDeactivated(WindowEvent e) {
-
-                }
-            });
 
             System.out.println(contacts);
             Collections.sort(contacts);
             System.out.println(contacts);
             list_contacts.setListData(contacts.toArray(new Person[0]));
+            savePerson();
             //contacts
             {
                 scr_contacts = new JScrollPane(list_contacts);
-                scr_contacts.setBounds(10,10,270,500);
+                scr_contacts.setBounds(10, 10, 270, 500);
                 scr_contacts.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 scr_contacts.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 add(scr_contacts);
@@ -183,7 +135,7 @@ public class ContactFrame extends JFrame
                 txt_firstName.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
-                        if (!Character.isLetter(e.getKeyChar()))
+                        if (e.getKeyChar() != '(' && e.getKeyChar() != ')' && e.getKeyChar() != '-' && e.getKeyChar() != ' ' && !Character.isLetter(e.getKeyChar()))
                             e.consume();
                     }
                 });
@@ -200,7 +152,7 @@ public class ContactFrame extends JFrame
                 txt_lastName.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
-                        if (!Character.isLetter(e.getKeyChar()))
+                        if (e.getKeyChar() != '(' && e.getKeyChar() != ')' && e.getKeyChar() != '-' && e.getKeyChar() != ' ' && !Character.isLetter(e.getKeyChar()))
                             e.consume();
                     }
                 });
@@ -217,7 +169,7 @@ public class ContactFrame extends JFrame
                 txt_number.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
-                        if (!Character.isDigit(e.getKeyChar()))
+                        if (!Character.isDigit(e.getKeyChar()) || txt_number.getText().length() > 13)
                             e.consume();
                     }
                 });
@@ -231,7 +183,8 @@ public class ContactFrame extends JFrame
                 add(lbl_address);
                 txt_address.setBounds(500, 190, 470, 40);
                 txt_address.setFont(new Font("Digital", Font.ITALIC, 20));
-                txt_address.addKeyListener(new KeyAdapter() {});
+                txt_address.addKeyListener(new KeyAdapter() {
+                });
                 add(txt_address);
             }
 
@@ -253,13 +206,15 @@ public class ContactFrame extends JFrame
                             else if (txt_number.getText().isEmpty()) //number empty
                                 p = new Person(txt_firstName.getText(), txt_lastName.getText(), -1, txt_address.getText());
                             else if (txt_address.getText().isEmpty()) //address empty
-                                p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), "");
+                                p = new Person(txt_firstName.getText(), txt_lastName.getText(), Long.parseLong(txt_number.getText()), "");
                             else p = new Person(txt_firstName.getText(), txt_lastName.getText(),
-                                        Integer.parseInt(txt_number.getText()), txt_address.getText());
+                                        Long.parseLong(txt_number.getText()), txt_address.getText());
                             contacts.add(p);
                             Collections.sort(contacts);
+                            System.out.println(contacts);
                             list_contacts.setListData(contacts.toArray(new Person[0]));
-                            System.out.println(p.getFirstName() + "," + p.getLastName() + "," + p.getNumber() + "," + p.getAddress());
+                            savePerson();
+                            System.out.println(p.getFirstName() + ";" + p.getLastName() + ";" + p.getNumber() + ";" + p.getAddress());
                         }
                         txt_firstName.setText("");
                         txt_lastName.setText("");
@@ -294,58 +249,42 @@ public class ContactFrame extends JFrame
                     btn_saveChanges.setBounds(500, 340, 400, 50);
                     btn_saveChanges.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_saveChanges.setVisible(false);
-                    btn_saveChanges.addActionListener(e->{
-                        btn_new.setBounds(705, 275, 195, 50);
-                        Person p = list_contacts.getSelectedValue();
-                        p.setFirstName(txt_firstName.getText());
-                        p.setLastName(txt_lastName.getText());
-                        if (!txt_number.getText().isEmpty())
-                            p.setNumber(Integer.parseInt(txt_number.getText()));
-                        p.setAddress(txt_address.getText());
-                        contacts.remove(list_contacts.getSelectedIndex());
-                        contacts.add(p);
-                        Collections.sort(contacts);
-                        list_contacts.setListData(contacts.toArray(new Person[0]));
-                        System.out.println(p.getAddress());
-                        list_contacts.clearSelection();
-                        btn_clearSelection.setVisible(true);
-                        //find the person in the txt File and change it
-                        //reorder
-                        ArrayList<String> fileLines = new ArrayList<>();
-                        try {
-                            Scanner scanner = new Scanner(file);
-                            while (scanner.hasNextLine())
-                            {
-                                String line = scanner.nextLine();
-                                if (list_contacts.getSelectedValue() != null &&
-                                        list_contacts.getSelectedValue().getFirstName().equals(line.split(",")[0]) &&
-                                        list_contacts.getSelectedValue().getLastName().equals(line.split(",")[1]) &&
-                                        list_contacts.getSelectedValue().getNumber() == Integer.parseInt(line.split(",")[2]) &&
-                                        list_contacts.getSelectedValue().getAddress().equals(line.split(",")[3]))
-                                    line = txt_firstName + "," + txt_lastName + "," + txt_number + "," + txt_address;
-                                contacts.add(new Person(line.split(",")[0], line.split(",")[0],
-                                        (Integer.parseInt(line.split(",")[0]) == -1 ? -1 : Integer.parseInt(line.split(",")[0])),
-                                        (line.split(",")[0].isEmpty() ? "" : line.split(",")[3])));
-                            }
-                            System.out.println("fileLines" + fileLines);
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                        Collections.sort(contacts);
-                        list_contacts.setListData(contacts.toArray(new Person[0]));
-                        //setVisibles
-                        {
-                            btn_saveChanges.setVisible(false);
-                            btn_delete.setVisible(false);
-                            btn_save.setVisible(true);
-                            btn_new.setVisible(true);
+                    btn_saveChanges.addActionListener(e -> {
+                        if (txt_firstName.getText().isEmpty() || txt_lastName.getText().isEmpty()) {
+                            JOptionPane.showMessageDialog(this, "You must enter both a first name and a last name");
+                            return;
+                        } else {
+                            btn_new.setBounds(705, 275, 195, 50);
+                            Person p = list_contacts.getSelectedValue();
+                            p.setFirstName(txt_firstName.getText());
+                            p.setLastName(txt_lastName.getText());
+                            if (!txt_number.getText().isEmpty())
+                                p.setNumber(Long.parseLong(txt_number.getText()));
+                            p.setAddress(txt_address.getText());
+                            contacts.remove(list_contacts.getSelectedIndex());
+                            contacts.add(p);
+                            Collections.sort(contacts);
+                            list_contacts.setListData(contacts.toArray(new Person[0]));
+                            savePerson();
+                            System.out.println(p.getAddress());
+                            list_contacts.clearSelection();
                             btn_clearSelection.setVisible(true);
-                            btn_clearSelection.setEnabled(false);
+                            //find the person in the txt File and change it
+                            //reorder
+                            //setVisibles
+                            {
+                                btn_saveChanges.setVisible(false);
+                                btn_delete.setVisible(false);
+                                btn_save.setVisible(true);
+                                btn_new.setVisible(true);
+                                btn_clearSelection.setVisible(true);
+                                btn_clearSelection.setEnabled(false);
+                            }
+                            txt_firstName.setText("");
+                            txt_lastName.setText("");
+                            txt_number.setText("");
+                            txt_address.setText("");
                         }
-                        txt_firstName.setText("");
-                        txt_lastName.setText("");
-                        txt_number.setText("");
-                        txt_address.setText("");
                     });
                     add(btn_saveChanges);
                 }
@@ -370,6 +309,7 @@ public class ContactFrame extends JFrame
                         }
                         //find this contact in the txt File and remove it
                         list_contacts.setListData(contacts.toArray(new Person[0]));
+                        savePerson();
                     });
                     //setVisibles
                     {
@@ -388,15 +328,17 @@ public class ContactFrame extends JFrame
         setVisible(true);
     }
 
-    private Person getPerson() {
-        Person p;
-        if (txt_number.getText().isEmpty() && txt_address.getText().isEmpty())
-            p = new Person(txt_firstName.getText(), txt_lastName.getText(), -1, "");
-        else if (txt_number.getText().isEmpty())
-            p = new Person(txt_firstName.getText(), txt_lastName.getText(), -1, txt_address.getText());
-        else if (txt_address.getText().isEmpty())
-            p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), "");
-        else p = new Person(txt_firstName.getText(), txt_lastName.getText(), Integer.parseInt(txt_number.getText()), txt_address.getText());
-        return p;
+    private void savePerson() {
+        try {
+            FileWriter fw = new FileWriter("src/Rolodex", false);
+            PrintWriter pw = new PrintWriter(fw);
+            for (Person contact : contacts)
+                pw.println(contact.getFirstName() + ";" + contact.getLastName() + ";" +
+                        (contact.getNumber() == -1 ? "📇" : contact.getNumber()) + ";" +
+                        (contact.getAddress().isEmpty() ? "📇" : contact.getAddress()));
+            pw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

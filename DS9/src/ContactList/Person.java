@@ -3,9 +3,9 @@ package ContactList;
 public class Person implements Comparable<Person>
 {
     private String first, last, address;
-    private int number = -1;
+    private long number = -1;
 
-    public Person(String first, String last, int number, String address)
+    public Person(String first, String last, long number, String address)
     {
         this.first = first;
         this.last = last;
@@ -23,7 +23,7 @@ public class Person implements Comparable<Person>
         return last;
     }
 
-    public int getNumber()
+    public long getNumber()
     {
         return number;
     }
@@ -44,7 +44,7 @@ public class Person implements Comparable<Person>
     }
 
 
-    public void setNumber(int number)
+    public void setNumber(long number)
     {
         this.number = number;
     }
