@@ -82,7 +82,7 @@ public class ContactFrame extends JFrame {
                         {
                             btn_saveChanges.setVisible(true);
                             btn_save.setVisible(false);
-                            btn_new.setBounds(500, 275, 400, 50);
+                            btn_new.setVisible(false);
                             btn_delete.setVisible(true);
                             btn_clearSelection.setEnabled(true);
                             btn_clearSelection.setVisible(true);
@@ -110,7 +110,6 @@ public class ContactFrame extends JFrame {
                 btn_clearSelection.setEnabled(false);
                 btn_clearSelection.addActionListener(e -> {
                     System.out.println(list_contacts.getSelectedIndex() + " clear");
-                    btn_new.setBounds(705, 275, 195, 50);
                     list_contacts.clearSelection();
                     //setVisibles
                     {
@@ -169,7 +168,7 @@ public class ContactFrame extends JFrame {
                 txt_number.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
-                        if (!Character.isDigit(e.getKeyChar()) || txt_number.getText().length() > 13)
+                        if (!Character.isDigit(e.getKeyChar()) || txt_number.getText().length() >= 13)
                             e.consume();
                     }
                 });
@@ -228,10 +227,10 @@ public class ContactFrame extends JFrame {
                     btn_new.setBounds(705, 275, 195, 50);
                     btn_new.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_new.addActionListener(e -> {
-                        btn_new.setBounds(705, 275, 195, 50);
-                        contacts.clear();
-                        list_contacts.setListData(contacts.toArray(new Person[0]));
-                        savePerson();
+                        txt_firstName.setText("");
+                        txt_lastName.setText("");
+                        txt_number.setText("");
+                        txt_address.setText("");
                         //setVisibles
                         {
                             btn_saveChanges.setVisible(false);
@@ -256,7 +255,6 @@ public class ContactFrame extends JFrame {
                             JOptionPane.showMessageDialog(this, "You must enter both a first name and a last name");
                             return;
                         } else {
-                            btn_new.setBounds(705, 275, 195, 50);
                             Person p = list_contacts.getSelectedValue();
                             contacts.remove(list_contacts.getSelectedIndex());
                             p.setFirstName(txt_firstName.getText());
@@ -280,6 +278,7 @@ public class ContactFrame extends JFrame {
                             //reorder
                             //setVisibles
                             {
+                                btn_new.setVisible(true);
                                 btn_saveChanges.setVisible(false);
                                 btn_delete.setVisible(false);
                                 btn_save.setVisible(true);
@@ -302,7 +301,7 @@ public class ContactFrame extends JFrame {
                     btn_delete.setFont(new Font("Digital", Font.BOLD, 20));
                     btn_delete.addActionListener(e -> {
                         contacts.remove(list_contacts.getSelectedIndex());
-                        btn_new.setBounds(705, 275, 195, 50);
+                        btn_new.setVisible(true);
                         txt_number.setText("");
                         txt_address.setText("");
                         //setVisibles
