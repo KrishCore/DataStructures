@@ -26,6 +26,8 @@ public class IceCreamLab extends JFrame
     private JCheckBox topping6 = new JCheckBox("Chocolate Chip (1.00)");
     private JCheckBox topping7 = new JCheckBox("Sprinkles (.75)");
 
+    private double bill = 0;
+
     public IceCreamLab()
     {
         super("Ice Cream Shop");
@@ -35,7 +37,7 @@ public class IceCreamLab extends JFrame
 
         //title
         {
-            title.setBounds(0, 0, getWidth(), 50);
+            title.setBounds(-113, 0, getWidth(), 50);
             title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
             title.setHorizontalAlignment(JLabel.CENTER);
             add(title);
