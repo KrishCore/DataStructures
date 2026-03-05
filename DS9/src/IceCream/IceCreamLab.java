@@ -183,7 +183,7 @@ public class IceCreamLab extends JFrame
 
         //cost
         {
-            
+
         }
 
         setVisible(true);
