@@ -1,42 +1,44 @@
 package IceCream;
 
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class IceCreamLab extends JFrame
 {
-    private Font big = new Font(Font.SANS_SERIF, Font.BOLD, 50);
+    private Font xBig = new Font(Font.SERIF, Font.BOLD, 70);
+    private Font big = new Font(Font.DIALOG, Font.BOLD, 40);
     private Font medium = new Font(Font.SANS_SERIF, Font.BOLD, 30);
-    private Font small = new Font(Font.SANS_SERIF, Font.BOLD, 15);
+    private Font small = new Font(Font.SANS_SERIF, Font.BOLD, 14);
     private JLabel title = new JLabel("Ice Cream Shoppe");
     private JLabel containerType  = new JLabel("Container Type:");
-    private JRadioButton container1 = new JRadioButton("Bowl (.50)");
-    private JRadioButton container2 = new JRadioButton("Waffle Bowl (2.00)");
-    private JRadioButton container3 = new JRadioButton("Waffle Cone (2.00)");
-    private JRadioButton container4 = new JRadioButton("Chocolate Waffle Cone (3.50)");
+    private JRadioButton container1 = new JRadioButton("Bowl ($0.50)");
+    private JRadioButton container2 = new JRadioButton("Waffle Bowl ($2.00)");
+    private JRadioButton container3 = new JRadioButton("Waffle Cone ($2.00)");
+    private JRadioButton container4 = new JRadioButton("Chocolate Waffle Cone ($3.50)");
     private ButtonGroup containersG = new ButtonGroup();
 
     private JLabel lbl_flavor = new JLabel("Flavor:");
     private JComboBox<String> flavor = new JComboBox<>(new String[] {"Cookies and Cream", "Chocolate", "Vanilla",
             "Butter Pecan", "Strawberry", "Chocolate Chip Cookie Dough", "Coffee", "Cinnamon"});
     private JLabel lbl_numScoops = new JLabel("Number of Scoops:");
-    private JComboBox<String> numScoops = new JComboBox<>(new String[] {"1 (3.00)", "2 (5.00)", "3 (7.00)"});
+    private JComboBox<String> numScoops = new JComboBox<>(new String[] {"1 ($3.00)", "2 ($5.00)", "3 ($7.00)"});
 
     private JLabel lbl_toppings = new JLabel("Toppings:");
-    private JCheckBox topping1 = new JCheckBox("Chocolate Syrup (.75)");
-    private JCheckBox topping2 = new JCheckBox("Carmel Syrup (.75");
-    private JCheckBox topping3 = new JCheckBox("M&M's (1.00)");
-    private JCheckBox topping4 = new JCheckBox("Oreos (1.00)");
-    private JCheckBox topping5 = new JCheckBox("Peanut Butter Cup (1.25)");
-    private JCheckBox topping6 = new JCheckBox("Chocolate Chip (1.00)");
-    private JCheckBox topping7 = new JCheckBox("Sprinkles (.75)");
+    private JCheckBox topping1 = new JCheckBox("Chocolate Syrup ($0.75)");
+    private JCheckBox topping2 = new JCheckBox("Carmel Syrup ($0.75)");
+    private JCheckBox topping3 = new JCheckBox("M&M's ($1.00)");
+    private JCheckBox topping4 = new JCheckBox("Oreos ($1.00)");
+    private JCheckBox topping5 = new JCheckBox("Peanut Butter Cup ($1.25)");
+    private JCheckBox topping6 = new JCheckBox("Chocolate Chip ($1.00)");
+    private JCheckBox topping7 = new JCheckBox("Sprinkles ($0.75)");
 
     private JButton add = new JButton("Add");
     private JButton delete = new JButton("Delete");
 
     private ArrayList<String> orderTable = new ArrayList<>();
-    private ArrayList<String> headings;
+    private ArrayList<String> headings = new ArrayList<>();
     private JTable table;
     private JScrollPane scr_table;
 
@@ -45,14 +47,14 @@ public class IceCreamLab extends JFrame
     public IceCreamLab()
     {
         super("Ice Cream Shop");
-        setSize(1500,800);
+        setSize(1300,800);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //title
         {
-            title.setBounds(-113, 0, getWidth(), 50);
-            title.setFont(big);
+            title.setBounds(0, 0, getWidth(), 100);
+            title.setFont(xBig);
             title.setHorizontalAlignment(JLabel.CENTER);
             add(title);
         }
@@ -141,17 +143,29 @@ public class IceCreamLab extends JFrame
             lbl_numScoops.setFont(medium);
             add(lbl_numScoops);
             numScoops.setBounds(300, 300, 270, 20);
+            System.out.println(numScoops.getFont());
+            numScoops.setFont(small);
             add(numScoops);
         }
 
         //add button
         {
+            add.setBounds(825, 120, 419, 95);
+            add.setFont(big);
+            add.addActionListener(e -> {
 
+            });
+            add(add);
+//            250 total
+//            gap between buttons should be 40 pixels
+//            210/2 = 105
         }
 
         //delete button
         {
-
+            delete.setBounds(825, 230, 419, 95);
+            delete.setFont(big);
+            add(delete);
         }
 
         //table and update table
@@ -167,16 +181,15 @@ public class IceCreamLab extends JFrame
             }
         }
 
-        //headings table
+        //scroll bar table
         {
-            headings = new ArrayList<>();
             headings.add("Container Type");
             headings.add("Number of Scoops");
             headings.add("Flavor");
             headings.add("Toppings");
             table = new JTable(new String[0][3], headings.toArray());
             scr_table = new JScrollPane(table);
-            scr_table.setBounds(850, 100, 600, 625);
+            scr_table.setBounds(40, 350, 1205, 350);
             scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             add(scr_table);
         }
