@@ -2,8 +2,11 @@ package IceCream;
 
 import javax.sound.sampled.Line;
 import javax.swing.*;
+import javax.swing.plaf.synth.SynthRadioButtonMenuItemUI;
 import java.awt.*;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class IceCreamLab extends JFrame
 {
@@ -11,6 +14,7 @@ public class IceCreamLab extends JFrame
     private Font big = new Font(Font.DIALOG, Font.BOLD, 40);
     private Font medium = new Font(Font.SANS_SERIF, Font.BOLD, 30);
     private Font small = new Font(Font.SANS_SERIF, Font.BOLD, 14);
+
     private JLabel title = new JLabel("Ice Cream Shoppe");
     private JLabel containerType  = new JLabel("Container Type:");
     private JRadioButton container1 = new JRadioButton("Bowl ($0.50)");
@@ -37,7 +41,7 @@ public class IceCreamLab extends JFrame
     private JButton add = new JButton("Add");
     private JButton delete = new JButton("Delete");
 
-    private ArrayList<String> orderTable = new ArrayList<>();
+    private ArrayList<IceCream> orderTable = new ArrayList<>();
     private ArrayList<String> headings = new ArrayList<>();
     private JTable table;
     private JScrollPane scr_table;
@@ -114,25 +118,25 @@ public class IceCreamLab extends JFrame
             lbl_toppings.setBounds(600, 100, 300, 60);
             lbl_toppings.setFont(medium);
             add(lbl_toppings);
-            topping1.setBounds(600, 155, 200, 20);
+            topping1.setBounds(600, 155, 220, 20);
             topping1.setFont(small);
             add(topping1);
-            topping2.setBounds(600, 180, 200, 20);
+            topping2.setBounds(600, 180, 220, 20);
             topping2.setFont(small);
             add(topping2);
-            topping3.setBounds(600, 205, 200, 20);
+            topping3.setBounds(600, 205, 220, 20);
             topping3.setFont(small);
             add(topping3);
-            topping4.setBounds(600, 230, 200, 20);
+            topping4.setBounds(600, 230, 220, 20);
             topping4.setFont(small);
             add(topping4);
-            topping5.setBounds(600, 255, 200, 20);
+            topping5.setBounds(600, 255, 220, 20);
             topping5.setFont(small);
             add(topping5);
-            topping6.setBounds(600, 280, 200, 20);
+            topping6.setBounds(600, 280, 220, 20);
             topping6.setFont(small);
             add(topping6);
-            topping7.setBounds(600, 305, 200, 20);
+            topping7.setBounds(600, 305, 220, 20);
             topping7.setFont(small);
             add(topping7);
         }
@@ -153,12 +157,50 @@ public class IceCreamLab extends JFrame
             add.setBounds(825, 120, 419, 95);
             add.setFont(big);
             add.addActionListener(e -> {
+                ArrayList<String> topings = new ArrayList<>();
+                String selectedRadio = "Bowl";
+                for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements();) {
+                    AbstractButton bu = b.nextElement();
+                    if (bu.isSelected()) selectedRadio = bu.getText();
+                }
+                //add toppings
+                {
+                    if (topping1.isSelected())
+                        topings.add(topping1.getText());
+                    if (topping2.isSelected())
+                        topings.add(topping1.getText());
+                    if (topping3.isSelected())
+                        topings.add(topping1.getText());
+                    if (topping4.isSelected())
+                        topings.add(topping1.getText());
+                    if (topping5.isSelected())
+                        topings.add(topping1.getText());
+                    if (topping6.isSelected())
+                        topings.add(topping1.getText());
+                    if (topping7.isSelected())
+                        topings.add(topping1.getText());
+                }
 
+                orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), numScoops.getSelectedItem().toString(), topings));
+                String[][] data = new String[orderTable.size()][4];
+                for (int i = 0; i < orderTable.size(); i++)
+                {
+                    data[i][0] = orderTable.get(i).getContainer();
+                    data[i][1] = orderTable.get(i).getFlavor();
+                    data[i][2] = orderTable.get(i).getScoops();
+                    data[i][3] = orderTable.get(i).getToppings().toString();
+                }
+                scr_table.remove(table);
+                table = new JTable(data, headings.toArray()) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                scr_table.setViewportView(table);
+                scr_table.revalidate();
             });
             add(add);
-//            250 total
-//            gap between buttons should be 40 pixels
-//            210/2 = 105
         }
 
         //delete button
@@ -166,6 +208,30 @@ public class IceCreamLab extends JFrame
             delete.setBounds(825, 230, 419, 95);
             delete.setFont(big);
             add(delete);
+            delete.addActionListener(e -> {
+                String[][] data = new String[orderTable.size()][4];
+                for (int i = 0; i < orderTable.size(); i++)
+                {
+                    data[i][0] = orderTable.get(i).getContainer();
+                    data[i][1] = orderTable.get(i).getFlavor();
+                    data[i][2] = orderTable.get(i).getScoops();
+                    data[i][3] = orderTable.get(i).getToppings().toString();
+                }
+                int row[] = table.getSelectedRows(); //needs fixing
+                table.getSelectedRow();
+                for (int i = row.length-1; i >=0; i--) {
+                    table.remove(row[i]);
+                }
+                scr_table.remove(table);
+                table = new JTable(data, headings.toArray()) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                scr_table.setViewportView(table);
+                scr_table.revalidate();
+            });
         }
 
         //table and update table
@@ -191,6 +257,7 @@ public class IceCreamLab extends JFrame
             scr_table = new JScrollPane(table);
             scr_table.setBounds(40, 350, 1205, 350);
             scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
             add(scr_table);
         }
 
