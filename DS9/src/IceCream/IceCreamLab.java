@@ -1,10 +1,7 @@
 package IceCream;
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
-import javax.swing.plaf.synth.SynthRadioButtonMenuItemUI;
 import java.awt.*;
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -45,6 +42,8 @@ public class IceCreamLab extends JFrame
     private ArrayList<String> headings = new ArrayList<>();
     private JTable table;
     private JScrollPane scr_table;
+
+    private JLabel total = new JLabel("Total: $0.00");
 
     private double bill = 0;
 
@@ -157,7 +156,7 @@ public class IceCreamLab extends JFrame
             add.setBounds(825, 120, 419, 95);
             add.setFont(big);
             add.addActionListener(e -> {
-                ArrayList<String> topings = new ArrayList<>();
+                ArrayList<String> toppings = new ArrayList<>();
                 String selectedRadio = "Bowl";
                 for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements();) {
                     AbstractButton bu = b.nextElement();
@@ -166,22 +165,22 @@ public class IceCreamLab extends JFrame
                 //add toppings
                 {
                     if (topping1.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping1.getText());
                     if (topping2.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping2.getText());
                     if (topping3.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping3.getText());
                     if (topping4.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping4.getText());
                     if (topping5.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping5.getText());
                     if (topping6.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping6.getText());
                     if (topping7.isSelected())
-                        topings.add(topping1.getText());
+                        toppings.add(topping7.getText());
                 }
 
-                orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), numScoops.getSelectedItem().toString(), topings));
+                orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), numScoops.getSelectedItem().toString(), toppings));
                 String[][] data = new String[orderTable.size()][4];
                 for (int i = 0; i < orderTable.size(); i++)
                 {
@@ -209,32 +208,34 @@ public class IceCreamLab extends JFrame
             delete.setFont(big);
             add(delete);
             delete.addActionListener(e -> {
+                int[] rows = table.getSelectedRows();
+
+                for (int i = rows.length - 1; i >= 0; i--) {
+                    orderTable.remove(rows[i]);
+                }
+
                 String[][] data = new String[orderTable.size()][4];
-                for (int i = 0; i < orderTable.size(); i++)
-                {
+
+                for (int i = 0; i < orderTable.size(); i++) {
                     data[i][0] = orderTable.get(i).getContainer();
                     data[i][1] = orderTable.get(i).getFlavor();
                     data[i][2] = orderTable.get(i).getScoops();
                     data[i][3] = orderTable.get(i).getToppings().toString();
                 }
-                int row[] = table.getSelectedRows(); //needs fixing
-                table.getSelectedRow();
-                for (int i = row.length-1; i >=0; i--) {
-                    table.remove(row[i]);
-                }
-                scr_table.remove(table);
+
                 table = new JTable(data, headings.toArray()) {
                     @Override
                     public boolean isCellEditable(int row, int column) {
                         return false;
                     }
                 };
+
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
             });
         }
 
-        //table and update table
+        //table and update table - empty
         {
             //table
             {
@@ -255,7 +256,7 @@ public class IceCreamLab extends JFrame
             headings.add("Toppings");
             table = new JTable(new String[0][3], headings.toArray());
             scr_table = new JScrollPane(table);
-            scr_table.setBounds(40, 350, 1205, 350);
+            scr_table.setBounds(40, 350, 1205, 300);
             scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
             add(scr_table);
@@ -263,7 +264,13 @@ public class IceCreamLab extends JFrame
 
         //cost
         {
-
+            total.setBounds(0, 650, getWidth(), 60);
+            total.setHorizontalAlignment(JLabel.CENTER);
+            total.setFont(medium);
+            add.addActionListener(e -> {
+                if (container1.isSelected());
+            });
+            add(total);
         }
 
         setVisible(true);
