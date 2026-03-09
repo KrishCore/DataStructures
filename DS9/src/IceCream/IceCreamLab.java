@@ -3,6 +3,7 @@ package IceCream;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 public class IceCreamLab extends JFrame
@@ -39,12 +40,15 @@ public class IceCreamLab extends JFrame
     private JButton delete = new JButton("Delete");
 
     private ArrayList<IceCream> orderTable = new ArrayList<>();
-    private final ArrayList<String> headings = new ArrayList<>();
+    private final String[] headings = new String[] {"Container Type", "Flavor", "Number of Scoops", "Toppings"};
     private JTable table;
     private JScrollPane scr_table;
 
+    private JLabel subTotal = new JLabel("Subtotal: $0.00");
+    private double st = 0;
+    private JLabel tax = new JLabel("Tax: 8.25%");
     private JLabel total = new JLabel("Total: $0.00");
-    private double bill = 0;
+    private double t = 0;
     private ArrayList<Double> prices = new ArrayList<>();
 
     public IceCreamLab()
@@ -53,10 +57,9 @@ public class IceCreamLab extends JFrame
         setSize(1300,800);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         //title
         {
-            title.setBounds(0, 0, getWidth(), 100);
+            title.setBounds(0, 0, getWidth()-40, 100);
             title.setFont(xBig);
             title.setHorizontalAlignment(JLabel.CENTER);
             add(title);
@@ -84,21 +87,6 @@ public class IceCreamLab extends JFrame
             containersG.add(container3);
             containersG.add(container4);
             container1.setSelected(true);
-            //unnecessary actionListeners
-            {
-                container1.addActionListener(e -> {
-                    System.out.println(e.getActionCommand());
-                });
-                container2.addActionListener(e -> {
-                    System.out.println(e.getActionCommand());
-                });
-                container3.addActionListener(e -> {
-                    System.out.println(e.getActionCommand());
-                });
-                container4.addActionListener(e -> {
-                    System.out.println(e.getActionCommand());
-                });
-            }
         }
 
         //flavor
@@ -157,7 +145,7 @@ public class IceCreamLab extends JFrame
             add.setFont(big);
             add.addActionListener(e -> {
                 ArrayList<String> toppings = new ArrayList<>();
-                String selectedRadio = "Bowl";
+                String selectedRadio = "Bowl ($0.50)";
                 for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements();) {
                     AbstractButton bu = b.nextElement();
                     if (bu.isSelected()) selectedRadio = bu.getText();
@@ -179,23 +167,35 @@ public class IceCreamLab extends JFrame
                     if (topping7.isSelected())
                         toppings.add(topping7.getText());
                 }
+                orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), Integer.parseInt(numScoops.getSelectedItem().toString().substring(0,1)), toppings));
 
-                orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), numScoops.getSelectedItem().toString(), toppings));
+                prices.add(orderTable.getLast().getPrice());
+                st += prices.getLast();
+                subTotal.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                t = st * 1.0825;
+                total.setText(((t+"").substring((t+"").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t): String.format("Total: $%.2f", t));
+
                 String[][] data = new String[orderTable.size()][4];
                 for (int i = 0; i < orderTable.size(); i++)
                 {
                     data[i][0] = orderTable.get(i).getContainer();
                     data[i][1] = orderTable.get(i).getFlavor();
-                    data[i][2] = orderTable.get(i).getScoops();
+                    if (orderTable.get(i).getScoops() == 1)
+                        data[i][2] = orderTable.get(i).getScoops() + " ($3.00)";
+                    else if (orderTable.get(i).getScoops() == 2)
+                        data[i][2] = orderTable.get(i).getScoops() + " ($5.00)";
+                    else if (orderTable.get(i).getScoops() == 3)
+                        data[i][2] = orderTable.get(i).getScoops() + " ($7.00)";
                     data[i][3] = orderTable.get(i).getToppings().toString();
                 }
                 scr_table.remove(table);
-                table = new JTable(data, headings.toArray()) {
+                table = new JTable(data, headings) {
                     @Override
                     public boolean isCellEditable(int row, int column) {
                         return false;
                     }
                 };
+                table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
 
@@ -222,25 +222,28 @@ public class IceCreamLab extends JFrame
             delete.setFont(big);
             add(delete);
             delete.addActionListener(e -> {
-                int[] rows = table.getSelectedRows();
-                for (int i = rows.length - 1; i >= 0; i--) {
-                    orderTable.remove(rows[i]);
-                }
+                orderTable.remove(table.getSelectedRow());
 
                 String[][] data = new String[orderTable.size()][4];
                 for (int i = 0; i < orderTable.size(); i++) {
                     data[i][0] = orderTable.get(i).getContainer();
                     data[i][1] = orderTable.get(i).getFlavor();
-                    data[i][2] = orderTable.get(i).getScoops();
+                    if (orderTable.get(i).getScoops() == 1)
+                        data[i][2] = orderTable.get(i).getScoops() + " ($3.00)";
+                    else if (orderTable.get(i).getScoops() == 2)
+                        data[i][2] = orderTable.get(i).getScoops() + " ($5.00)";
+                    else if (orderTable.get(i).getScoops() == 3)
+                        data[i][2] = orderTable.get(i).getScoops() + " ($7.00)";
                     data[i][3] = orderTable.get(i).getToppings().toString();
                 }
 
-                table = new JTable(data, headings.toArray()) {
+                table = new JTable(data, headings) {
                     @Override
                     public boolean isCellEditable(int row, int column) {
                         return false;
                     }
                 };
+                table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
@@ -262,73 +265,60 @@ public class IceCreamLab extends JFrame
 
         //scroll bar table
         {
-            headings.add("Container Type");
-            headings.add("Flavor");
-            headings.add("Number of Scoops");
-            headings.add("Toppings");
-            table = new JTable(new String[0][3], headings.toArray());
+            table = new JTable(new String[0][3], headings);
             scr_table = new JScrollPane(table);
             scr_table.setBounds(40, 350, 1205, 300);
             scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             add(scr_table);
+        }
+
+        //selection change
+        {
+            int selectedRow = table.getSelectedRow();
+
+            IceCream ic = (table.getSelectedRow() != -1) ? orderTable.get(table.getSelectedRow()) : null;
+            if (selectedRow != -1)
+            {
+                
+            }
+            if (ic.getContainer().equals("Bowl ($0.50)"))
+                containersG.setSelected(container1.getModel(), true);
         }
 
         //cost
         {
-            total.setBounds(0, 650, getWidth(), 60);
-            total.setHorizontalAlignment(JLabel.CENTER);
-            total.setFont(medium);
-            add.addActionListener(e -> {
-                //container cost
-                {
-                    if (container1.isSelected())
-                        bill += Double.parseDouble(container1.getText().substring(container1.getText().indexOf("$") + 1, container1.getText().length() - 1));
-                    else if (container2.isSelected())
-                        bill += Double.parseDouble(container2.getText().substring(container2.getText().indexOf("$") + 1, container2.getText().length() - 1));
-                    else if (container3.isSelected())
-                        bill += Double.parseDouble(container3.getText().substring(container3.getText().indexOf("$") + 1, container3.getText().length() - 1));
-                    else if (container4.isSelected())
-                        bill += Double.parseDouble(container4.getText().substring(container4.getText().indexOf("$") + 1, container4.getText().length() - 1));
-                }
+            //subtotal
+            {
+                subTotal.setBounds(0, 660, getWidth()/2-20, 60);
+                subTotal.setHorizontalAlignment(JLabel.CENTER);
+                System.out.println(subTotal.getX() + " " + subTotal.getWidth());
+                subTotal.setFont(medium);
+                delete.addActionListener(e -> {
+                    System.out.println("rows:" + table.getSelectedRow());
+                    st-= orderTable.get(table.getSelectedRow()).getPrice();
+                    subTotal.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                    t = st * 1.0825;
+                    total.setText(((t+"").substring((t+"").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t): String.format("Total: $%.2f", t));
+                });
+                add(subTotal);
+            }
 
-                //scoops cost
-                {
-                    if (numScoops.getSelectedIndex() == 0)
-                        bill += Double.parseDouble(numScoops.getItemAt(0).substring(numScoops.getItemAt(0).indexOf("$")+1, numScoops.getItemAt(0).length()-1));
-                    if (numScoops.getSelectedIndex() == 1)
-                        bill += Double.parseDouble(numScoops.getItemAt(1).substring(numScoops.getItemAt(1).indexOf("$")+1, numScoops.getItemAt(1).length()-1));
-                    if (numScoops.getSelectedIndex() == 2)
-                        bill += Double.parseDouble(numScoops.getItemAt(2).substring(numScoops.getItemAt(2).indexOf("$")+1, numScoops.getItemAt(2).length()-1));
-                }
+            //tax
+            {
+                tax.setBounds(0, 660, getWidth()-40,60);
+                tax.setFont(medium);
+                tax.setHorizontalAlignment(JLabel.CENTER);
+                add(tax);
+            }
 
-                //toppings cost
-                {
-                    if (topping1.isSelected())
-                        bill += Double.parseDouble(topping1.getText().substring(topping1.getText().indexOf("$") + 1, topping1.getText().length() - 1));
-                    if (topping2.isSelected())
-                        bill += Double.parseDouble(topping2.getText().substring(topping2.getText().indexOf("$") + 1, topping2.getText().length() - 1));
-                    if (topping3.isSelected())
-                        bill += Double.parseDouble(topping3.getText().substring(topping3.getText().indexOf("$") + 1, topping3.getText().length() - 1));
-                    if (topping4.isSelected())
-                        bill += Double.parseDouble(topping4.getText().substring(topping4.getText().indexOf("$") + 1, topping4.getText().length() - 1));
-                    if (topping5.isSelected())
-                        bill += Double.parseDouble(topping5.getText().substring(topping5.getText().indexOf("$") + 1, topping5.getText().length() - 1));
-                    if (topping6.isSelected())
-                        bill += Double.parseDouble(topping6.getText().substring(topping6.getText().indexOf("$") + 1, topping6.getText().length() - 1));
-                    if (topping7.isSelected())
-                        bill += Double.parseDouble(topping7.getText().substring(topping7.getText().indexOf("$") + 1, topping7.getText().length() - 1));
-                }
-
-                total.setText("Cost: $" + bill);
-                prices.add(bill);
-                bill = 0; // may need to change
-            });
-
-            delete.addActionListener(e -> {
-
-            });
-            add(total);
+            //total
+            {
+                total.setBounds(getWidth()/2-20, 660, getWidth()/2-20, 60);
+                total.setFont(medium);
+                total.setHorizontalAlignment(JLabel.CENTER);
+                add(total);
+            }
         }
 
         setVisible(true);
