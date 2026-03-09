@@ -39,13 +39,13 @@ public class IceCreamLab extends JFrame
     private JButton delete = new JButton("Delete");
 
     private ArrayList<IceCream> orderTable = new ArrayList<>();
-    private ArrayList<String> headings = new ArrayList<>();
+    private final ArrayList<String> headings = new ArrayList<>();
     private JTable table;
     private JScrollPane scr_table;
 
     private JLabel total = new JLabel("Total: $0.00");
-
     private double bill = 0;
+    private ArrayList<Double> prices = new ArrayList<>();
 
     public IceCreamLab()
     {
@@ -198,6 +198,20 @@ public class IceCreamLab extends JFrame
                 };
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
+
+                //reset selections
+                {
+                    container1.setSelected(true);
+                    flavor.setSelectedIndex(2);
+                    numScoops.setSelectedIndex(0);
+                    topping1.setSelected(false);
+                    topping2.setSelected(false);
+                    topping3.setSelected(false);
+                    topping4.setSelected(false);
+                    topping5.setSelected(false);
+                    topping6.setSelected(false);
+                    topping7.setSelected(false);
+                }
             });
             add(add);
         }
@@ -209,13 +223,11 @@ public class IceCreamLab extends JFrame
             add(delete);
             delete.addActionListener(e -> {
                 int[] rows = table.getSelectedRows();
-
                 for (int i = rows.length - 1; i >= 0; i--) {
                     orderTable.remove(rows[i]);
                 }
 
                 String[][] data = new String[orderTable.size()][4];
-
                 for (int i = 0; i < orderTable.size(); i++) {
                     data[i][0] = orderTable.get(i).getContainer();
                     data[i][1] = orderTable.get(i).getFlavor();
@@ -251,8 +263,8 @@ public class IceCreamLab extends JFrame
         //scroll bar table
         {
             headings.add("Container Type");
-            headings.add("Number of Scoops");
             headings.add("Flavor");
+            headings.add("Number of Scoops");
             headings.add("Toppings");
             table = new JTable(new String[0][3], headings.toArray());
             scr_table = new JScrollPane(table);
@@ -268,7 +280,53 @@ public class IceCreamLab extends JFrame
             total.setHorizontalAlignment(JLabel.CENTER);
             total.setFont(medium);
             add.addActionListener(e -> {
-                if (container1.isSelected());
+                //container cost
+                {
+                    if (container1.isSelected())
+                        bill += Double.parseDouble(container1.getText().substring(container1.getText().indexOf("$") + 1, container1.getText().length() - 1));
+                    else if (container2.isSelected())
+                        bill += Double.parseDouble(container2.getText().substring(container2.getText().indexOf("$") + 1, container2.getText().length() - 1));
+                    else if (container3.isSelected())
+                        bill += Double.parseDouble(container3.getText().substring(container3.getText().indexOf("$") + 1, container3.getText().length() - 1));
+                    else if (container4.isSelected())
+                        bill += Double.parseDouble(container4.getText().substring(container4.getText().indexOf("$") + 1, container4.getText().length() - 1));
+                }
+
+                //scoops cost
+                {
+                    if (numScoops.getSelectedIndex() == 0)
+                        bill += Double.parseDouble(numScoops.getItemAt(0).substring(numScoops.getItemAt(0).indexOf("$")+1, numScoops.getItemAt(0).length()-1));
+                    if (numScoops.getSelectedIndex() == 1)
+                        bill += Double.parseDouble(numScoops.getItemAt(1).substring(numScoops.getItemAt(1).indexOf("$")+1, numScoops.getItemAt(1).length()-1));
+                    if (numScoops.getSelectedIndex() == 2)
+                        bill += Double.parseDouble(numScoops.getItemAt(2).substring(numScoops.getItemAt(2).indexOf("$")+1, numScoops.getItemAt(2).length()-1));
+                }
+
+                //toppings cost
+                {
+                    if (topping1.isSelected())
+                        bill += Double.parseDouble(topping1.getText().substring(topping1.getText().indexOf("$") + 1, topping1.getText().length() - 1));
+                    if (topping2.isSelected())
+                        bill += Double.parseDouble(topping2.getText().substring(topping2.getText().indexOf("$") + 1, topping2.getText().length() - 1));
+                    if (topping3.isSelected())
+                        bill += Double.parseDouble(topping3.getText().substring(topping3.getText().indexOf("$") + 1, topping3.getText().length() - 1));
+                    if (topping4.isSelected())
+                        bill += Double.parseDouble(topping4.getText().substring(topping4.getText().indexOf("$") + 1, topping4.getText().length() - 1));
+                    if (topping5.isSelected())
+                        bill += Double.parseDouble(topping5.getText().substring(topping5.getText().indexOf("$") + 1, topping5.getText().length() - 1));
+                    if (topping6.isSelected())
+                        bill += Double.parseDouble(topping6.getText().substring(topping6.getText().indexOf("$") + 1, topping6.getText().length() - 1));
+                    if (topping7.isSelected())
+                        bill += Double.parseDouble(topping7.getText().substring(topping7.getText().indexOf("$") + 1, topping7.getText().length() - 1));
+                }
+
+                total.setText("Cost: $" + bill);
+                prices.add(bill);
+                bill = 0; // may need to change
+            });
+
+            delete.addActionListener(e -> {
+
             });
             add(total);
         }
