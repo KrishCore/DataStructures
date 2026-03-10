@@ -3,7 +3,6 @@ package IceCream;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 
 public class IceCreamLab extends JFrame
@@ -36,7 +35,7 @@ public class IceCreamLab extends JFrame
     private JCheckBox topping6 = new JCheckBox("Chocolate Chip ($1.00)");
     private JCheckBox topping7 = new JCheckBox("Sprinkles ($0.75)");
 
-    private JButton add = new JButton("Add");
+    private JButton addSave = new JButton("Add");
     private JButton delete = new JButton("Delete");
 
     private ArrayList<IceCream> orderTable = new ArrayList<>();
@@ -141,40 +140,79 @@ public class IceCreamLab extends JFrame
 
         //add button
         {
-            add.setBounds(825, 120, 419, 95);
-            add.setFont(big);
-            add.addActionListener(e -> {
-                ArrayList<String> toppings = new ArrayList<>();
-                String selectedRadio = "Bowl ($0.50)";
-                for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements();) {
-                    AbstractButton bu = b.nextElement();
-                    if (bu.isSelected()) selectedRadio = bu.getText();
-                }
-                //add toppings
+            addSave.setBounds(825, 120, 420, 95);
+            addSave.setFont(big);
+            addSave.addActionListener(e -> {
+                addSave.setText("Add");
+                delete.setEnabled(false);
+                if (table.getSelectedRow() != -1)
                 {
-                    if (topping1.isSelected())
-                        toppings.add(topping1.getText());
-                    if (topping2.isSelected())
-                        toppings.add(topping2.getText());
-                    if (topping3.isSelected())
-                        toppings.add(topping3.getText());
-                    if (topping4.isSelected())
-                        toppings.add(topping4.getText());
-                    if (topping5.isSelected())
-                        toppings.add(topping5.getText());
-                    if (topping6.isSelected())
-                        toppings.add(topping6.getText());
-                    if (topping7.isSelected())
-                        toppings.add(topping7.getText());
+                    ArrayList<String> toppings = new ArrayList<>();
+                    String selectedRadio = "Bowl ($0.50)";
+                    for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements(); ) {
+                        AbstractButton bu = b.nextElement();
+                        if (bu.isSelected()) selectedRadio = bu.getText();
+                    }
+                    //save toppings
+                    {
+                        if (topping1.isSelected())
+                            toppings.add(topping1.getText());
+                        if (topping2.isSelected())
+                            toppings.add(topping2.getText());
+                        if (topping3.isSelected())
+                            toppings.add(topping3.getText());
+                        if (topping4.isSelected())
+                            toppings.add(topping4.getText());
+                        if (topping5.isSelected())
+                            toppings.add(topping5.getText());
+                        if (topping6.isSelected())
+                            toppings.add(topping6.getText());
+                        if (topping7.isSelected())
+                            toppings.add(topping7.getText());
+                    }
+                    double oldPrice = orderTable.get(table.getSelectedRow()).getPrice();
+                    orderTable.get(table.getSelectedRow()).setContainer(selectedRadio);
+                    orderTable.get(table.getSelectedRow()).setFlavor(flavor.getSelectedItem().toString());
+                    orderTable.get(table.getSelectedRow()).setScoops(Integer.parseInt(numScoops.getSelectedItem().toString().substring(0, 1)));
+                    orderTable.get(table.getSelectedRow()).setToppings(toppings);
+
+                    prices.set(table.getSelectedRow(), orderTable.get(table.getSelectedRow()).getPrice());
+                    st = st - oldPrice + prices.get(table.getSelectedRow());
+                    subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                    t = st * 1.0825;
+                    total.setText(((t + "").substring((t + "").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t) : String.format("Total: $%.2f", t));
                 }
-                orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), Integer.parseInt(numScoops.getSelectedItem().toString().substring(0,1)), toppings));
-
-                prices.add(orderTable.getLast().getPrice());
-                st += prices.getLast();
-                subTotal.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
-                t = st * 1.0825;
-                total.setText(((t+"").substring((t+"").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t): String.format("Total: $%.2f", t));
-
+                else {
+                    ArrayList<String> toppings = new ArrayList<>();
+                    String selectedRadio = "Bowl ($0.50)";
+                    for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements(); ) {
+                        AbstractButton bu = b.nextElement();
+                        if (bu.isSelected()) selectedRadio = bu.getText();
+                    }
+                    //add toppings
+                    {
+                        if (topping1.isSelected())
+                            toppings.add(topping1.getText());
+                        if (topping2.isSelected())
+                            toppings.add(topping2.getText());
+                        if (topping3.isSelected())
+                            toppings.add(topping3.getText());
+                        if (topping4.isSelected())
+                            toppings.add(topping4.getText());
+                        if (topping5.isSelected())
+                            toppings.add(topping5.getText());
+                        if (topping6.isSelected())
+                            toppings.add(topping6.getText());
+                        if (topping7.isSelected())
+                            toppings.add(topping7.getText());
+                    }
+                    orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), Integer.parseInt(numScoops.getSelectedItem().toString().substring(0, 1)), toppings));
+                    prices.add(orderTable.getLast().getPrice());
+                    st += prices.getLast();
+                    subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                    t = st * 1.0825;
+                    total.setText(((t + "").substring((t + "").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t) : String.format("Total: $%.2f", t));
+                }
                 String[][] data = new String[orderTable.size()][4];
                 for (int i = 0; i < orderTable.size(); i++)
                 {
@@ -196,6 +234,7 @@ public class IceCreamLab extends JFrame
                     }
                 };
                 table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                selectionChange();
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
 
@@ -213,15 +252,18 @@ public class IceCreamLab extends JFrame
                     topping7.setSelected(false);
                 }
             });
-            add(add);
+            add(addSave);
         }
 
         //delete button
         {
-            delete.setBounds(825, 230, 419, 95);
+            delete.setBounds(825, 230, 420, 95);
             delete.setFont(big);
             add(delete);
+            delete.setEnabled(false);
             delete.addActionListener(e -> {
+                delete.setEnabled(false);
+                addSave.setText("Add");
                 orderTable.remove(table.getSelectedRow());
 
                 String[][] data = new String[orderTable.size()][4];
@@ -244,6 +286,7 @@ public class IceCreamLab extends JFrame
                     }
                 };
                 table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                selectionChange();
 
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
@@ -265,25 +308,24 @@ public class IceCreamLab extends JFrame
 
         //scroll bar table
         {
-            table = new JTable(new String[0][3], headings);
+            table = new JTable(new String[0][3], headings) { //may not be needed
+                @Override
+                public boolean isCellEditable(int row, int column)
+                {
+                    return false;
+                }
+            };
             scr_table = new JScrollPane(table);
             scr_table.setBounds(40, 350, 1205, 300);
             scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            selectionChange();
             add(scr_table);
         }
 
         //selection change
         {
-            int selectedRow = table.getSelectedRow();
 
-            IceCream ic = (table.getSelectedRow() != -1) ? orderTable.get(table.getSelectedRow()) : null;
-            if (selectedRow != -1)
-            {
-                
-            }
-            if (ic.getContainer().equals("Bowl ($0.50)"))
-                containersG.setSelected(container1.getModel(), true);
         }
 
         //cost
@@ -320,7 +362,39 @@ public class IceCreamLab extends JFrame
                 add(total);
             }
         }
-
         setVisible(true);
+    }
+
+    public void selectionChange()
+    {
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()){
+                if (table.getSelectedRow() != -1) {
+                    delete.setEnabled(true);
+                    addSave.setText("Save");
+                    IceCream ic = orderTable.get(table.getSelectedRow());
+                    if (ic.getContainer().equals("Bowl ($0.50)"))
+                        containersG.setSelected(container1.getModel(), true);
+                    else if (ic.getContainer().equals("Waffle Bowl ($2.00)"))
+                        containersG.setSelected(container2.getModel(), true);
+                    else if (ic.getContainer().equals("Waffle Cone ($2.00)"))
+                        containersG.setSelected(container3.getModel(), true);
+                    else if (ic.getContainer().equals("Chocolate Waffle Cone ($3.50)"))
+                        containersG.setSelected(container4.getModel(), true);
+
+                    flavor.setSelectedItem(ic.getFlavor());
+                    numScoops.setSelectedIndex(ic.getScoops() - 1);
+
+                    ArrayList<String> toppings = ic.getToppings();
+                    topping1.setSelected(toppings.contains(topping1.getText()));
+                    topping2.setSelected(toppings.contains(topping2.getText()));
+                    topping3.setSelected(toppings.contains(topping3.getText()));
+                    topping4.setSelected(toppings.contains(topping4.getText()));
+                    topping5.setSelected(toppings.contains(topping5.getText()));
+                    topping6.setSelected(toppings.contains(topping6.getText()));
+                    topping7.setSelected(toppings.contains(topping7.getText()));
+                }
+            }
+        });
     }
 }
