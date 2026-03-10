@@ -50,6 +50,8 @@ public class IceCreamLab extends JFrame
     private double t = 0;
     private ArrayList<Double> prices = new ArrayList<>();
 
+    private JButton pay = new JButton("Pay");
+
     public IceCreamLab()
     {
         super("Ice Cream Shop");
@@ -145,8 +147,9 @@ public class IceCreamLab extends JFrame
             addSave.addActionListener(e -> {
                 addSave.setText("Add");
                 delete.setEnabled(false);
-                if (table.getSelectedRow() != -1)
+                if (table.getSelectedRow() != -1) //save
                 {
+                    pay.setEnabled(false);
                     ArrayList<String> toppings = new ArrayList<>();
                     String selectedRadio = "Bowl ($0.50)";
                     for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements(); ) {
@@ -178,11 +181,8 @@ public class IceCreamLab extends JFrame
 
                     prices.set(table.getSelectedRow(), orderTable.get(table.getSelectedRow()).getPrice());
                     st = st - oldPrice + prices.get(table.getSelectedRow());
-                    subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
-                    t = st * 1.0825;
-                    total.setText(((t + "").substring((t + "").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t) : String.format("Total: $%.2f", t));
                 }
-                else {
+                else { //add
                     ArrayList<String> toppings = new ArrayList<>();
                     String selectedRadio = "Bowl ($0.50)";
                     for (Enumeration<AbstractButton> b = containersG.getElements(); b.hasMoreElements(); ) {
@@ -209,10 +209,20 @@ public class IceCreamLab extends JFrame
                     orderTable.add(new IceCream(selectedRadio, flavor.getSelectedItem().toString(), Integer.parseInt(numScoops.getSelectedItem().toString().substring(0, 1)), toppings));
                     prices.add(orderTable.getLast().getPrice());
                     st += prices.getLast();
-                    subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
-                    t = st * 1.0825;
-                    total.setText(((t + "").substring((t + "").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t) : String.format("Total: $%.2f", t));
                 }
+                subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                t = st * 1.0825;
+                String tot = String.format("$%.2f", t);
+                if (tot.substring(tot.indexOf(".")).length() == 2)
+                    System.out.println(true);
+                System.out.println(tot.substring(tot.indexOf(".")) +"    " + tot.length());
+
+                total.setText(String.format("Total: $%.2f", t));
+                if (total.getText().equals("Total: $0.000") || total.getText().equals("Total: $0.0") || total.getText().equals("Total: $0.") || total.getText().equals("Total: $0"))
+                    total.setText("Total $0.00");
+                System.out.println(total.getText());
+                if (!orderTable.isEmpty())
+                    pay.setEnabled(true);
                 String[][] data = new String[orderTable.size()][4];
                 for (int i = 0; i < orderTable.size(); i++)
                 {
@@ -226,6 +236,7 @@ public class IceCreamLab extends JFrame
                         data[i][2] = orderTable.get(i).getScoops() + " ($7.00)";
                     data[i][3] = orderTable.get(i).getToppings().toString();
                 }
+
                 scr_table.remove(table);
                 table = new JTable(data, headings) {
                     @Override
@@ -290,6 +301,10 @@ public class IceCreamLab extends JFrame
 
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
+
+                pay.setEnabled(false);
+                if (!orderTable.isEmpty())
+                    pay.setEnabled(true);
             });
         }
 
@@ -323,16 +338,11 @@ public class IceCreamLab extends JFrame
             add(scr_table);
         }
 
-        //selection change
-        {
-
-        }
-
         //cost
         {
             //subtotal
             {
-                subTotal.setBounds(0, 660, getWidth()/2-20, 60);
+                subTotal.setBounds(0, 660, getWidth()/2-80, 60);
                 subTotal.setHorizontalAlignment(JLabel.CENTER);
                 System.out.println(subTotal.getX() + " " + subTotal.getWidth());
                 subTotal.setFont(medium);
@@ -341,14 +351,23 @@ public class IceCreamLab extends JFrame
                     st-= orderTable.get(table.getSelectedRow()).getPrice();
                     subTotal.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
                     t = st * 1.0825;
-                    total.setText(((t+"").substring((t+"").indexOf(".")).length() == 2) ? String.format("Total: $%.2f0", t): String.format("Total: $%.2f", t));
+                    if ((t+"").substring((t+"").indexOf(".")).length() == 2)
+                        System.out.println("length 2");
+                    else if ((t+"").substring((t+"").indexOf(".")).length() == 1)
+                        System.out.println("length 1");
+                    else if ((t+"").substring((t+"").indexOf(".")).length() == 3)
+                        System.out.println("3");
+                    total.setText(String.format("Total: $%.2f", t));
+                    if (total.getText().equals("Total: $0.000") || total.getText().equals("Total: $0.0") || total.getText().equals("Total: $0.") || total.getText().equals("Total: $0"))
+                        total.setText("Total $0.00");
+                    System.out.println(total.getText());
                 });
                 add(subTotal);
             }
 
             //tax
             {
-                tax.setBounds(0, 660, getWidth()-40,60);
+                tax.setBounds(0, 660, getWidth()-100,60);
                 tax.setFont(medium);
                 tax.setHorizontalAlignment(JLabel.CENTER);
                 add(tax);
@@ -356,11 +375,30 @@ public class IceCreamLab extends JFrame
 
             //total
             {
-                total.setBounds(getWidth()/2-20, 660, getWidth()/2-20, 60);
+                total.setBounds(getWidth()/2-20, 660, getWidth()/2-80, 60);
                 total.setFont(medium);
                 total.setHorizontalAlignment(JLabel.CENTER);
                 add(total);
             }
+        }
+
+        //pay
+        {
+            pay.setBounds(1100, 660, 100,50);
+            pay.setEnabled(false);
+            pay.addActionListener(e -> {
+                int selection = -1;
+                while (selection == -1)
+                {
+                    selection = JOptionPane.showOptionDialog(this, "How would you like to pay?", "Payment Method",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cash", "Card"}, "Cash");
+                    if (selection == 0)
+                        JOptionPane.showMessageDialog(this, "Cash payment accepted.");
+                    else if (selection == 1)
+                        JOptionPane.showMessageDialog(this, "Card payment accepted");
+                }
+            });
+            add(pay);
         }
         setVisible(true);
     }
@@ -370,6 +408,7 @@ public class IceCreamLab extends JFrame
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()){
                 if (table.getSelectedRow() != -1) {
+                    pay.setEnabled(false);
                     delete.setEnabled(true);
                     addSave.setText("Save");
                     IceCream ic = orderTable.get(table.getSelectedRow());
