@@ -39,15 +39,16 @@ public class IceCreamLab extends JFrame
     private JButton delete = new JButton("Delete");
 
     private ArrayList<IceCream> orderTable = new ArrayList<>();
-    private final String[] headings = new String[] {"Container Type", "Flavor", "Number of Scoops", "Toppings"};
+    private final String[] headings = new String[] {"Container Type", "Flavor", "Number of Scoops", "Toppings", "Cost"};
     private JTable table;
     private JScrollPane scr_table;
 
     private JLabel subTotal = new JLabel("Subtotal: $0.00");
     private double st = 0;
-    private JLabel tax = new JLabel("Tax: 8.25%");
+    private JLabel tax = new JLabel("Tax: $0.00");
+    private double tx = 0;
     private JLabel total = new JLabel("Total: $0.00");
-    private double t = 0;
+    private double to = 0;
     private ArrayList<Double> prices = new ArrayList<>();
 
     private JButton pay = new JButton("Pay");
@@ -178,6 +179,7 @@ public class IceCreamLab extends JFrame
                     orderTable.get(table.getSelectedRow()).setFlavor(flavor.getSelectedItem().toString());
                     orderTable.get(table.getSelectedRow()).setScoops(Integer.parseInt(numScoops.getSelectedItem().toString().substring(0, 1)));
                     orderTable.get(table.getSelectedRow()).setToppings(toppings);
+//                    orderTable.get(table.getSelectedRow()).setPrice();
 
                     prices.set(table.getSelectedRow(), orderTable.get(table.getSelectedRow()).getPrice());
                     st = st - oldPrice + prices.get(table.getSelectedRow());
@@ -211,30 +213,38 @@ public class IceCreamLab extends JFrame
                     st += prices.getLast();
                 }
                 subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
-                t = st * 1.0825;
-                String tot = String.format("$%.2f", t);
+                to = st * 1.0825;
+                String tot = String.format("$%.2f", to);
                 if (tot.substring(tot.indexOf(".")).length() == 2)
                     System.out.println(true);
                 System.out.println(tot.substring(tot.indexOf(".")) +"    " + tot.length());
 
-                total.setText(String.format("Total: $%.2f", t));
+                tx = st *.0825;
+                tax.setText(String.format("Tax: $%.2f", tx));
+
+                total.setText(String.format("Total: $%.2f", to));
                 if (total.getText().equals("Total: $0.000") || total.getText().equals("Total: $0.0") || total.getText().equals("Total: $0.") || total.getText().equals("Total: $0"))
                     total.setText("Total $0.00");
                 System.out.println(total.getText());
                 if (!orderTable.isEmpty())
                     pay.setEnabled(true);
-                String[][] data = new String[orderTable.size()][4];
+                String[][] data = new String[orderTable.size()][5];
                 for (int i = 0; i < orderTable.size(); i++)
                 {
-                    data[i][0] = orderTable.get(i).getContainer();
+                    data[i][0] = orderTable.get(i).getContainer().substring(0, orderTable.get(i).getContainer().indexOf(" ("));
                     data[i][1] = orderTable.get(i).getFlavor();
                     if (orderTable.get(i).getScoops() == 1)
-                        data[i][2] = orderTable.get(i).getScoops() + " ($3.00)";
+                        data[i][2] = orderTable.get(i).getScoops() +"";// + " ($3.00)";
                     else if (orderTable.get(i).getScoops() == 2)
-                        data[i][2] = orderTable.get(i).getScoops() + " ($5.00)";
+                        data[i][2] = orderTable.get(i).getScoops() +"";// + " ($5.00)";
                     else if (orderTable.get(i).getScoops() == 3)
-                        data[i][2] = orderTable.get(i).getScoops() + " ($7.00)";
-                    data[i][3] = orderTable.get(i).getToppings().toString();
+                        data[i][2] = orderTable.get(i).getScoops() +"";// + " ($7.00)";
+                    if (orderTable.get(i).getToppings().isEmpty())
+                        data[i][3] = "None";
+                    else data[i][3] = orderTable.get(i).getToppings().toString().substring(1, orderTable.get(i).getToppings().toString().length()-1);
+                    if ((orderTable.get(i).getPrice()+"").substring((orderTable.get(i).getPrice()+"").indexOf(".")).length() == 2)
+                        data[i][4] = "$" + orderTable.get(i).getPrice()+"0";
+                    else data[i][4] = "$" + orderTable.get(i).getPrice();
                 }
 
                 scr_table.remove(table);
@@ -245,6 +255,9 @@ public class IceCreamLab extends JFrame
                     }
                 };
                 table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                table.getTableHeader().setFont(small);
+                table.getTableHeader().setReorderingAllowed(false);
+                table.getTableHeader().setResizingAllowed(false);
                 selectionChange();
                 scr_table.setViewportView(table);
                 scr_table.revalidate();
@@ -277,17 +290,22 @@ public class IceCreamLab extends JFrame
                 addSave.setText("Add");
                 orderTable.remove(table.getSelectedRow());
 
-                String[][] data = new String[orderTable.size()][4];
+                String[][] data = new String[orderTable.size()][5];
                 for (int i = 0; i < orderTable.size(); i++) {
-                    data[i][0] = orderTable.get(i).getContainer();
+                    data[i][0] = orderTable.get(i).getContainer().substring(0, orderTable.get(i).getContainer().indexOf(" ("));
                     data[i][1] = orderTable.get(i).getFlavor();
                     if (orderTable.get(i).getScoops() == 1)
-                        data[i][2] = orderTable.get(i).getScoops() + " ($3.00)";
+                        data[i][2] = orderTable.get(i).getScoops() +"";// + " ($3.00)";
                     else if (orderTable.get(i).getScoops() == 2)
-                        data[i][2] = orderTable.get(i).getScoops() + " ($5.00)";
+                        data[i][2] = orderTable.get(i).getScoops() +"";// + " ($5.00)";
                     else if (orderTable.get(i).getScoops() == 3)
-                        data[i][2] = orderTable.get(i).getScoops() + " ($7.00)";
-                    data[i][3] = orderTable.get(i).getToppings().toString();
+                        data[i][2] = orderTable.get(i).getScoops() +"";// + " ($7.00)";
+                    if (orderTable.get(i).getToppings().isEmpty())
+                        data[i][3] = "None";
+                    else data[i][3] = orderTable.get(i).getToppings().toString().substring(1, orderTable.get(i).getToppings().toString().length()-1);
+                    if ((orderTable.get(i).getPrice()+"").substring((orderTable.get(i).getPrice()+"").indexOf(".")).length() == 2)
+                        data[i][4] = "$" + orderTable.get(i).getPrice()+"0";
+                    else data[i][4] = "$" + orderTable.get(i).getPrice();
                 }
 
                 table = new JTable(data, headings) {
@@ -297,6 +315,9 @@ public class IceCreamLab extends JFrame
                     }
                 };
                 table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                table.getTableHeader().setFont(small);
+                table.getTableHeader().setReorderingAllowed(false);
+                table.getTableHeader().setResizingAllowed(false);
                 selectionChange();
 
                 scr_table.setViewportView(table);
@@ -332,8 +353,12 @@ public class IceCreamLab extends JFrame
             };
             scr_table = new JScrollPane(table);
             scr_table.setBounds(40, 350, 1205, 300);
-            scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scr_table.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scr_table.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.getTableHeader().setFont(small);
+            table.getTableHeader().setReorderingAllowed(false);
+            table.getTableHeader().setResizingAllowed(false);
             selectionChange();
             add(scr_table);
         }
@@ -350,14 +375,18 @@ public class IceCreamLab extends JFrame
                     System.out.println("rows:" + table.getSelectedRow());
                     st-= orderTable.get(table.getSelectedRow()).getPrice();
                     subTotal.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
-                    t = st * 1.0825;
-                    if ((t+"").substring((t+"").indexOf(".")).length() == 2)
+                    to = st * 1.0825;
+                    if ((to+"").substring((to+"").indexOf(".")).length() == 2)
                         System.out.println("length 2");
-                    else if ((t+"").substring((t+"").indexOf(".")).length() == 1)
+                    else if ((to+"").substring((to+"").indexOf(".")).length() == 1)
                         System.out.println("length 1");
-                    else if ((t+"").substring((t+"").indexOf(".")).length() == 3)
+                    else if ((to+"").substring((to+"").indexOf(".")).length() == 3)
                         System.out.println("3");
-                    total.setText(String.format("Total: $%.2f", t));
+
+                    tx = st *.0825;
+                    tax.setText(String.format("Tax: $%.2f", tx));
+
+                    total.setText(String.format("Total: $%.2f", to));
                     if (total.getText().equals("Total: $0.000") || total.getText().equals("Total: $0.0") || total.getText().equals("Total: $0.") || total.getText().equals("Total: $0"))
                         total.setText("Total $0.00");
                     System.out.println(total.getText());
@@ -386,18 +415,74 @@ public class IceCreamLab extends JFrame
         {
             pay.setBounds(1100, 660, 100,50);
             pay.setEnabled(false);
+
             pay.addActionListener(e -> {
-                int selection = -1;
-                while (selection == -1)
-                {
-                    selection = JOptionPane.showOptionDialog(this, "How would you like to pay?", "Payment Method",
+                boolean paymentComplete = false;
+
+                while (!paymentComplete) {
+                    int payMethod = JOptionPane.showOptionDialog(this, "How would you like to pay?", "Payment Method",
                             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cash", "Card"}, "Cash");
-                    if (selection == 0)
+
+                    if (payMethod == -1) return;
+
+                    if (payMethod == 0)
                         JOptionPane.showMessageDialog(this, "Cash payment accepted.");
-                    else if (selection == 1)
-                        JOptionPane.showMessageDialog(this, "Card payment accepted");
+                    else if (payMethod == 1) {
+                        String cardNum = null;
+                        boolean cardValid = false;
+                        while (!cardValid) {
+                            cardNum = JOptionPane.showInputDialog(this, "Enter Card Number (Numbers only):");
+                            if (cardNum == null) break;
+
+                            cardValid = !cardNum.isEmpty();
+                            for (int i = 0; i < cardNum.length(); i++)
+                                if (!Character.isDigit(cardNum.charAt(i))) cardValid = false;
+                        }
+
+                        if (cardNum == null) continue;
+
+                        String pin = null;
+                        boolean pinValid = false;
+                        while (!pinValid) {
+                            pin = JOptionPane.showInputDialog(this, "Enter PIN (Numbers only):");
+                            if (pin == null) break;
+
+                            pinValid = !pin.isEmpty();
+                            for (int i = 0; i < pin.length(); i++)
+                                if (!Character.isDigit(pin.charAt(i))) pinValid = false;
+                        }
+
+                        if (pin == null) continue;
+                        JOptionPane.showMessageDialog(this, "Card payment accepted.");
+                    }
+
+                    int receiptChoice = JOptionPane.showOptionDialog(this, "How would you like your receipt?", "Receipt Method",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"No receipt", "Print"}, "No receipt");
+
+                    if (receiptChoice == -1)
+                        return;
+
+                    JOptionPane.showMessageDialog(this, "Thank you for shopping with Krish!");
+
+                    paymentComplete = true;
+
+                    // Reset
+                    st = 0; tx = 0; to = 0;
+                    subTotal.setText("Subtotal: $0.00");
+                    tax.setText("Tax: $0.00");
+                    total.setText("Total: $0.00");
+
+                    orderTable.clear();
+                    prices.clear();
+                    pay.setEnabled(false);
+                    delete.setEnabled(false);
+
+                    scr_table.setViewportView(new JTable(new String[0][5], headings));
+
+                    paymentComplete = true;
                 }
             });
+
             add(pay);
         }
         setVisible(true);
