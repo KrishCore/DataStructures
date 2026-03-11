@@ -413,77 +413,77 @@ public class IceCreamLab extends JFrame
 
         //pay
         {
-            pay.setBounds(1100, 660, 100,50);
-            pay.setEnabled(false);
-
-            pay.addActionListener(e -> {
-                boolean paymentComplete = false;
-
-                while (!paymentComplete) {
-                    int payMethod = JOptionPane.showOptionDialog(this, "How would you like to pay?", "Payment Method",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cash", "Card"}, "Cash");
-
-                    if (payMethod == -1) return;
-
-                    if (payMethod == 0)
-                        JOptionPane.showMessageDialog(this, "Cash payment accepted.");
-                    else if (payMethod == 1) {
-                        String cardNum = null;
-                        boolean cardValid = false;
-                        while (!cardValid) {
-                            cardNum = JOptionPane.showInputDialog(this, "Enter Card Number (Numbers only):");
-                            if (cardNum == null) break;
-
-                            cardValid = !cardNum.isEmpty();
-                            for (int i = 0; i < cardNum.length(); i++)
-                                if (!Character.isDigit(cardNum.charAt(i))) cardValid = false;
-                        }
-
-                        if (cardNum == null) continue;
-
-                        String pin = null;
-                        boolean pinValid = false;
-                        while (!pinValid) {
-                            pin = JOptionPane.showInputDialog(this, "Enter PIN (Numbers only):");
-                            if (pin == null) break;
-
-                            pinValid = !pin.isEmpty();
-                            for (int i = 0; i < pin.length(); i++)
-                                if (!Character.isDigit(pin.charAt(i))) pinValid = false;
-                        }
-
-                        if (pin == null) continue;
-                        JOptionPane.showMessageDialog(this, "Card payment accepted.");
-                    }
-
-                    int receiptChoice = JOptionPane.showOptionDialog(this, "How would you like your receipt?", "Receipt Method",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"No receipt", "Print"}, "No receipt");
-
-                    if (receiptChoice == -1)
-                        return;
-
-                    JOptionPane.showMessageDialog(this, "Thank you for shopping with Krish!");
-
-                    paymentComplete = true;
-
-                    // Reset
-                    st = 0; tx = 0; to = 0;
-                    subTotal.setText("Subtotal: $0.00");
-                    tax.setText("Tax: $0.00");
-                    total.setText("Total: $0.00");
-
-                    orderTable.clear();
-                    prices.clear();
-                    pay.setEnabled(false);
-                    delete.setEnabled(false);
-
-                    scr_table.setViewportView(new JTable(new String[0][5], headings));
-
-                    paymentComplete = true;
-                }
-            });
-
-            add(pay);
+//            pay.setBounds(1100, 660, 100,50);
+//            pay.setEnabled(false);
+//
+//            pay.addActionListener(e -> {
+//                boolean paymentComplete = false;
+//
+//                while (!paymentComplete) {
+//                    int payMethod = JOptionPane.showOptionDialog(this, "How would you like to pay?", "Payment Method",
+//                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cash", "Card"}, "Cash");
+//
+//                    if (payMethod == -1) return;
+//
+//                    if (payMethod == 0)
+//                        JOptionPane.showMessageDialog(this, "Cash payment accepted.");
+//                    else if (payMethod == 1) {
+//                        String cardNum = null;
+//                        boolean cardValid = false;
+//                        while (!cardValid) {
+//                            cardNum = JOptionPane.showInputDialog(this, "Enter Card Number (Numbers only):");
+//                            if (cardNum == null) break;
+//
+//                            cardValid = !cardNum.isEmpty();
+//                            for (int i = 0; i < cardNum.length(); i++)
+//                                if (!Character.isDigit(cardNum.charAt(i))) cardValid = false;
+//                        }
+//
+//                        if (cardNum == null) continue;
+//
+//                        String pin = null;
+//                        boolean pinValid = false;
+//                        while (!pinValid) {
+//                            pin = JOptionPane.showInputDialog(this, "Enter PIN (Numbers only):");
+//                            if (pin == null) break;
+//
+//                            pinValid = !pin.isEmpty();
+//                            for (int i = 0; i < pin.length(); i++)
+//                                if (!Character.isDigit(pin.charAt(i))) pinValid = false;
+//                        }
+//
+//                        if (pin == null) continue;
+//                        JOptionPane.showMessageDialog(this, "Card payment accepted.");
+//                    }
+//
+//                    int receiptChoice = JOptionPane.showOptionDialog(this, "How would you like your receipt?", "Receipt Method",
+//                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"No receipt", "Print"}, "No receipt");
+//
+//                    if (receiptChoice == -1)
+//                        return;
+//
+//                    JOptionPane.showMessageDialog(this, "Thank you for shopping with Krish!");
+//
+//                    paymentComplete = true;
+//
+//                    // Reset
+//                    st = 0; tx = 0; to = 0;
+//                    subTotal.setText("Subtotal: $0.00");
+//                    tax.setText("Tax: $0.00");
+//                    total.setText("Total: $0.00");
+//
+//                    orderTable.clear();
+//                    prices.clear();
+//                    pay.setEnabled(false);
+//                    delete.setEnabled(false);
+//
+//                    scr_table.setViewportView(new JTable(new String[0][5], headings));
+//
+//                    paymentComplete = true;
+//                }
+//            });
+//
+//            add(pay);
         }
         setVisible(true);
     }
