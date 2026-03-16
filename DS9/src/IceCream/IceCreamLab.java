@@ -24,7 +24,7 @@ public class IceCreamLab extends JFrame
     private JComboBox<String> flavor = new JComboBox<>(new String[] {"Cookies and Cream", "Chocolate", "Vanilla",
             "Butter Pecan", "Strawberry", "Chocolate Chip Cookie Dough", "Coffee", "Cinnamon"});
     private JLabel lbl_numScoops = new JLabel("Number of Scoops:");
-    private JComboBox<String> numScoops = new JComboBox<>(new String[] {"1 ($3.00)", "2 ($5.00)", "3 ($7.00)"});
+    private JComboBox<String> numScoops = new JComboBox<>(new String[] {"1 ($3.00)", "2 ($5.50)", "3 ($7.00)"});
 
     private JLabel lbl_toppings = new JLabel("Toppings:");
     private JCheckBox topping1 = new JCheckBox("Chocolate Syrup ($0.75)");

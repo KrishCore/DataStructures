@@ -91,7 +91,7 @@ public class IceCream
             if (scoops == 1)
                 price += 3.00;
             else if (scoops == 2)
-                price += 5.00;
+                price += 5.50;
             else if (scoops == 3)
                 price += 7.00;
         }
