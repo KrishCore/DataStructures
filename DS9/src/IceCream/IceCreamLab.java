@@ -43,11 +43,14 @@ public class IceCreamLab extends JFrame
     private JTable table;
     private JScrollPane scr_table;
 
-    private JLabel subTotal = new JLabel("Subtotal: $0.00");
+    private JLabel subTotal = new JLabel("Subtotal:");
+    private JTextField subT = new JTextField("$0.00");
     private double st = 0;
-    private JLabel tax = new JLabel("Tax: $0.00");
+    private JLabel tax = new JLabel("Tax:");
+    private JTextField ta = new JTextField("$0.00");
     private double tx = 0;
-    private JLabel total = new JLabel("Total: $0.00");
+    private JLabel total = new JLabel("Total:");
+    private JTextField tota = new JTextField("$0.00");
     private double to = 0;
     private ArrayList<Double> prices = new ArrayList<>();
 
@@ -212,7 +215,7 @@ public class IceCreamLab extends JFrame
                     prices.add(orderTable.getLast().getPrice());
                     st += prices.getLast();
                 }
-                subTotal.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                subT.setText(((st + "").substring((st + "").indexOf(".")).length() == 2) ? "$" + st + "0" : "$" + st);
                 to = st * 1.0825;
                 String tot = String.format("$%.2f", to);
                 if (tot.substring(tot.indexOf(".")).length() == 2)
@@ -220,12 +223,12 @@ public class IceCreamLab extends JFrame
                 System.out.println(tot.substring(tot.indexOf(".")) +"    " + tot.length());
 
                 tx = st *.0825;
-                tax.setText(String.format("Tax: $%.2f", tx));
+                ta.setText(String.format("$%.2f", tx));
 
-                total.setText(String.format("Total: $%.2f", to));
-                if (total.getText().equals("Total: $0.000") || total.getText().equals("Total: $0.0") || total.getText().equals("Total: $0.") || total.getText().equals("Total: $0"))
-                    total.setText("Total $0.00");
-                System.out.println(total.getText());
+                tota.setText(String.format("$%.2f", to));
+                if (tota.getText().equals("$0.000") || tota.getText().equals("$0.0") || tota.getText().equals("$0.") || tota.getText().equals("$0"))
+                    tota.setText("$0.00");
+                System.out.println(tota.getText());
                 if (!orderTable.isEmpty())
                     pay.setEnabled(true);
                 String[][] data = new String[orderTable.size()][5];
@@ -367,14 +370,13 @@ public class IceCreamLab extends JFrame
         {
             //subtotal
             {
-                subTotal.setBounds(0, 660, getWidth()/2-80, 60);
-                subTotal.setHorizontalAlignment(JLabel.CENTER);
+                subTotal.setBounds(100, 660, 200, 60);
                 System.out.println(subTotal.getX() + " " + subTotal.getWidth());
                 subTotal.setFont(medium);
                 delete.addActionListener(e -> {
                     System.out.println("rows:" + table.getSelectedRow());
                     st-= orderTable.get(table.getSelectedRow()).getPrice();
-                    subTotal.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "Subtotal: $" + st + "0" : "Subtotal: $" + st);
+                    subT.setText(((st+"").substring((st+"").indexOf(".")).length() == 2) ? "$" + st + "0" : "$" + st);
                     to = st * 1.0825;
                     if ((to+"").substring((to+"").indexOf(".")).length() == 2)
                         System.out.println("length 2");
@@ -384,30 +386,41 @@ public class IceCreamLab extends JFrame
                         System.out.println("3");
 
                     tx = st *.0825;
-                    tax.setText(String.format("Tax: $%.2f", tx));
+                    ta.setText(String.format("$%.2f", tx));
 
-                    total.setText(String.format("Total: $%.2f", to));
-                    if (total.getText().equals("Total: $0.000") || total.getText().equals("Total: $0.0") || total.getText().equals("Total: $0.") || total.getText().equals("Total: $0"))
-                        total.setText("Total $0.00");
-                    System.out.println(total.getText());
+                    tota.setText(String.format("$%.2f", to));
+                    if (tota.getText().equals("$0.000") || tota.getText().equals("$0.0") || tota.getText().equals("$0.") || tota.getText().equals("$0"))
+                        tota.setText("Total $0.00");
+                    System.out.println(tota.getText());
                 });
                 add(subTotal);
+                subT.setBounds(250, 660, 200,60);
+                subT.setFont(medium);
+                subT.setHorizontalAlignment(JLabel.CENTER);
+                add(subT);
             }
 
             //tax
             {
-                tax.setBounds(0, 660, getWidth()-100,60);
+                tax.setBounds(500, 660, 200,60);
+                System.out.println(getWidth()/2-20 + " gw-100");
                 tax.setFont(medium);
-                tax.setHorizontalAlignment(JLabel.CENTER);
                 add(tax);
+                ta.setBounds(600, 660, 200,60);
+                ta.setFont(medium);
+                ta.setHorizontalAlignment(JLabel.CENTER);
+                add(ta);
             }
 
             //total
             {
-                total.setBounds(getWidth()/2-20, 660, getWidth()/2-80, 60);
+                total.setBounds(850, 660, 200, 60);
                 total.setFont(medium);
-                total.setHorizontalAlignment(JLabel.CENTER);
                 add(total);
+                tota.setBounds(950, 660, 200, 60);
+                tota.setFont(medium);
+                tota.setHorizontalAlignment(JLabel.CENTER);
+                add(tota);
             }
         }
 
