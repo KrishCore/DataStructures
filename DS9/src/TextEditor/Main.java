@@ -1,4 +1,4 @@
-package FileEditor;
+package TextEditor;
 
 public class Main
 {
