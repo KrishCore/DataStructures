@@ -102,11 +102,14 @@ public class TextEditorFrame extends JFrame
                         tabs.add("Untitled", jsp);
                         arr.add("Untitled");
                     }
-                    mi_saveAs.setEnabled(true);
-                    mi_save.setEnabled(true);
-                    mi_font.setEnabled(true);
-                    mi_replace.setEnabled(true);
-                    mi_wordCount.setEnabled(true);
+                    //set enables
+                    {
+                        mi_saveAs.setEnabled(true);
+                        mi_save.setEnabled(true);
+                        mi_font.setEnabled(true);
+                        mi_replace.setEnabled(true);
+                        mi_wordCount.setEnabled(true);
+                    }
                 });
             }
 
@@ -116,7 +119,7 @@ public class TextEditorFrame extends JFrame
                 mi_open.addActionListener(e -> {
                     //select file
                     {
-                        JFileChooser openPicker = new JFileChooser("C:\\");
+                        JFileChooser openPicker = new JFileChooser("C:\\Users\\k1338728\\OneDrive - Katy Independent School District\\GitHub\\DataStructures\\DS9\\src\\TextEditor\\Saves");
                         FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
                         openPicker.setFileFilter(fnef);
                         int result = openPicker.showOpenDialog(this);
@@ -126,16 +129,26 @@ public class TextEditorFrame extends JFrame
                             try {
                                 Scanner fs = new Scanner(selectedFile);
                                 while (fs.hasNextLine())
-                                    fText += fs.nextLine();
+                                    fText += fs.nextLine() + "\n";
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
+
                             System.out.println(fText);
                             JTextArea text = new JTextArea(fText);
                             JScrollPane jsp = new JScrollPane(text);
                             jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                             text.setLineWrap(true);
                             tabs.add(selectedFile.getName(), jsp);
+
+                            //set enables
+                            {
+                                mi_saveAs.setEnabled(true);
+                                mi_save.setEnabled(true);
+                                mi_font.setEnabled(true);
+                                mi_replace.setEnabled(true);
+                                mi_wordCount.setEnabled(true);
+                            }
                         }
                     }
 
