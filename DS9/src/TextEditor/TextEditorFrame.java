@@ -123,16 +123,18 @@ public class TextEditorFrame extends JFrame
                         FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
                         openPicker.setFileFilter(fnef);
                         int result = openPicker.showOpenDialog(this);
-                        if (result == JFileChooser.APPROVE_OPTION) {
+                        if (result == JFileChooser.APPROVE_OPTION && !arr.contains(openPicker.getSelectedFile().getName())) {
                             File selectedFile = openPicker.getSelectedFile();
                             String fText = "";
                             try {
                                 Scanner fs = new Scanner(selectedFile);
                                 while (fs.hasNextLine())
                                     fText += fs.nextLine() + "\n";
+                                fs.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
+
 
                             System.out.println(fText);
                             JTextArea text = new JTextArea(fText);
@@ -140,6 +142,7 @@ public class TextEditorFrame extends JFrame
                             jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                             text.setLineWrap(true);
                             tabs.add(selectedFile.getName(), jsp);
+                            arr.add(selectedFile.getName());
 
                             //set enables
                             {
@@ -162,7 +165,7 @@ public class TextEditorFrame extends JFrame
                 mi_saveAs.addActionListener(e -> {
                     //create file
                     {
-                        JFileChooser savePicker = new JFileChooser("C:\\");
+                        JFileChooser savePicker = new JFileChooser("C:\\Users\\k1338728\\OneDrive - Katy Independent School District\\GitHub\\DataStructures\\DS9\\src\\TextEditor\\Saves");
                         FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
                         savePicker.setFileFilter(fnef);
                         int result = savePicker.showOpenDialog(this);
@@ -176,6 +179,9 @@ public class TextEditorFrame extends JFrame
                                 {
                                     pw.println(fs.nextLine());
                                 }
+                                fw.close();
+                                pw.close();
+                                fs.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
