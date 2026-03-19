@@ -29,7 +29,8 @@ public class TextEditorFrame extends JFrame
     private JMenu m_edit = new JMenu("Edit");
 
     private JTabbedPane tabs =  new JTabbedPane();
-    private ArrayList<String> arr = new ArrayList<>();
+    private ArrayList<String> arrN = new ArrayList<>();
+    private ArrayList<JTextArea> arrT = new ArrayList<>();
 
     public TextEditorFrame()
     {
@@ -54,7 +55,7 @@ public class TextEditorFrame extends JFrame
                     tabs.setBounds(0,0,getWidth()-15,getHeight()-60);
                 }
             });
-            if (arr.isEmpty())
+            if (arrN.isEmpty())
             {
                 mi_saveAs.setEnabled(false);
                 mi_save.setEnabled(false);
@@ -96,11 +97,13 @@ public class TextEditorFrame extends JFrame
                             else isFound = true;
                         }
                         tabs.add("Untitled" + c, jsp);
-                        arr.add("Untitled" + c);
+                        arrN.add("Untitled" + c);
+                        arrT.add(text);
                     }
                     else {
                         tabs.add("Untitled", jsp);
-                        arr.add("Untitled");
+                        arrN.add("Untitled");
+                        arrT.add(text);
                     }
                     //set enables
                     {
@@ -123,7 +126,7 @@ public class TextEditorFrame extends JFrame
                         FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
                         openPicker.setFileFilter(fnef);
                         int result = openPicker.showOpenDialog(this);
-                        if (result == JFileChooser.APPROVE_OPTION && !arr.contains(openPicker.getSelectedFile().getName())) {
+                        if (result == JFileChooser.APPROVE_OPTION && !arrN.contains(openPicker.getSelectedFile().getName())) {
                             File selectedFile = openPicker.getSelectedFile();
                             String fText = "";
                             try {
@@ -142,7 +145,8 @@ public class TextEditorFrame extends JFrame
                             jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                             text.setLineWrap(true);
                             tabs.add(selectedFile.getName(), jsp);
-                            arr.add(selectedFile.getName());
+                            arrN.add(selectedFile.getName());
+                            arrT.add(text);
 
                             //set enables
                             {
@@ -174,14 +178,12 @@ public class TextEditorFrame extends JFrame
                             try {
                                 FileWriter fw = new FileWriter(selectedFile);
                                 PrintWriter pw = new PrintWriter(fw);
-                                Scanner fs = new Scanner(selectedFile);
-                                while (fs.hasNextLine())
-                                {
-                                    pw.println(fs.nextLine());
-                                }
+                                String fileName = arrN.get(tabs.getSelectedIndex());
+                                pw.println(arrT.get(tabs.getSelectedIndex()).getText());
+//                                arrT.get(tabs.getSelectedIndex()).setText("");
+
                                 fw.close();
                                 pw.close();
-                                fs.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
