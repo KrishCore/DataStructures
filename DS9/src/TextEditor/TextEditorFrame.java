@@ -4,7 +4,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class TextEditorFrame extends JFrame
 {
@@ -27,6 +29,7 @@ public class TextEditorFrame extends JFrame
     private JMenu m_edit = new JMenu("Edit");
 
     private JTabbedPane tabs =  new JTabbedPane();
+    private ArrayList<String> arr = new ArrayList<>();
 
     public TextEditorFrame()
     {
@@ -51,7 +54,22 @@ public class TextEditorFrame extends JFrame
                     tabs.setBounds(0,0,getWidth()-15,getHeight()-60);
                 }
             });
-
+            if (arr.isEmpty())
+            {
+                mi_saveAs.setEnabled(false);
+                mi_save.setEnabled(false);
+                mi_font.setEnabled(false);
+                mi_replace.setEnabled(false);
+                mi_wordCount.setEnabled(false);
+            }
+            else
+            {
+                mi_saveAs.setEnabled(true);
+                mi_save.setEnabled(true);
+                mi_font.setEnabled(true);
+                mi_replace.setEnabled(true);
+                mi_wordCount.setEnabled(true);
+            }
             tabs.setBounds(0,0,getWidth()-15,getHeight()-60);
             add(tabs);
         }
@@ -78,8 +96,12 @@ public class TextEditorFrame extends JFrame
                             else isFound = true;
                         }
                         tabs.add("Untitled" + c, jsp);
+                        arr.add("Untitled" + c);
                     }
-                    else tabs.add("Untitled", jsp);
+                    else {
+                        tabs.add("Untitled", jsp);
+                        arr.add("Untitled");
+                    }
                     mi_saveAs.setEnabled(true);
                     mi_save.setEnabled(true);
                     mi_font.setEnabled(true);
@@ -100,6 +122,20 @@ public class TextEditorFrame extends JFrame
                         int result = openPicker.showOpenDialog(this);
                         if (result == JFileChooser.APPROVE_OPTION) {
                             File selectedFile = openPicker.getSelectedFile();
+                            String fText = "";
+                            try {
+                                Scanner fs = new Scanner(selectedFile);
+                                while (fs.hasNextLine())
+                                    fText += fs.nextLine();
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            System.out.println(fText);
+                            JTextArea text = new JTextArea(fText);
+                            JScrollPane jsp = new JScrollPane(text);
+                            jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                            text.setLineWrap(true);
+                            tabs.add(selectedFile.getName(), jsp);
                         }
                     }
 
@@ -119,6 +155,17 @@ public class TextEditorFrame extends JFrame
                         int result = savePicker.showOpenDialog(this);
                         if (result == JFileChooser.APPROVE_OPTION) {
                             File selectedFile = savePicker.getSelectedFile();
+                            try {
+                                FileWriter fw = new FileWriter(selectedFile);
+                                PrintWriter pw = new PrintWriter(fw);
+                                Scanner fs = new Scanner(selectedFile);
+                                while (fs.hasNextLine())
+                                {
+                                    pw.println(fs.nextLine());
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
                     }
                 });
