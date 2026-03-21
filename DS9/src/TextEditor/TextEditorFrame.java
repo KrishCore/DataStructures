@@ -31,6 +31,7 @@ public class TextEditorFrame extends JFrame
     private JTabbedPane tabs =  new JTabbedPane();
     private ArrayList<String> arrN = new ArrayList<>();
     private ArrayList<JTextArea> arrT = new ArrayList<>();
+    private ArrayList<Boolean> saved = new ArrayList<>();
 
     public TextEditorFrame()
     {
@@ -53,26 +54,26 @@ public class TextEditorFrame extends JFrame
                 @Override
                 public void componentResized(ComponentEvent e) {
                     tabs.setBounds(0,0,getWidth()-15,getHeight()-60);
+                    if (arrN.isEmpty())
+                    {
+                        mi_saveAs.setEnabled(false);
+                        mi_save.setEnabled(false);
+                        mi_font.setEnabled(false);
+                        mi_replace.setEnabled(false);
+                        mi_wordCount.setEnabled(false);
+                    }
+                    else
+                    {
+                        mi_saveAs.setEnabled(true);
+                        mi_save.setEnabled(true);
+                        mi_font.setEnabled(true);
+                        mi_replace.setEnabled(true);
+                        mi_wordCount.setEnabled(true);
+                    }
+                    tabs.setBounds(0,0,getWidth()-15,getHeight()-60);
+                    add(tabs);
                 }
             });
-            if (arrN.isEmpty())
-            {
-                mi_saveAs.setEnabled(false);
-                mi_save.setEnabled(false);
-                mi_font.setEnabled(false);
-                mi_replace.setEnabled(false);
-                mi_wordCount.setEnabled(false);
-            }
-            else
-            {
-                mi_saveAs.setEnabled(true);
-                mi_save.setEnabled(true);
-                mi_font.setEnabled(true);
-                mi_replace.setEnabled(true);
-                mi_wordCount.setEnabled(true);
-            }
-            tabs.setBounds(0,0,getWidth()-15,getHeight()-60);
-            add(tabs);
         }
         //file - needs work
         {
@@ -81,6 +82,11 @@ public class TextEditorFrame extends JFrame
                 m_file.add(mi_create);
                 mi_create.addActionListener(e -> {
                     JTextArea text = new JTextArea();
+                    text.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                        public void insertUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
+                        public void removeUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
+                        public void changedUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
+                    });
                     JScrollPane jsp = new JScrollPane(text);
                     jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     text.setLineWrap(true);
@@ -99,12 +105,14 @@ public class TextEditorFrame extends JFrame
                         tabs.add("Untitled" + c, jsp);
                         arrN.add("Untitled" + c);
                         arrT.add(text);
+                        saved.add(false);
                         tabs.setSelectedIndex(tabs.indexOfTab(arrN.getLast()));
                     }
                     else {
                         tabs.add("Untitled", jsp);
                         arrN.add("Untitled");
                         arrT.add(text);
+                        saved.add(false);
                         tabs.setSelectedIndex(arrN.size()-1);
                     }
                     try {
@@ -129,6 +137,7 @@ public class TextEditorFrame extends JFrame
                 mi_open.addActionListener(e -> {
                     //select file
                     {
+                        System.out.println("Open command clicked");
                         JFileChooser openPicker = new JFileChooser("C:\\Users\\k1338728\\OneDrive - Katy Independent School District\\GitHub\\DataStructures\\DS9\\src\\TextEditor\\Saves");
                         FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
                         openPicker.setFileFilter(fnef);
@@ -148,12 +157,21 @@ public class TextEditorFrame extends JFrame
 
                             System.out.println(fText);
                             JTextArea text = new JTextArea(fText);
+                            text.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                                public void insertUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
+                                public void removeUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
+                                public void changedUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
+                            });
                             JScrollPane jsp = new JScrollPane(text);
                             jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                             text.setLineWrap(true);
                             tabs.add(selectedFile.getName(), jsp);
                             arrN.add(selectedFile.getName());
                             arrT.add(text);
+                            if (text.getText().equals(fText))
+                                saved.add(true);
+                            else saved.add(false); // need to add a constant listener
+                            // to see when text != fText so saved can be updated
 
                             //set enables
                             {
@@ -195,7 +213,11 @@ public class TextEditorFrame extends JFrame
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
-                        arrN.add(tabs.getTitleAt(tabs.getSelectedIndex()));
+                            int i = tabs.getSelectedIndex();
+                            saved.set(i, true);
+
+                            arrN.set(i, selectedFile.getName());
+                            tabs.setTitleAt(i, selectedFile.getName());
 //                        arrT.add(arrT.get(tabs.));
                         }
                     }
@@ -209,14 +231,14 @@ public class TextEditorFrame extends JFrame
                 mi_save.addActionListener(e -> {
                     String name = tabs.getTitleAt(tabs.getSelectedIndex());
                     Scanner fs = null;
+                    String fil = "";
                     try {
                         fs = new Scanner(new File("C:\\Users\\k1338728\\OneDrive - Katy Independent School District\\GitHub\\DataStructures\\DS9\\src\\TextEditor\\Saves\\" + name));
+                        while (fs.hasNextLine())
+                            fil += fs.nextLine() + "\n";
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    String fil = "";
-                    while (fs.hasNextLine())
-                        fil += fs.nextLine() + "\n";
                     fs.close();
                     System.out.println("checked file");
 //                    if (!fil.equals(arrT.get(tabs.getSelectedIndex()).getText()))
@@ -224,7 +246,8 @@ public class TextEditorFrame extends JFrame
 //                        System.out.println("it not equal - save");
 //
 //                        try {
-//                            FileWriter fw = fw = new FileWriter(name);
+//                            File file = new File("src\\TextEditor\\Saves\\" + name);
+//                            FileWriter fw = new FileWriter(file);
 //                            PrintWriter pw = new PrintWriter(fw);
 //                            pw.println(arrT.get(tabs.getSelectedIndex()).getText());
 //                            fw.close();
@@ -236,7 +259,7 @@ public class TextEditorFrame extends JFrame
 //                    fs.close();
 
                     System.out.println(fil);
-                    if (fil.isEmpty() || fil.equals(name + "\n") || fil.equals(name))
+                    if (!saved.get(tabs.getSelectedIndex()))
                     {
                         System.out.println("empty");
                         JFileChooser savePicker = new JFileChooser("C:\\Users\\k1338728\\OneDrive - Katy Independent School District\\GitHub\\DataStructures\\DS9\\src\\TextEditor\\Saves");
@@ -258,7 +281,11 @@ public class TextEditorFrame extends JFrame
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
-                            arrN.add(tabs.getTitleAt(tabs.getSelectedIndex()));
+                            int i = tabs.getSelectedIndex();
+                            saved.set(i, true);
+
+                            arrN.set(i, selectedFile.getName());
+                            tabs.setTitleAt(i, selectedFile.getName());
 //                        arrT.add(arrT.get(tabs.));
                         }
                     }
@@ -266,14 +293,22 @@ public class TextEditorFrame extends JFrame
                     {
                         System.out.println("not empty");
                         try {
-                            FileWriter fw = new FileWriter(name);
+                            File file = new File("src\\TextEditor\\Saves\\" + name);
+                            FileWriter fw = new FileWriter(file);
                             PrintWriter pw = new PrintWriter(fw);
-                            String fileName = arrN.get(tabs.getSelectedIndex());
                             pw.println(arrT.get(tabs.getSelectedIndex()).getText());
-//                                arrT.get(tabs.getSelectedIndex()).setText("");
-
                             fw.close();
                             pw.close();
+
+                            int i = tabs.getSelectedIndex();
+                            saved.set(i, true);
+
+                            if (name.endsWith("*"))
+                            {
+                                name = name.substring(0, name.length()-1);
+                                arrN.set(i, name);
+                                tabs.setTitleAt(i, name);
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -297,8 +332,22 @@ public class TextEditorFrame extends JFrame
                     {
                         System.out.println("it not equal - close");
                         int resutl = JOptionPane.showConfirmDialog(this, "Are you sure you want to close " + name + "?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                        if (resutl == 0)
-                            tabs.remove(tabs.getSelectedIndex());
+                        if (resutl == 0) {
+                            int i = tabs.getSelectedIndex();
+                            tabs.remove(i);
+                            arrN.remove(i);
+                            arrT.remove(i);
+                            saved.remove(i);
+                            if (arrN.isEmpty())
+                            {
+                                mi_saveAs.setEnabled(false);
+                                mi_save.setEnabled(false);
+                                mi_font.setEnabled(false);
+                                mi_replace.setEnabled(false);
+                                mi_wordCount.setEnabled(false);
+                                mi_close.setEnabled(false);
+                            }
+                        }
                     }
                     fs.close();
                 });
@@ -318,9 +367,22 @@ public class TextEditorFrame extends JFrame
                         if (!fil.equals(arrT.get(tabs.getSelectedIndex()).getText()))
                         {
                             System.out.println("it not equal");
-                            int resutl = JOptionPane.showConfirmDialog(this, "Are you sure you want to close " + name + "?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                            if (resutl == 0)
+                            int resutl = JOptionPane.showConfirmDialog(this, "Unsaved data will be lost. Are you sure you want to close this file?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                            if (resutl == 0) {
                                 tabs.remove(i);
+                                arrN.remove(i);
+                                arrT.remove(i);
+                                saved.remove(i);
+                                if (arrN.isEmpty())
+                                {
+                                    mi_saveAs.setEnabled(false);
+                                    mi_save.setEnabled(false);
+                                    mi_font.setEnabled(false);
+                                    mi_replace.setEnabled(false);
+                                    mi_wordCount.setEnabled(false);
+                                    mi_close.setEnabled(false);
+                                }
+                            }
                         }
                     }
                     dispose();
@@ -359,5 +421,18 @@ public class TextEditorFrame extends JFrame
         }
 
         setVisible(true);
+    }
+
+    private void markUnsaved(JTextArea text)
+    {
+        int index = arrT.indexOf(text);
+        if (index != -1) {
+            saved.set(index, false);
+
+            String title = arrN.get(index);
+            if (!title.endsWith("*")) {
+                tabs.setTitleAt(index, title + "*");
+            }
+        }
     }
 }
