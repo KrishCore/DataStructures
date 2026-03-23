@@ -1,6 +1,7 @@
 package TextEditor;
 
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -28,6 +29,7 @@ public class TextEditorFrame extends JFrame
     private JTabbedPane tabs =  new JTabbedPane();
     private ArrayList<String> arrN = new ArrayList<>();
     private ArrayList<JTextArea> arrT = new ArrayList<>();
+    private ArrayList<String> arrOT = new ArrayList<>();
     private ArrayList<File> arrF = new ArrayList<>();
     private ArrayList<Boolean> arrS = new ArrayList<>();
 
@@ -101,6 +103,7 @@ public class TextEditorFrame extends JFrame
                         tabs.add("Untitled" + c, jsp);
                         arrN.add("Untitled" + c);
                         arrT.add(text);
+                        arrOT.add("");
                         arrF.add(null);
                         arrS.add(false);
                         tabs.setSelectedIndex(tabs.indexOfTab(arrN.getLast()));
@@ -109,15 +112,12 @@ public class TextEditorFrame extends JFrame
                         tabs.add("Untitled", jsp);
                         arrN.add("Untitled");
                         arrT.add(text);
+                        arrOT.add("");
                         arrF.add(null);
                         arrS.add(false);
                         tabs.setSelectedIndex(arrN.size()-1);
                     }
-                    try {
-                        file.createNewFile();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+
                     //set enables
                     {
                         mi_saveAs.setEnabled(true);
@@ -143,19 +143,23 @@ public class TextEditorFrame extends JFrame
                         if (result == JFileChooser.APPROVE_OPTION && !arrN.contains(openPicker.getSelectedFile().getName())) {
                             File selectedFile = openPicker.getSelectedFile();
                             String fText = "";
+                            Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
                             try {
                                 Scanner fs = new Scanner(selectedFile);
+                                String[] parts = fs.nextLine().split(",");
+                                font = new Font(parts[0], Font.PLAIN, Integer.parseInt(parts[1]));
                                 while (fs.hasNextLine())
                                     fText += fs.nextLine() + "\n";
                                 fs.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
-
+                            fText = fText.trim().isEmpty() ? fText.trim() : fText.trim() + "\n";
 
                             System.out.println(fText);
                             JTextArea text = new JTextArea(fText);
-                            text.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                            text.setFont(font);
+                            text.getDocument().addDocumentListener(new DocumentListener() {
                                 public void insertUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
                                 public void removeUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
                                 public void changedUpdate(javax.swing.event.DocumentEvent e) { markUnsaved(text); }
@@ -167,6 +171,7 @@ public class TextEditorFrame extends JFrame
                             tabs.add(selectedFile.getName(), jsp);
                             arrN.add(selectedFile.getName());
                             arrT.add(text);
+                            arrOT.add(fText);
                             arrF.add(selectedFile);
                             tabs.setSelectedIndex(arrN.size()-1);
                             if (text.getText().equals(fText))
@@ -182,6 +187,8 @@ public class TextEditorFrame extends JFrame
                                 mi_wordCount.setEnabled(true);
                             }
                         }
+                        else if (result == JFileChooser.APPROVE_OPTION && arrN.contains(openPicker.getSelectedFile().getName()))
+                            tabs.setSelectedIndex(arrN.indexOf(openPicker.getSelectedFile().getName()));
                     }
 
 
@@ -199,24 +206,37 @@ public class TextEditorFrame extends JFrame
                         FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
                         savePicker.setFileFilter(fnef);
                         int result = savePicker.showSaveDialog(this);
+                        int i = tabs.getSelectedIndex();
                         if (result == JFileChooser.APPROVE_OPTION) {
                             File selectedFile = savePicker.getSelectedFile();
+                            if (!selectedFile.getName().endsWith(".txt"))
+                                selectedFile = new File(selectedFile.getAbsolutePath()+".txt");
+                            if (!selectedFile.exists()) {
+                                try {
+                                    selectedFile.createNewFile();
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
                             try {
                                 FileWriter fw = new FileWriter(selectedFile);
                                 PrintWriter pw = new PrintWriter(fw);
-                                pw.println(arrT.get(tabs.getSelectedIndex()).getText());
-
+                                Font f = arrT.get(i).getFont();
+                                pw.println(f.getName() + "," + f.getSize());
+                                pw.print(arrT.get(tabs.getSelectedIndex()).getText());
                                 fw.close();
                                 pw.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
-                            int i = tabs.getSelectedIndex();
                             arrS.set(i, true);
+                            File oldFile = arrF.get(i);
+                            if (oldFile != null && oldFile.exists())
+                                oldFile.delete();
                             arrF.set(i, selectedFile);
                             arrN.set(i, selectedFile.getName());
+                            arrOT.set(i, arrT.get(i).getText());
                             tabs.setTitleAt(i, selectedFile.getName());
-//                        arrT.add(arrT.get(tabs.));
                         }
                     }
                 });
@@ -234,27 +254,30 @@ public class TextEditorFrame extends JFrame
                     if (arrF.get(i) == null) {
                         // first time or unsaved (Save As)
                         JFileChooser savePicker = new JFileChooser("src\\TextEditor\\Saves");
+                        FileNameExtensionFilter fnef = new FileNameExtensionFilter("Text Filter", "txt", "text");
+                        savePicker.setFileFilter(fnef);
                         int result = savePicker.showSaveDialog(this);
 
                         System.out.println(result + "  result");
                         if (result == JFileChooser.APPROVE_OPTION) {
+                            System.out.println(savePicker.getSelectedFile() + " savePicker.getSelectedFile()");
                             File file = savePicker.getSelectedFile();
+                            if (!file.getName().endsWith(".txt"))
+                                file = new File(file.getAbsolutePath() + ".txt");
                             try {
                                 PrintWriter pw = new PrintWriter(new FileWriter(file));
-                                pw.println(arrT.get(i).getText());
+                                Font f = arrT.get(i).getFont();
+                                pw.println(f.getName() + "," + f.getSize());
+                                pw.print(arrT.get(i).getText());
                                 pw.close();
-
+                                arrOT.set(i, arrT.get(i).getText());
                                 arrS.set(i, true);
                                 arrF.set(i, file);
-                                if (name.endsWith("*")) {
-                                    name = name.substring(0, name.length()-1);
-                                    arrN.set(i, file.getName());
-                                    tabs.setTitleAt(i, file.getName());
-                                }
-
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
+                            arrN.set(i, arrF.get(i).getName());
+                            tabs.setTitleAt(i, arrF.get(i).getName());
                         }
                     }
                     else {
@@ -263,19 +286,19 @@ public class TextEditorFrame extends JFrame
                             System.out.println("normal Save");
                             File file = arrF.get(i);
                             PrintWriter pw = new PrintWriter(new FileWriter(file));
-                            pw.println(arrT.get(i).getText());
+                            Font font = arrT.get(i).getFont();
+                            pw.println(font.getName() + "," + font.getSize());
+                            pw.print(arrT.get(i).getText());
                             pw.close();
+                            arrOT.set(i, arrT.get(i).getText());
+                            arrS.set(i, true);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
                     arrS.set(i, true);
-                    if (name.endsWith("*")) {
-                        name = name.substring(0, name.length()-1);
-                        arrN.set(i, name);
-                        tabs.setTitleAt(i, name);
-                    }
-
+                    tabs.setTitleAt(i, arrN.get(i));
+                    arrOT.set(i, arrT.get(i).getText());
                 });
                 mi_save.setEnabled(false);
             }
@@ -319,7 +342,7 @@ public class TextEditorFrame extends JFrame
                             hasUnsaved = true;
                     if (hasUnsaved)
                     {
-                        int resutl = JOptionPane.showConfirmDialog(this, "Unsaved data will be lost. Are you sure you want to close this file?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                        int resutl = JOptionPane.showConfirmDialog(this, "There are files that have not been saved, unsaved data will be lost. Are you sure you want to exit?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                         if (resutl != 0)
                             return;
                     }
@@ -329,7 +352,7 @@ public class TextEditorFrame extends JFrame
             }
         }
 
-        //edit - needs work
+        //edit
         {
             //Font
             {
@@ -342,19 +365,46 @@ public class TextEditorFrame extends JFrame
                     fraem.setSize(300,300);
                     fraem.setLayout(null);
 
-                    String[] fonts = {Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT};
+                    String[] fonts = {Font.SERIF, "Sans Serif", Font.MONOSPACED, Font.DIALOG, "Dialog Input"};
                     JComboBox<String> fontBox = new JComboBox<>(fonts);
+                    System.out.println("text.getFont().getName():   " + text.getFont().getName());
+                    fontBox.setSelectedItem(text.getFont().getName());;
                     fontBox.setBounds(20,20,200,25);
+                    fraem.add(fontBox);
 
-                    JTextField size = new JTextField();
-                    size.setBounds(20,60,200,25);
+                    JTextField sizeF = new JTextField();
+                    sizeF.setText(text.getFont().getSize()+"");
+                    sizeF.setBounds(20,60,200,25);
+                    sizeF.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            if (!Character.isDigit(e.getKeyChar()))
+                                e.consume();
+                        }
+                    });
+                    fraem.add(sizeF);
 
                     JButton save = new JButton("Save");
                     save.setBounds(20,110,80,25);
+                    save.addActionListener(es -> {
+                        try {
+                            String fontName = (String) fontBox.getSelectedItem();
+                            int size = sizeF.getText().isEmpty()? 12 : Integer.parseInt(sizeF.getText());
+                            text.setFont(new Font(fontName, Font.PLAIN, size));
+                            markUnsaved(text);
+                            fraem.dispose();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    fraem.add(save);
+
                     JButton cancel = new JButton("Cancel");
                     cancel.setBounds(140,110,80,25);
+                    cancel.addActionListener(ec -> fraem.dispose());
+                    fraem.add(cancel);
 
-                    //save - wrok from here
+                    fraem.setVisible(true);
                 });
                 mi_font.setEnabled(false);
             }
@@ -374,6 +424,7 @@ public class TextEditorFrame extends JFrame
                     String text = arrT.get(i).getText();
                     text = text.replace(find, replace);
                     arrT.get(i).setText(text);
+                    markUnsaved(arrT.get(i));
                 });
                 mi_replace.setEnabled(false);
             }
@@ -398,15 +449,23 @@ public class TextEditorFrame extends JFrame
         setVisible(true);
     }
 
-    private void markUnsaved(JTextArea text)
-    {
-        int index = arrT.indexOf(text);
-        if (index != -1) {
-            arrS.set(index, false);
+    private void markUnsaved(JTextArea text) {
+        int i = arrT.indexOf(text);
+        if (i != -1) {
+            String cur = text.getText();
+            String og = arrOT.get(i);
+            String name = arrN.get(i);
 
-            String title = arrN.get(index);
-            if (!title.endsWith("*"))
-                tabs.setTitleAt(index, title + "*");
+            if (cur.equals(og)) {
+                arrS.set(i, true);
+                if (!tabs.getTitleAt(i).equals(name))
+                    tabs.setTitleAt(i, name);
+            } else {
+                arrS.set(i, false);
+                String newTitle = name + "*";
+                if (!tabs.getTitleAt(i).equals(newTitle))
+                    tabs.setTitleAt(i, newTitle);
+            }
         }
     }
 }
