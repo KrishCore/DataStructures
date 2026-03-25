@@ -18,4 +18,9 @@ public class FoodItem
     public double getPrice() {
         return price;
     }
+
+    public String toString()
+    {
+        return name + " - " + price;
+    }
 }
