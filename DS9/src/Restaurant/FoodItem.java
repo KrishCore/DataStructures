@@ -4,8 +4,9 @@ public class FoodItem
 {
     private String name;
     private double price;
+    private int quantity;
 
-    public FoodItem (String name, double price)
+    public FoodItem (String name, double price, int quantity)
     {
         this.name = name;
         this.price = price;
@@ -19,8 +20,18 @@ public class FoodItem
         return price;
     }
 
+    public void setQuantity(int quantity)
+    {
+        this.quantity = quantity;
+    }
+
+    public int getQuantity()
+    {
+        return quantity;
+    }
+
     public String toString()
     {
-        return name + " - " + price;
+        return name + " - $" + price + ": " + quantity + " _ " + quantity*price;
     }
 }
