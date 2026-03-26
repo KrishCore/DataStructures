@@ -4,6 +4,7 @@ public class FoodItem
 {
     private String name;
     private double price;
+    private int quantity;
 
     public FoodItem (String name, double price)
     {
@@ -17,6 +18,16 @@ public class FoodItem
 
     public double getPrice() {
         return price;
+    }
+
+    public void setQuantity(int quantity)
+    {
+        this.quantity = quantity;
+    }
+
+    public int getQuantity()
+    {
+        return quantity;
     }
 
     public String toString()
