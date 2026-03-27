@@ -161,8 +161,8 @@ public class RestaurantFrame extends JFrame
                         arrEntrees.add(new FoodItem("Fried Chicken Julius Salade", 22.99, 0));
                         arrEntrees.add(new FoodItem("Whitened Chicken Farfalle", 21.99, 0));
                         arrEntrees.add(new FoodItem("Cold Syrup Glazed Chicken Skillet", 18.99, 0));
-                        arrEntrees.add(new FoodItem("Creek/Catchment Chicken Pot", 27.99, 0));
-                        arrEntrees.add(new FoodItem("The Hot Honey Hen", 22.99, 0));
+                        arrEntrees.add(new FoodItem("Creek Chicken Pot", 27.99, 0));
+                        arrEntrees.add(new FoodItem("The Hot Honey Hen", 22.99, 0)); //sweeat and spicy chicken sandwich
                         arrEntrees.add(new FoodItem("Fried Occidental Chicken Herba Salata", 28.99, 0));
                         arrEntrees.add(new FoodItem("Raspberry-Pi Vinegar Chicken Gobbledygook", 25.99, 0));
                         arrEntrees.add(new FoodItem("The Wannabe Tex-Mex Taquito", 23.99, 0));
@@ -170,10 +170,10 @@ public class RestaurantFrame extends JFrame
                         e_des.add("Grilled chipotle lime chicken on fresh greens and cilantro rice with house-made pico de gallo, black bean corn salsa and guacamole. Topped with chimichurri, tortilla strips and  a fresh lime wedge.");
                         e_des.add("Juicy chicken breast seasoned and grilled over an open flame. Served with your choice of two sides.");
                         e_des.add("Cajun-seasoned chicken and blackened shrimp jazzed up in buttery garlic and parsley, served sizzling with sautéed mushrooms & onions and garlic mashed potatoes.");
-                        e_des.add("");
+                        e_des.add("Juicy, perfectly grilled steak served with garlic mashed potatoes and steamed broccoli, because sometimes being a little late comes with a delicious reward!");
                         e_des.add("Crisp romaine tossed in garlic Caesar dressing topped with grilled chicken, croutons and shaved Parmesan. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.");
                         e_des.add("Crispy, chicken breast filet, smothered in marinara sauce and topped with Parmesan cheese on a bed of fettuccine pasta in a Parmesan cream sauce. Served with a golden-brown signature breadstick with buttery garlic and parsley.");
-                        e_des.add("Sliced grilled chicken breast topped with hot honey glaze, Applewood-smoked bacon and parsley. Served with sautéed mushrooms & onions and waffle fries.");
+                        e_des.add("Sliced grilled chicken breast topped with hot honey glaze and parsley. Served with sautéed mushrooms & onions and waffle fries.");
                         e_des.add("Savor the Bayou with Bourbon Street chicken, Spanish rice, garlicky green beans, sautéed onions and peppers with a side of creamy Cajun sauce.");
                         e_des.add("A little sweet, a little spicy. Crispy, hand-breaded chicken breast smothered in Sweet Asian Chile sauce with our signature coleslaw on a Brioche bun. Served with classic fries.");
                         e_des.add("A long-running favorite, grilled chicken top a bed of fresh Asian greens, crunchy noodles and almonds tossed in our Oriental vinaigrette. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.");
@@ -181,19 +181,18 @@ public class RestaurantFrame extends JFrame
                         e_des.add("Juicy chipotle chicken with crisp lettuce, a blend of Cheddar cheeses and house-made pico de gallo wrapped in a tortilla with our Mexi-ranch dipping sauce. Served with classic fries.");
 
                         //https://cloudconvert.com/ use ths link to convert the images
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
-
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Northeast Chicken Plate.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Fried Chicken Chest.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Wall Street Shrimp and Chicken.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Mr. Modi's Robotic Steak Dinner.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Frid Chicken Julius Salade.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Whitened Chicken Farfalle.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Cold Syrup Glazed Chicken Skillet.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Creek Chicken Pot.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\The Hot Honey Hen.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Fried Occidental Chicken Herba Salata.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Raspberry-Pi Vinegar Chicken Gobbledygook.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        e_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\The Wannabe Tex-Mex Taquito.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
                     }
 
                     // set up
@@ -205,7 +204,7 @@ public class RestaurantFrame extends JFrame
 
                         for (int i = 0; i < arrEntrees.size(); i++) {
                             Color bg = (i % 2 == 0) ? c1 : c2;
-                            p_entrees.add(createFoodPanel(arrEntrees.get(i), bg, null));
+                            p_entrees.add(createFoodPanel(arrEntrees.get(i), bg, e_image.get(i)));
                         }
                         JScrollPane scrollA = new JScrollPane(p_entrees);
                         scrollA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -231,8 +230,18 @@ public class RestaurantFrame extends JFrame
                     {
                         arrDesserts.add(new FoodItem("Mega Cinnabon® Eddies", 7.99, 0));
                         arrDesserts.add(new FoodItem("Reese's Pieces Shake", 4.89, 0));
-                        arrDesserts.add(new FoodItem("Quadruple Vanilla Anxieties", 11.99, 0));
-                        arrDesserts.add(new FoodItem("Whitie Nibble", 6.99, 0));
+                        arrDesserts.add(new FoodItem("Quadruple Chocolate Anxieties", 11.99, 0));
+                        arrDesserts.add(new FoodItem("Cacao Nibbles", 6.99, 0));
+
+                        d_des.add("Cinnabon® Mini Swirls are an irresistible sweet treat. Fried to a crisp, golden brown and dusted with Cinnabon® cinnamon sugar, drizzled with caramel and paired with Cinnabon’s signature cream cheese frosting.");
+                        d_des.add("Enjoy a tasty American classic made with vanilla ice cream and Reese's Pieces® cookie pieces.");
+                        d_des.add("Warm, rich, fudge-filled chocolate cake is drizzled with hot fudge. Served with vanilla ice cream.");
+                        d_des.add("The perfect size of a warm dark chocolate brownie with nuts served with vanilla ice cream and drizzled with hot fudge.");
+
+                        d_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Desserts\\Mega Cinnabon Eddies.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        d_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Desserts\\Reese's Peices Shake.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        d_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Desserts\\Quadruple Vanilla Anxieties.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+                        d_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Desserts\\Cacao Nibbles.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
                     }
 
                     // set up
@@ -244,7 +253,7 @@ public class RestaurantFrame extends JFrame
 
                         for (int i = 0; i < arrDesserts.size(); i++) {
                             Color bg = (i % 2 == 0) ? c1 : c2;
-                            p_desserts.add(createFoodPanel(arrDesserts.get(i), bg, null));
+                            p_desserts.add(createFoodPanel(arrDesserts.get(i), bg, d_image.get(i)));
                         }
                         JScrollPane scrollA = new JScrollPane(p_desserts);
                         scrollA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
