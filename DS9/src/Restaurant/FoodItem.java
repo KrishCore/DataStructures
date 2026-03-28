@@ -10,10 +10,13 @@ public class FoodItem
     private int quantity;
     private ImageIcon image;
 
-    public FoodItem (String name, double price, int quantity)
+    public FoodItem (String name, double price, int quantity, String description, ImageIcon image)
     {
         this.name = name;
         this.price = price;
+        this.quantity = quantity;
+        this.description = description;
+        this.image = image;
     }
 
     public String getName() {
@@ -32,6 +35,16 @@ public class FoodItem
     public int getQuantity()
     {
         return quantity;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public ImageIcon getImage()
+    {
+        return image;
     }
 
     public String toString()
