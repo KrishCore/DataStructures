@@ -10,8 +10,9 @@ public class RestaurantFrame extends JFrame
     private JLabel title = new JLabel("Orangebee's");
     private Font Xbig = new Font(Font.SERIF, Font.BOLD, 70);
     private Font medium = new Font(Font.SERIF, Font.BOLD, 30);
-    private Font food = new Font(Font.SERIF, Font.BOLD, 25);
-    private Font pr = new Font(Font.SERIF, Font.BOLD, 20);
+    private Font nam = new Font(Font.SERIF, Font.BOLD, 25);
+    private Font pric = new Font(Font.SERIF, Font.BOLD, 20);
+    private Font desc = new Font(Font.SANS_SERIF, Font.BOLD, 15);
 
     private JMenuBar mb = new JMenuBar();
     private JMenu menu = new JMenu("Menu");
@@ -22,6 +23,7 @@ public class RestaurantFrame extends JFrame
     private JMenu pay = new JMenu("Pay");
 
     private JMenu cart = new JMenu("View Cart");
+    private JPanel p_cart = new JPanel();
     private JTable table = new JTable();
     private String[] headings = new String[] {"Item Name", "Quantity", "Cost", "Extended Cost"};
 
@@ -94,12 +96,12 @@ public class RestaurantFrame extends JFrame
                     menu.add(mi_appetizers);
                     //add appetizers
                     {
-                        app_des.add("<html>Freshly made white corn tortilla chips are topped with grilled chicken, queso blanco, a blend of melted Cheddar cheeses, house-made pico de gallo, fresh jalapeños, chopped cilantro, sour cream and guacamole.</html>");
-                        app_des.add("<html>Crispy outside with melty Mozzarella inside, this favorite is served with marinara sauce.</html>");
-                        app_des.add("<html>Get ready to build your Ultimate Trio! Choose 3 appetizers from a mouthwatering selection of 10 and pair them with 3 irresistible dipping sauces. With endless combinations, every bite is a new adventure!</html>");
-                        app_des.add("<html>Five golden brown signature breadsticks brushed with buttery garlic and parsley. Served with creamy Alfredo sauce for dipping.</html>");
-                        app_des.add("<html>Crispy, golden-fried rings with a savory flavor, served with Ranch and Honey BBQ sauce.</html>");
-                        app_des.add("<html>Crispy breaded pieces of tender boneless chicken tossed in your choice of sauce. Served with Bleu cheese or house-made ranch buttermilk ranch dressings and celery.</html>");
+                        app_des.add("Freshly made white corn tortilla chips are topped with grilled chicken, queso blanco, a blend of melted Cheddar cheeses, house-made pico de gallo, fresh jalapeños, chopped cilantro, sour cream and guacamole.");
+                        app_des.add("Crispy outside with melty Mozzarella inside, this favorite is served with marinara sauce.");
+                        app_des.add("Get ready to build your Ultimate Trio! Choose 3 appetizers from a mouthwatering selection of 10 and pair them with 3 irresistible dipping sauces. With endless combinations, every bite is a new adventure!");
+                        app_des.add("Five golden brown signature breadsticks brushed with buttery garlic and parsley. Served with creamy Alfredo sauce for dipping.");
+                        app_des.add("Crispy, golden-fried rings with a savory flavor, served with Ranch and Honey BBQ sauce.");
+                        app_des.add("Crispy breaded pieces of tender boneless chicken tossed in your choice of sauce. Served with Bleu cheese or house-made ranch buttermilk ranch dressings and celery.");
 
                         app_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Appetizers\\Foriegn-Imported Nachos.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
                         app_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Appetizers\\Mini Cheese Straws.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
@@ -152,18 +154,18 @@ public class RestaurantFrame extends JFrame
                     menu.add(mi_entrees);
                     //add entrees
                     {
-                        ent_description.add("<html>Grilled chipotle lime chicken on fresh greens and cilantro rice with house-made pico de gallo, black bean corn salsa and guacamole. Topped with chimichurri, tortilla strips and  a fresh lime wedge.");
-                        ent_description.add("<html>Juicy chicken breast seasoned and grilled over an open flame. Served with your choice of two sides.</html>");
-                        ent_description.add("<html>Cajun-seasoned chicken and blackened shrimp jazzed up in buttery garlic and parsley, served sizzling with sautéed mushrooms & onions and garlic mashed potatoes.</html>");
-                        ent_description.add("<html>Juicy, perfectly grilled steak served with garlic mashed potatoes and steamed broccoli, because sometimes being a little late comes with a delicious reward!</html>");
-                        ent_description.add("<html>Crisp romaine tossed in garlic Caesar dressing topped with grilled chicken, croutons and shaved Parmesan. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.</html>");
-                        ent_description.add("<html>Crispy, chicken breast filet, smothered in marinara sauce and topped with Parmesan cheese on a bed of fettuccine pasta in a Parmesan cream sauce. Served with a golden-brown signature breadstick with buttery garlic and parsley.</html>");
-                        ent_description.add("<html>Sliced grilled chicken breast topped with hot honey glaze and parsley. Served with sautéed mushrooms & onions and waffle fries.</html>");
-                        ent_description.add("<html>Savor the Bayou with Bourbon Street chicken, Spanish rice, garlicky green beans, sautéed onions and peppers with a side of creamy Cajun sauce.</html>");
-                        ent_description.add("<html>A little sweet, a little spicy. Crispy, hand-breaded chicken breast smothered in Sweet Asian Chile sauce with our signature coleslaw on a Brioche bun. Served with classic fries.</html>");
-                        ent_description.add("<html>A long-running favorite, grilled chicken top a bed of fresh Asian greens, crunchy noodles and almonds tossed in our Oriental vinaigrette. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.</html>");
-                        ent_description.add("<html>Tart, fresh and flavorful, fresh greens served with garden tomatoes, red onions and fresh strawberries. Topped with grilled chicken, sliced almonds and a drizzle of balsamic glaze and sweet lemon olive vinaigrette on the side. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.<html>");
-                        ent_description.add("<html>Juicy chipotle chicken with crisp lettuce, a blend of Cheddar cheeses and house-made pico de gallo wrapped in a tortilla with our Mexi-ranch dipping sauce. Served with classic fries.</html>");
+                        ent_description.add("Grilled chipotle lime chicken on fresh greens and cilantro rice with house-made pico de gallo, black bean corn salsa and guacamole. Topped with chimichurri, tortilla strips and  a fresh lime wedge.");
+                        ent_description.add("Juicy chicken breast seasoned and grilled over an open flame. Served with your choice of two sides.");
+                        ent_description.add("Cajun-seasoned chicken and blackened shrimp jazzed up in buttery garlic and parsley, served sizzling with sautéed mushrooms & onions and garlic mashed potatoes.");
+                        ent_description.add("Juicy, perfectly grilled steak served with garlic mashed potatoes and steamed broccoli, because sometimes being a little late comes with a delicious reward!");
+                        ent_description.add("Crisp romaine tossed in garlic Caesar dressing topped with grilled chicken, croutons and shaved Parmesan. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.");
+                        ent_description.add("Crispy, chicken breast filet, smothered in marinara sauce and topped with Parmesan cheese on a bed of fettuccine pasta in a Parmesan cream sauce. Served with a golden-brown signature breadstick with buttery garlic and parsley.");
+                        ent_description.add("Sliced grilled chicken breast topped with hot honey glaze and parsley. Served with sautéed mushrooms & onions and waffle fries.");
+                        ent_description.add("Savor the Bayou with Bourbon Street chicken, Spanish rice, garlicky green beans, sautéed onions and peppers with a side of creamy Cajun sauce.");
+                        ent_description.add("A little sweet, a little spicy. Crispy, hand-breaded chicken breast smothered in Sweet Asian Chile sauce with our signature coleslaw on a Brioche bun. Served with classic fries.");
+                        ent_description.add("A long-running favorite, grilled chicken top a bed of fresh Asian greens, crunchy noodles and almonds tossed in our Oriental vinaigrette. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.");
+                        ent_description.add("Tart, fresh and flavorful, fresh greens served with garden tomatoes, red onions and fresh strawberries. Topped with grilled chicken, sliced almonds and a drizzle of balsamic glaze and sweet lemon olive vinaigrette on the side. Served with a golden brown signature breadstick brushed with buttery garlic and parsley.");
+                        ent_description.add("Juicy chipotle chicken with crisp lettuce, a blend of Cheddar cheeses and house-made pico de gallo wrapped in a tortilla with our Mexi-ranch dipping sauce. Served with classic fries.");
 
                         //https://cloudconvert.com/ use ths link to convert the images
                         ent_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Entrees\\Northeast Chicken Plate.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
@@ -226,10 +228,10 @@ public class RestaurantFrame extends JFrame
                     menu.add(mi_desserts);
                     //add deserts
                     {
-                        des_description.add("<html>Cinnabon® Mini Swirls are an irresistible sweet treat. Fried to a crisp, golden brown and dusted with Cinnabon® cinnamon sugar, drizzled with caramel and paired with Cinnabon’s signature cream cheese frosting.</html>");
-                        des_description.add("<html>Enjoy a tasty American classic made with vanilla ice cream and Reese's Pieces® cookie pieces.</html>");
-                        des_description.add("<html>Warm, rich, fudge-filled chocolate cake is drizzled with hot fudge. Served with vanilla ice cream.</html>");
-                        des_description.add("<html>The perfect size of a warm dark chocolate brownie with nuts served with vanilla ice cream and drizzled with hot fudge.</html>");
+                        des_description.add("Cinnabon® Mini Swirls are an irresistible sweet treat. Fried to a crisp, golden brown and dusted with Cinnabon® cinnamon sugar, drizzled with caramel and paired with Cinnabon’s signature cream cheese frosting.");
+                        des_description.add("Enjoy a tasty American classic made with vanilla ice cream and Reese's Pieces® cookie pieces.");
+                        des_description.add("Warm, rich, fudge-filled chocolate cake is drizzled with hot fudge. Served with vanilla ice cream.");
+                        des_description.add("The perfect size of a warm dark chocolate brownie with nuts served with vanilla ice cream and drizzled with hot fudge.");
 
                         des_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Desserts\\Mega Cinnabon Eddies.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
                         des_image.add(new ImageIcon(new ImageIcon("src\\Restaurant\\Iamges\\Desserts\\Reese's Peices Shake.jpeg").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
@@ -274,13 +276,22 @@ public class RestaurantFrame extends JFrame
             //cart
             {
                 mb.add(cart);
+
                 String[][] items = new String[1][4];
                 table = new JTable(items, headings);
                 JScrollPane scroll = new JScrollPane(table);
                 scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 scroll.setWheelScrollingEnabled(true);
-                cart.addActionListener(e -> {
 
+                JPanel wrapper = new JPanel(new BorderLayout());
+                wrapper.add(scroll, BorderLayout.CENTER);
+                panels.add(wrapper, "Desserts");
+
+                cart.addActionListener(e -> {
+                    CardLayout cl = (CardLayout) panels.getLayout();
+                    cl.show(panels, "Desserts");
+                    panels.revalidate();
+                    panels.repaint();
                 });
             }
 
@@ -299,19 +310,26 @@ public class RestaurantFrame extends JFrame
     {
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setPreferredSize(new Dimension(700, 150));
+        panel.setPreferredSize(new Dimension(700, 200));
         panel.setBackground(bg);
 
         JLabel name = new JLabel(item.getName());
         name.setBounds(10, 10, 500, 40);
-        name.setFont(food);
+        name.setFont(nam);
 
         JLabel price = new JLabel("$" + item.getPrice());
-        price.setBounds(10, 45, 100, 20);
-        price.setFont(pr);
+        price.setBounds(10, 50, 100, 20);
+        price.setFont(pric);
 
-        JLabel des = new JLabel(description); // make the panel longer and move the description to the bottom
-        des.setBounds(400, 50, 200, 100);
+        JTextArea des = new JTextArea(description); // make the panel longer and move the description to the bottom
+        des.setLineWrap(true);
+        des.setWrapStyleWord(true);
+        des.setBackground(bg);
+        des.setFont(desc);
+//        System.out.println(des.getSelectedTextColor());
+        des.setEnabled(false);
+        des.setDisabledTextColor(new Color(51,51,51));
+        des.setBounds(10, 110, 590, 100);
         panel.add(des);
 
         JLabel i = new JLabel(image);
