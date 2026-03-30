@@ -1,7 +1,10 @@
 package Restaurant;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class RestaurantFrame extends JFrame
@@ -20,12 +23,19 @@ public class RestaurantFrame extends JFrame
     private JMenuItem mi_entrees = new JMenuItem("Entrees");
     private JMenuItem mi_desserts = new JMenuItem("Desserts");
 
-    private JMenu pay = new JMenu("Pay");
 
-    private JMenu cart = new JMenu("View Cart");
+    private JMenuItem cart = new JMenuItem("View Cart");
     private JPanel p_cart = new JPanel();
+    private JPanel p_checkout = new JPanel();
     private JTable table = new JTable();
     private String[] headings = new String[] {"Item Name", "Quantity", "Cost", "Extended Cost"};
+
+    private JMenuItem pay = new JMenuItem("Pay");
+    private JTextField tipField = new JTextField("0");
+    private JTextField subtotalField = new JTextField();
+    private JTextField taxField = new JTextField();
+    private JTextField tipAmountField = new JTextField();
+    private JTextField totalField = new JTextField();
 
     private JPanel mainScreen = new JPanel();
     private JPanel p_appetizers = new JPanel();
@@ -45,8 +55,7 @@ public class RestaurantFrame extends JFrame
     private ArrayList<ImageIcon> des_image = new ArrayList<>();
 
     private ArrayList<FoodItem> order = new ArrayList<>();
-    public RestaurantFrame()
-    {
+    public RestaurantFrame() {
         super("Orangebee's");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -54,12 +63,9 @@ public class RestaurantFrame extends JFrame
 
         //panels
         {
-            panels.setBounds(0,0,getWidth()-12, getHeight()-57);
+            panels.setBounds(0, 0, getWidth() - 12, getHeight() - 57);
             panels.setLayout(new CardLayout());
             add(panels);
-            panels.add(new JPanel(), "Appetizers");
-            panels.add(new JPanel(), "Entrees");
-            panels.add(new JPanel(), "Desserts");
         }
 
         //welcome and title
@@ -78,8 +84,7 @@ public class RestaurantFrame extends JFrame
             p_home.add(title, BorderLayout.CENTER);
             panels.add(p_home, "Home");
 
-            CardLayout cl = (CardLayout) panels.getLayout();
-            cl.show(panels, "Home");
+            ((CardLayout) panels.getLayout()).show(panels, "Home");
         }
 
         //Menu Bar
@@ -88,6 +93,7 @@ public class RestaurantFrame extends JFrame
             //menu
             {
                 mb.add(menu);
+                mb.add(cart);
                 mb.setVisible(true);
                 setJMenuBar(mb);
 
@@ -142,8 +148,7 @@ public class RestaurantFrame extends JFrame
                     }
 
                     mi_appetizers.addActionListener(e -> {
-                        CardLayout cl = (CardLayout) panels.getLayout();
-                        cl.show(panels, "Appetizers");
+                        ((CardLayout) panels.getLayout()).show(panels, "Appetizers");
                         panels.revalidate();
                         panels.repaint();
                     });
@@ -216,8 +221,7 @@ public class RestaurantFrame extends JFrame
                     }
 
                     mi_entrees.addActionListener(e -> {
-                        CardLayout cl = (CardLayout) panels.getLayout();
-                        cl.show(panels, "Entrees");
+                        ((CardLayout) panels.getLayout()).show(panels, "Entrees");
                         panels.revalidate();
                         panels.repaint();
                     });
@@ -265,41 +269,113 @@ public class RestaurantFrame extends JFrame
                     }
 
                     mi_desserts.addActionListener(e -> {
-                        CardLayout cl = (CardLayout) panels.getLayout();
-                        cl.show(panels, "Desserts");
+                        ((CardLayout) panels.getLayout()).show(panels, "Desserts");
                         panels.revalidate();
                         panels.repaint();
                     });
                 }
             }
 
-            //cart
+            // cart
             {
                 mb.add(cart);
+                p_cart.setLayout(new BorderLayout());
 
-                String[][] items = new String[1][4];
-                table = new JTable(items, headings);
-                JScrollPane scroll = new JScrollPane(table);
-                scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                scroll.setWheelScrollingEnabled(true);
+                table = new JTable(new DefaultTableModel(headings, 0));
+                JScrollPane tableScroll = new JScrollPane(table);
+                p_cart.add(tableScroll, BorderLayout.CENTER);
 
-                JPanel wrapper = new JPanel(new BorderLayout());
-                wrapper.add(scroll, BorderLayout.CENTER);
-                panels.add(wrapper, "Desserts");
+                JPanel receipt = new JPanel();
+                receipt.setLayout(new GridLayout(5, 2, 10, 10));
+
+                subtotalField.setEnabled(false);
+                taxField.setEnabled(false);
+                tipAmountField.setEnabled(false);
+                totalField.setEnabled(false);
+
+                tipField.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        char c = e.getKeyChar();
+
+                        // backspace wrok
+                        if (c == KeyEvent.VK_BACK_SPACE) {
+                            SwingUtilities.invokeLater(() -> updateCardTable());
+                            if (tipField.getText().isEmpty())
+                                tipField.setText("0");
+                            return;
+                        }
+
+                        // only digits
+                        if (!Character.isDigit(c)) {
+                            e.consume();
+                            return;
+                        }
+
+                        // update AFTER typing finishes
+                        SwingUtilities.invokeLater(() -> updateCardTable());
+                        if (tipField.getText().startsWith("0") && tipField.getText().length() > 0)
+                            tipField.setText(tipField.getText().substring(1));
+                    }
+                });
+
+                receipt.add(new JLabel("Tip %:"));
+                receipt.add(tipField);
+
+                receipt.add(new JLabel("Subtotal:"));
+                receipt.add(subtotalField);
+
+                receipt.add(new JLabel("Tax (8.25%):"));
+                receipt.add(taxField);
+
+                receipt.add(new JLabel("Tip Amount:"));
+                receipt.add(tipAmountField);
+
+                receipt.add(new JLabel("Total:"));
+                receipt.add(totalField);
+
+                p_cart.add(receipt, BorderLayout.SOUTH);
+
+                panels.add(p_cart, "Cart");
 
                 cart.addActionListener(e -> {
                     CardLayout cl = (CardLayout) panels.getLayout();
-                    cl.show(panels, "Desserts");
-                    panels.revalidate();
+                    cl.show(panels, "Cart");
                     panels.repaint();
+                    panels.revalidate();
+                    updateCardTable(); // refresh table
                 });
             }
 
             //pay
             {
+
                 mb.add(pay);
                 pay.addActionListener(e -> {
+                    double total = 0;
 
+                    try {
+                        total = Double.parseDouble(totalField.getText().replace("$", ""));
+                    } catch (Exception ex) {
+                        total = 0;
+                    }
+
+                    if (total == 0)
+                    {
+                        JOptionPane.showMessageDialog(this, "Cart is Empty\nAdd some food items to the cart to make an order");
+                        return;
+                    }
+
+                    JOptionPane.showMessageDialog(this, "Payment successful!\n\nTotal Paid: $" + String.format("%.2f", total),
+                            "Recept", JOptionPane.INFORMATION_MESSAGE);
+
+                    for (FoodItem f : arrAppetizers) f.setQuantity(0);
+                    for (FoodItem f : arrEntrees) f.setQuantity(0);
+                    for (FoodItem f : arrDesserts) f.setQuantity(0);
+
+                    tipField.setText("0");
+                    updateCardTable();
+                    System.exit(0);
                 });
             }
         }
@@ -311,6 +387,7 @@ public class RestaurantFrame extends JFrame
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setPreferredSize(new Dimension(700, 200));
+        panel.setBorder(BorderFactory.createLineBorder(new Color(255, 128, 0), 5));
         panel.setBackground(bg);
 
         JLabel name = new JLabel(item.getName());
@@ -326,10 +403,9 @@ public class RestaurantFrame extends JFrame
         des.setWrapStyleWord(true);
         des.setBackground(bg);
         des.setFont(desc);
-//        System.out.println(des.getSelectedTextColor());
         des.setEnabled(false);
-        des.setDisabledTextColor(new Color(51,51,51));
-        des.setBounds(10, 110, 590, 100);
+        des.setDisabledTextColor(new Color(51, 51, 51));
+        des.setBounds(10, 110, 590, 80);
         panel.add(des);
 
         JLabel i = new JLabel(image);
@@ -358,6 +434,7 @@ public class RestaurantFrame extends JFrame
             if (!order.contains(item))
                 order.add(item);
             System.out.println(order);
+            updateCardTable();
         });
 
         remove.addActionListener(e -> {
@@ -369,6 +446,7 @@ public class RestaurantFrame extends JFrame
             if (q == 0)
                 order.remove(item);
             System.out.println(order);
+            updateCardTable();
         });
 
         panel.add(name);
@@ -382,21 +460,52 @@ public class RestaurantFrame extends JFrame
 
     private void updateCardTable()
     {
-        ArrayList<String[]> rows = new ArrayList<>();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
 
-        for (FoodItem f : arrAppetizers) //add appetizers
-        {
-            rows.add(new String[]{f.getName(), f.getQuantity()+"", f.getPrice()+"", f.getQuantity()*f.getPrice()+""});
-        }
+        double subtotal = 0;
 
-        for (FoodItem f : arrEntrees) //add entrees
-        {
-            rows.add(new String[]{f.getName(), f.getQuantity()+"", f.getPrice()+"", f.getQuantity()*f.getPrice()+""});
-        }
+        for (FoodItem f : arrAppetizers)
+            if (f.getQuantity() > 0)
+            {
+                double ext = f.getQuantity() * f.getPrice();
+                subtotal += ext;
+                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), ext});
+            }
+        for (FoodItem f : arrEntrees)
+            if (f.getQuantity() > 0)
+            {
+                double ext = f.getQuantity() * f.getPrice();
+                subtotal += ext;
+                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), ext});
+            }
+        for (FoodItem f : arrDesserts)
+            if (f.getQuantity() > 0)
+            {
+                double ext = f.getQuantity() * f.getPrice();
+                subtotal += ext;
+                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), ext});
+            }
 
-        for (FoodItem f : arrDesserts) //add desserts
-        {
-            rows.add(new String[]{f.getName(), f.getQuantity()+"", f.getPrice()+"", f.getQuantity()*f.getPrice()+""});
+        double tax = subtotal * 0.0825;
+
+        long tipPercent = 0;
+        try {
+            tipPercent = tipField.getText().isEmpty() ? 0 : Long.parseLong(tipField.getText());
         }
+        catch (Exception e)
+        {
+            tipPercent = 0;
+        }
+        if (tipPercent < 0)
+            tipPercent = 0;
+
+        double tip = subtotal * tipPercent / 100.0;
+        double total = subtotal + tax + tip;
+
+        subtotalField.setText("$" + String.format("%.2f", subtotal));
+        taxField.setText("$" + String.format("%.2f", tax));
+        tipAmountField.setText("$" + String.format("%.2f", tip));
+        totalField.setText("$" + String.format("%.2f", total));
     }
 }
