@@ -24,6 +24,7 @@ public class RestaurantFrame extends JFrame
     private JMenuItem mi_desserts = new JMenuItem("Desserts");
 
 
+    private JMenu checkout = new JMenu("Checkout");
     private JMenuItem cart = new JMenuItem("View Cart");
     private JPanel p_cart = new JPanel();
     private JPanel p_checkout = new JPanel();
@@ -32,10 +33,15 @@ public class RestaurantFrame extends JFrame
 
     private JMenuItem pay = new JMenuItem("Pay");
     private JTextField tipField = new JTextField("0");
-    private JTextField subtotalField = new JTextField();
-    private JTextField taxField = new JTextField();
+    private double tipPercent = 0;
     private JTextField tipAmountField = new JTextField();
+    private double tipAmount = 0;
+    private JTextField subtotalField = new JTextField();
+    private double subtotal = 0;
+    private JTextField taxField = new JTextField();
+    private double tax = 0;
     private JTextField totalField = new JTextField();
+    private double total = 0;
 
     private JPanel mainScreen = new JPanel();
     private JPanel p_appetizers = new JPanel();
@@ -93,7 +99,7 @@ public class RestaurantFrame extends JFrame
             //menu
             {
                 mb.add(menu);
-                mb.add(cart);
+
                 mb.setVisible(true);
                 setJMenuBar(mb);
 
@@ -278,10 +284,16 @@ public class RestaurantFrame extends JFrame
 
             // cart
             {
-                mb.add(cart);
+                mb.add(checkout);
+                checkout.add(cart);
                 p_cart.setLayout(new BorderLayout());
 
-                table = new JTable(new DefaultTableModel(headings, 0));
+                table = new JTable(new DefaultTableModel(headings, 0)){
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
                 JScrollPane tableScroll = new JScrollPane(table);
                 p_cart.add(tableScroll, BorderLayout.CENTER);
 
@@ -415,8 +427,8 @@ public class RestaurantFrame extends JFrame
 
         JTextField num = new JTextField("0");
         num.setBounds(300, 50, 50, 50);
-        num.setDisabledTextColor(Color.BLACK);
         num.setEnabled(false);
+        num.setDisabledTextColor(new Color(51, 51, 51));
         num.setHorizontalAlignment(JTextField.CENTER);
 
         JButton add = new JButton("+");
@@ -454,7 +466,6 @@ public class RestaurantFrame extends JFrame
         panel.add(num);
         panel.add(add);
         panel.add(remove);
-
         return panel;
     }
 
@@ -462,34 +473,29 @@ public class RestaurantFrame extends JFrame
     {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-
-        double subtotal = 0;
+        subtotal = 0;
 
         for (FoodItem f : arrAppetizers)
             if (f.getQuantity() > 0)
             {
-                double ext = f.getQuantity() * f.getPrice();
-                subtotal += ext;
-                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), ext});
+                subtotal += f.getQuantity() * f.getPrice();
+                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), f.getQuantity() * f.getPrice()});
             }
         for (FoodItem f : arrEntrees)
             if (f.getQuantity() > 0)
             {
-                double ext = f.getQuantity() * f.getPrice();
-                subtotal += ext;
-                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), ext});
+                subtotal += f.getQuantity() * f.getPrice();
+                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), f.getQuantity() * f.getPrice()});
             }
         for (FoodItem f : arrDesserts)
             if (f.getQuantity() > 0)
             {
-                double ext = f.getQuantity() * f.getPrice();
-                subtotal += ext;
-                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), ext});
+                subtotal += f.getQuantity() * f.getPrice();
+                model.addRow(new Object[]{f.getName(), f.getQuantity(), f.getPrice(), f.getQuantity() * f.getPrice()});
             }
 
-        double tax = subtotal * 0.0825;
+        tax = subtotal * 0.0825;
 
-        long tipPercent = 0;
         try {
             tipPercent = tipField.getText().isEmpty() ? 0 : Long.parseLong(tipField.getText());
         }
@@ -500,12 +506,12 @@ public class RestaurantFrame extends JFrame
         if (tipPercent < 0)
             tipPercent = 0;
 
-        double tip = subtotal * tipPercent / 100.0;
-        double total = subtotal + tax + tip;
+        tipAmount = subtotal * tipPercent / 100.0;
+        total = subtotal + tax + tipAmount;
 
         subtotalField.setText("$" + String.format("%.2f", subtotal));
         taxField.setText("$" + String.format("%.2f", tax));
-        tipAmountField.setText("$" + String.format("%.2f", tip));
+        tipAmountField.setText("$" + String.format("%.2f", tipAmount));
         totalField.setText("$" + String.format("%.2f", total));
     }
 }
