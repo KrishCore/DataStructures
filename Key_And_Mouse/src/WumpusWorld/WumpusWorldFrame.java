@@ -10,39 +10,46 @@ import java.io.IOException;
 
 public class WumpusWorldFrame extends JFrame implements KeyListener
 {
-    private BufferedImage arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif",100, 100);
-    private BufferedImage black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF", 100, 100);
-    private BufferedImage breeze = getScaledImage("src\\WumpusWorld\\Images\\breeze.gif", 100, 100);
-    private BufferedImage deadWumpus = getScaledImage("src\\WumpusWorld\\Images\\deadwumpus.GIF", 100, 100);
-    private BufferedImage flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", 100, 100);
+    private ImageIcon arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif",100, 100);
+    private ImageIcon black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF", 100, 100);
+    private ImageIcon breeze = getScaledImage("src\\WumpusWorld\\Images\\breeze.gif", 100, 100);
+    private ImageIcon deadWumpus = getScaledImage("src\\WumpusWorld\\Images\\deadwumpus.GIF", 100, 100);
+    private ImageIcon flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", 100, 100);
     private JPanel p_floor = new JPanel();
-    private BufferedImage gold = getScaledImage("src\\WumpusWorld\\Images\\gold.gif", 100, 100);
-    private BufferedImage ladder = getScaledImage("src\\WumpusWorld\\Images\\ladder.gif", 100, 100);
-    private BufferedImage picture1 = getScaledImage("src\\WumpusWorld\\Images\\Picture1.gif", 100, 100);
-    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 100, 100);
-    private BufferedImage playerDown = getScaledImage("src\\WumpusWorld\\Images\\playerDown.png", 100, 100);
-    private BufferedImage playerLeft = getScaledImage("src\\WumpusWorld\\Images\\playerLeft.png", 100, 100);
-    private BufferedImage playerRight = getScaledImage("src\\WumpusWorld\\Images\\playerRight.png", 100, 100);
-    private BufferedImage playerUp = getScaledImage("src\\WumpusWorld\\Images\\playerUp.png", 100, 100);
-    private BufferedImage stench = getScaledImage("src\\WumpusWorld\\Images\\stench.gif", 100, 100);
-    private BufferedImage wumpus = getScaledImage("src\\WumpusWorld\\Images\\wumpus.gif", 100, 100);
+    private ImageIcon gold = getScaledImage("src\\WumpusWorld\\Images\\gold.gif", 100, 100);
+    private ImageIcon ladder = getScaledImage("src\\WumpusWorld\\Images\\ladder.gif", 100, 100);
+    private ImageIcon picture1 = getScaledImage("src\\WumpusWorld\\Images\\Picture1.gif", 100, 100);
+    private ImageIcon pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 100, 100);
+    private ImageIcon playerDown = getScaledImage("src\\WumpusWorld\\Images\\playerDown.png", 100, 100);
+    private ImageIcon playerLeft = getScaledImage("src\\WumpusWorld\\Images\\playerLeft.png", 100, 100);
+    private ImageIcon playerRight = getScaledImage("src\\WumpusWorld\\Images\\playerRight.png", 100, 100);
+    private ImageIcon playerUp = getScaledImage("src\\WumpusWorld\\Images\\playerUp.png", 100, 100);
+    private ImageIcon stench = getScaledImage("src\\WumpusWorld\\Images\\stench.gif", 100, 100);
+    private ImageIcon wumpus = getScaledImage("src\\WumpusWorld\\Images\\wumpus.gif", 100, 100);
 
     public WumpusWorldFrame() throws IOException {
         super("Wumpus World");
         System.out.println(getWidth());
         setSize(520+12,520+35);
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
-                p_floor.setBounds(0, 0, getWidth()-12, getHeight()-35);
-                System.out.println("P_flooor" + p_floor.getWidth() + "  :  " + p_floor.getHeight());
-                flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", (p_floor.getWidth()-0)/5, (p_floor.getHeight()-0)/5);
-                System.out.println("flooor" + flooor.getWidth() + "  :  " + flooor.getHeight());
-            }
-        });
+        //resizer - component listener
+        {
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    super.componentResized(e);
+                    p_floor.setBounds(0, 0, getWidth()-25, getHeight() - 50); // this needs to be changed
+                    System.out.println("P_flooor" + p_floor.getWidth() + "  :  " + p_floor.getHeight());
+                    flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", (p_floor.getWidth() - 20) / 5, (p_floor.getHeight() - 20) / 5);
+                    System.out.println("flooor" + flooor.getIconWidth() + "  :  " + flooor.getIconHeight());
+                    Graphics floorG = p_floor.getGraphics();// = this.getGraphics();
+                    paint(floorG);
+                }
+            });
+        }
         setLayout(null);
-        p_floor.setLayout(new GridLayout(5, 5, 5, 5));
+//        flooor = ImageIO.read(new File("src\\WumpusWorld\\Images\\Floor.gif"));
+        getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", 100, 100);
+        p_floor.setLayout(new GridLayout(5, 5, 6, 5));
         p_floor.setBounds(0, 0, getWidth()-12, getHeight()-35);
         p_floor.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         p_floor.setBackground(Color.BLACK);
@@ -54,21 +61,20 @@ public class WumpusWorldFrame extends JFrame implements KeyListener
         setVisible(true);
     }
 
-    private BufferedImage getScaledImage (String path, int width, int height)
+    private ImageIcon getScaledImage (String path, int width, int height)
     {
-        try {
-            BufferedImage og = ImageIO.read(new File(path));
-            Image scaled = og.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = bi.createGraphics();
-            g.drawImage(scaled, 0, 0, null);
-            g.dispose();
-            return bi;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+
     }
+
+//    public void paint(Graphics g)
+//    {
+//        Graphics floorG = flooor.getGraphics();
+//        g.setColor(Color.BLACK);
+//        g.fillRect(0, 0, getWidth(), getHeight());
+//
+//        g.drawImage(flooor.getImage(), 5, 5, null);
+//    }
 
     @Override
     public void keyTyped(KeyEvent e) {
