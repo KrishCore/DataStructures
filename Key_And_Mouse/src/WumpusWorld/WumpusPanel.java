@@ -107,6 +107,7 @@ public class WumpusPanel extends JPanel implements KeyListener
             return;
 
         char c = e.getKeyChar();
+
         //set the player directoin (the picture) ex: playerRight
         //find out how to do it
         if (c == 'W') {
