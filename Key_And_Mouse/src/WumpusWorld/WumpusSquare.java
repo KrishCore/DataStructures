@@ -11,6 +11,7 @@ public class WumpusSquare
     private boolean deadWumpus;
     private boolean stench;
     private boolean visited;
+    private boolean player;
 
     public WumpusSquare()
     {
@@ -22,6 +23,7 @@ public class WumpusSquare
         deadWumpus = false;
         stench = false;
         visited = false;
+        player = false;
     }
 
     public boolean isGold() {
@@ -86,6 +88,15 @@ public class WumpusSquare
 
     public void setVisited(boolean visited) {
         this.visited = visited;
+    }
+
+
+    public boolean isPlayer() {
+        return player;
+    }
+
+    public void setPlayer(boolean player) {
+        this.visited = player;
     }
 
     @Override

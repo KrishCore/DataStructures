@@ -23,11 +23,10 @@ public class WumpusPanel extends JPanel implements KeyListener
     private BufferedImage breeze = getScaledImage("src\\WumpusWorld\\Images\\breeze.gif", 100, 100);
     private BufferedImage deadWumpus = getScaledImage("src\\WumpusWorld\\Images\\deadwumpus.GIF", 100, 100);
     private BufferedImage flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", 100, 100);
-    private JPanel p_floor = new JPanel();
     private BufferedImage gold = getScaledImage("src\\WumpusWorld\\Images\\gold.gif", 100, 100);
     private BufferedImage ladder = getScaledImage("src\\WumpusWorld\\Images\\ladder.gif", 100, 100);
     private BufferedImage picture1 = getScaledImage("src\\WumpusWorld\\Images\\Picture1.gif", 100, 100);
-    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 100, 100);
+    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 50, 50);
     private BufferedImage playerDown = getScaledImage("src\\WumpusWorld\\Images\\playerDown.png", 100, 100);
     private BufferedImage playerLeft = getScaledImage("src\\WumpusWorld\\Images\\playerLeft.png", 100, 100);
     private BufferedImage playerRight = getScaledImage("src\\WumpusWorld\\Images\\playerRight.png", 100, 100);
@@ -39,9 +38,9 @@ public class WumpusPanel extends JPanel implements KeyListener
 
     public WumpusPanel()
     {
-        setSize(100, 700);
+        setSize(580, 750);
         addKeyListener(this);
-        buffer = new BufferedImage(1000, 700, BufferedImage.TYPE_INT_ARGB);
+        buffer = new BufferedImage(580, 750, BufferedImage.TYPE_INT_ARGB);
         map = new WumpusMap();
         reset();
     }
@@ -60,19 +59,27 @@ public class WumpusPanel extends JPanel implements KeyListener
         Graphics2D gd = buffer.createGraphics();
 
         gd.setColor(Color.BLACK);
-        gd.fillRect(0, 0, getWidth(), getHeight());
+        gd.fillRect(0, 0, getWidth(), getHeight()-50);
 
         //grid
         {
             for (int i = 0; i < WumpusMap.NUM_ROWS; i++) {
                 for (int j = 0; j < WumpusMap.NUM_ROWS; j++) {
-                    int x = j * 50;
-                    int y = i * 50;
-                    WumpusSquare wsq = map.getWumpusSquare(j, i);
+                    int x = j*50+40;
+                    int y = i*50;
+                    WumpusSquare wsq = map.getWumpusSquare(i, j);
 
                     //floor
                     {
                         gd.drawImage(flooor, x, y, 50, 50, null);
+                        //fog of war
+                        {
+                            if (player.getRowPosition() != x && player.getColPosition() != y)
+                            {
+
+                            }
+                        }
+
                         //cheat
                         {
                             if (wsq.isPit()) gd.drawImage(pit, x, y, 50, 50, null);
@@ -80,20 +87,34 @@ public class WumpusPanel extends JPanel implements KeyListener
                             if (wsq.isLadder()) gd.drawImage(ladder, x, y, 50, 50, null);
                             if (wsq.isWumpus()) gd.drawImage(wumpus, x, y, 50, 50, null);
                             if (wsq.isDeadWumpus()) gd.drawImage(deadWumpus, x, y, 50, 50, null);
+
+                            if (wsq.isStench() && !wsq.isPit()) gd.drawImage(stench, x, y, 50, 50, null);
+                            if (wsq.isBreeze() && !wsq.isPit()) gd.drawImage(breeze, x, y, 50, 50, null);
                         }
                     }
                 }
             }
-        }
-
-        //player
-        {
-            int px = player.getColPosition()*50;
+            int px = player.getColPosition()*50+40;
             int py = player.getRowPosition()*50;
+            BufferedImage image = playerUp;
+            if (player.getDirection() == WumpusPlayer.NORTH) image = playerUp;
+            if (player.getDirection() == WumpusPlayer.WEST) image = playerLeft;
+            if (player.getDirection() == WumpusPlayer.SOUTH) image = playerDown;
+            if (player.getDirection() == WumpusPlayer.EAST) image = playerRight;
+            gd.drawImage(image, px, py, 50, 50, null);
 
-            gd.drawImage(playerUp, px, py,50, 50, null);
             g.drawImage(buffer, 0, 0, null);
+            gd.dispose();
         }
+
+//        //player - may not be needed
+//        {
+//            int px = player.getColPosition()*50+40;
+//            int py = player.getRowPosition()*50;
+//
+//            gd.drawImage(playerUp, px, py,50, 50, null);
+//            g.drawImage(buffer, 0, 0, null);
+//        }
     }
 
     @Override
@@ -111,7 +132,7 @@ public class WumpusPanel extends JPanel implements KeyListener
         //set the player directoin (the picture) ex: playerRight
         //find out how to do it
         if (c == 'W') {
-            player.setRowPosition(player.getRowPosition() + 1);
+            player.setRowPosition(player.getRowPosition() - 1);
             player.setDirection(WumpusPlayer.NORTH);
 
         }
@@ -120,7 +141,7 @@ public class WumpusPanel extends JPanel implements KeyListener
             player.setDirection(WumpusPlayer.EAST);
         }
         if (c == 'S') {
-            player.setRowPosition(player.getRowPosition() - 1);
+            player.setRowPosition(player.getRowPosition() + 1);
             player.setDirection(WumpusPlayer.SOUTH);
         }
         if (c == 'D') {
