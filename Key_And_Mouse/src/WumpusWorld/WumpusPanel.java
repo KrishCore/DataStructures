@@ -66,7 +66,7 @@ public class WumpusPanel extends JPanel implements KeyListener
             for (int i = 0; i < WumpusMap.NUM_ROWS; i++) {
                 for (int j = 0; j < WumpusMap.NUM_ROWS; j++) {
                     int x = j*50+40;
-                    int y = i*50;
+                    int y = i*50+20;
                     WumpusSquare wsq = map.getWumpusSquare(i, j);
 
                     //floor
@@ -94,8 +94,8 @@ public class WumpusPanel extends JPanel implements KeyListener
                     }
                 }
             }
-            int px = player.getColPosition()*50+40;
-            int py = player.getRowPosition()*50;
+            int px = player.getRowPosition()*50+40;
+            int py = player.getColPosition()*50+20;
             BufferedImage image = playerUp;
             if (player.getDirection() == WumpusPlayer.NORTH) image = playerUp;
             if (player.getDirection() == WumpusPlayer.WEST) image = playerLeft;
@@ -134,7 +134,6 @@ public class WumpusPanel extends JPanel implements KeyListener
         if (c == 'W') {
             player.setRowPosition(player.getRowPosition() - 1);
             player.setDirection(WumpusPlayer.NORTH);
-
         }
         if (c == 'A') {
             player.setColPosition(player.getColPosition() - 1);
@@ -149,7 +148,7 @@ public class WumpusPanel extends JPanel implements KeyListener
             player.setDirection(WumpusPlayer.EAST);
         }
 
-        // check death
+        //check death
         WumpusSquare sq = map.getWumpusSquare(player.getColPosition(), player.getRowPosition());
 
         if (sq.isPit()) {
@@ -162,6 +161,7 @@ public class WumpusPanel extends JPanel implements KeyListener
         }
 
         repaint();
+        paint(this.getGraphics());
         //handles all the player inputs
     }
 
