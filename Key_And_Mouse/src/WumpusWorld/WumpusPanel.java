@@ -3,13 +3,14 @@ package WumpusWorld;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class WumpusPanel extends JPanel implements KeyListener
+public class WumpusPanel extends JPanel //implements KeyListener
 {
     public static final int PLAYING = 0;
     public static final int DEAD = 1;
@@ -17,6 +18,7 @@ public class WumpusPanel extends JPanel implements KeyListener
     private int status;
     private WumpusPlayer player;
     private WumpusMap map;
+    private boolean toggleCheat = false;
 
     private BufferedImage arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif",100, 100);
     private BufferedImage black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF", 100, 100);
@@ -26,7 +28,7 @@ public class WumpusPanel extends JPanel implements KeyListener
     private BufferedImage gold = getScaledImage("src\\WumpusWorld\\Images\\gold.gif", 100, 100);
     private BufferedImage ladder = getScaledImage("src\\WumpusWorld\\Images\\ladder.gif", 100, 100);
     private BufferedImage picture1 = getScaledImage("src\\WumpusWorld\\Images\\Picture1.gif", 100, 100);
-    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 50, 50);
+    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 100, 100);
     private BufferedImage playerDown = getScaledImage("src\\WumpusWorld\\Images\\playerDown.png", 100, 100);
     private BufferedImage playerLeft = getScaledImage("src\\WumpusWorld\\Images\\playerLeft.png", 100, 100);
     private BufferedImage playerRight = getScaledImage("src\\WumpusWorld\\Images\\playerRight.png", 100, 100);
@@ -39,10 +41,164 @@ public class WumpusPanel extends JPanel implements KeyListener
     public WumpusPanel()
     {
         setSize(580, 750);
-        addKeyListener(this);
         buffer = new BufferedImage(580, 750, BufferedImage.TYPE_INT_ARGB);
         map = new WumpusMap();
         reset();
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                System.out.println("KeyTyped");
+                int code = e.getKeyCode();
+                char c = e.getKeyChar();
+                System.out.println(c);
+
+//                if (status != PLAYING)
+//                    return;
+
+                //movement
+                {
+                    if (status == PLAYING && code == KeyEvent.VK_W) //up (w)
+                    {
+                        player.setRowPosition(player.getRowPosition() - 1);
+                        player.setDirection(WumpusPlayer.NORTH);
+                        map.getWumpusSquare(player.getRowPosition(), player.getColPosition()).setVisited(true);
+                    }
+                    if (status == PLAYING && code == KeyEvent.VK_A) //left (a)
+                    {
+                        player.setColPosition(player.getColPosition() - 1);
+                        player.setDirection(WumpusPlayer.WEST);
+                        map.getWumpusSquare(player.getRowPosition(), player.getColPosition()).setVisited(true);
+                    }
+                    if (status == PLAYING && code == KeyEvent.VK_S) //down (s)
+                    {
+                        player.setRowPosition(player.getRowPosition() + 1);
+                        player.setDirection(WumpusPlayer.SOUTH);
+                        map.getWumpusSquare(player.getRowPosition(), player.getColPosition()).setVisited(true);
+                    }
+                    if (status == PLAYING && code == KeyEvent.VK_D) //right (d)
+                    {
+                        player.setColPosition(player.getColPosition() + 1);
+                        player.setDirection(WumpusPlayer.EAST);
+                        map.getWumpusSquare(player.getRowPosition(), player.getColPosition()).setVisited(true);
+                    }
+                }
+
+                //arrow
+                {
+                    if (status == PLAYING && code == KeyEvent.VK_I && player.hasArrow()) //up arrow
+                    {
+                        System.out.println("shoot arrow up");
+                        for (int i = 0; i < player.getRowPosition(); i++) {
+                            WumpusSquare ws = map.getWumpusSquare(player.getRowPosition() - i, player.getColPosition());
+                            if (ws.isWumpus()) {
+                                ws.setWumpus(false);
+                                ws.setDeadWumpus(true);
+                                System.out.println("You hear a scream " + ws.isDeadWumpus());
+                            }
+                        }
+                        player.setDirection(WumpusPlayer.NORTH);
+                        player.setArrow(false);
+                    }
+                    if (status == PLAYING && code == KeyEvent.VK_J && player.hasArrow()) //left arrow
+                    {
+                        System.out.println("shoot arrow left");
+                        for (int i = 0; i < player.getColPosition(); i++) {
+                            WumpusSquare ws = map.getWumpusSquare(player.getRowPosition(), player.getColPosition()-i);
+                            if (ws.isWumpus()) {
+                                ws.setWumpus(false);
+                                ws.setDeadWumpus(true);
+                                System.out.println("You hear a scream " + ws.isDeadWumpus());
+                            }
+                        }
+                        player.setDirection(WumpusPlayer.WEST);
+                        player.setArrow(false);
+                    }
+                    if (status == PLAYING && code == KeyEvent.VK_K && player.hasArrow()) //down arrow
+                    {
+                        System.out.println("shoot arrow down");
+                        for (int i = 0; i < WumpusMap.NUM_ROWS-player.getRowPosition(); i++) {
+                            WumpusSquare ws = map.getWumpusSquare(player.getRowPosition() + i, player.getColPosition());
+                            if (ws.isWumpus()) {
+                                ws.setWumpus(false);
+                                ws.setDeadWumpus(true);
+                                System.out.println("You hear a scream " + ws.isDeadWumpus());
+                            }
+                        }
+                        player.setDirection(WumpusPlayer.SOUTH);
+                        player.setArrow(false);
+                    }
+                    if (status == PLAYING && code == KeyEvent.VK_L && player.hasArrow()) //right arrow
+                    {
+                        System.out.println("shoot arrow right");
+                        for (int i = 0; i < WumpusMap.NUM_COLUMNS-player.getColPosition(); i++) {
+                            WumpusSquare ws = map.getWumpusSquare(player.getRowPosition(), player.getColPosition() + i);
+                            if (ws.isWumpus()) {
+                                ws.setWumpus(false);
+                                ws.setDeadWumpus(true);
+                                System.out.println("You hear a scream " + ws.isDeadWumpus());
+                            }
+                        }
+                        player.setDirection(WumpusPlayer.EAST);
+                        player.setArrow(false);
+                    }
+                }
+
+                WumpusSquare sq = map.getWumpusSquare(player.getRowPosition(), player.getColPosition());
+                //toggle cheat
+                {
+                    if (c == '*') {
+                        toggleCheat = !toggleCheat;
+                        System.out.println("You turned cheat on! " + toggleCheat);
+                        repaint();
+                    }
+                }
+                //check death
+                {
+                    if (sq.isPit()) {
+                        status = DEAD;
+                        System.out.println("You fell down a pit to your death");
+                    } else if (sq.isWumpus()) {
+                        status = DEAD;
+                        System.out.println("You are eaten by the Wumpus");
+                    }
+                }
+                //other actions
+                {
+                    if (sq.isBreeze())
+                        System.out.println("You feel a breeze");
+                    if (sq.isStench() || sq.isDeadWumpus())
+                        System.out.println("You smell a stench");
+                    if (sq.isGold()) {
+                        System.out.println("You see a glimmer");
+                        if (code == KeyEvent.VK_P)
+                            player.setGold(true);
+                    }
+                    if (sq.isLadder())
+                        System.out.println("You bump into a ladder");
+                }
+                //check win
+                {
+                    if (player.hasGold() && sq.isLadder() && code == KeyEvent.VK_C) {
+                        System.out.println("You won!!");
+                        status = WON;
+                    }
+                }
+                //new game
+                {
+                    if (status != PLAYING && code == KeyEvent.VK_N) {
+                        map = new WumpusMap();
+                        status = PLAYING;
+                        reset();
+                        System.out.println("New game\n");
+                    }
+                }
+
+                repaint();
+//                paint(super.getGraphics());
+                //handles all the player inputs
+            }
+        });
     }
 
     private void reset()
@@ -52,19 +208,32 @@ public class WumpusPanel extends JPanel implements KeyListener
         player = new WumpusPlayer();
         player.setRowPosition(map.getLadderR());
         player.setColPosition(map.getLadderC());
+        player.setArrow(true);
+        toggleCheat = false;
+        for (int i = 0; i < WumpusMap.NUM_ROWS; i++)
+            for (int j = 0; j < WumpusMap.NUM_COLUMNS; j++)
+                map.getWumpusSquare(i, j).setVisited(false);
+        WumpusSquare sq = map.getWumpusSquare(player.getRowPosition(), player.getColPosition());
+        sq.setVisited(true);
+        if (sq.isBreeze())
+            System.out.println("You feel a breeze");
+        if (sq.isStench() || sq.isDeadWumpus())
+            System.out.println("You smell a stench");
+        if (sq.isLadder())
+            System.out.println("You bump into a ladder");
     }
 
     public void paint(Graphics g)
     {
         Graphics2D gd = buffer.createGraphics();
 
-        gd.setColor(Color.BLACK);
+        gd.setColor(Color.DARK_GRAY);
         gd.fillRect(0, 0, getWidth(), getHeight()-50);
 
         //grid
         {
             for (int i = 0; i < WumpusMap.NUM_ROWS; i++) {
-                for (int j = 0; j < WumpusMap.NUM_ROWS; j++) {
+                for (int j = 0; j < WumpusMap.NUM_COLUMNS; j++) {
                     int x = j*50+40;
                     int y = i*50+20;
                     WumpusSquare wsq = map.getWumpusSquare(i, j);
@@ -74,101 +243,94 @@ public class WumpusPanel extends JPanel implements KeyListener
                         gd.drawImage(flooor, x, y, 50, 50, null);
                         //fog of war
                         {
-                            if (player.getRowPosition() != x && player.getColPosition() != y)
+                            if (wsq.isVisited())
                             {
+//                                gd.drawImage(black, x, y, 50, 50, null);
 
+                                if (wsq.isPit()) gd.drawImage(pit, x, y, 50, 50, null);
+                                if (!player.hasGold() && wsq.isGold()) gd.drawImage(gold, x, y, 50, 50, null);
+                                if (wsq.isLadder()) gd.drawImage(ladder, x, y, 50, 50, null);
+                                if (wsq.isWumpus()) gd.drawImage(wumpus, x, y, 50, 50, null);
+                                if (wsq.isDeadWumpus()) gd.drawImage(deadWumpus, x, y, 50, 50, null);
+
+                                if (wsq.isStench() && !wsq.isPit()) gd.drawImage(stench, x, y, 50, 50, null);
+                                if (wsq.isBreeze() && !wsq.isPit()) gd.drawImage(breeze, x, y, 50, 50, null);
                             }
+                            else gd.drawImage(black, x, y, 50, 50, null);
                         }
 
                         //cheat
                         {
-                            if (wsq.isPit()) gd.drawImage(pit, x, y, 50, 50, null);
-                            if (wsq.isGold()) gd.drawImage(gold, x, y, 50, 50, null);
-                            if (wsq.isLadder()) gd.drawImage(ladder, x, y, 50, 50, null);
-                            if (wsq.isWumpus()) gd.drawImage(wumpus, x, y, 50, 50, null);
-                            if (wsq.isDeadWumpus()) gd.drawImage(deadWumpus, x, y, 50, 50, null);
+                            if (toggleCheat && !wsq.isVisited())
+                            {
+                                gd.drawImage(flooor, x, y, 50, 50, null);
+                                if (wsq.isPit()) gd.drawImage(pit, x, y, 50, 50, null);
+                                if (!player.hasGold() && wsq.isGold()) gd.drawImage(gold, x, y, 50, 50, null);
+                                if (wsq.isLadder()) gd.drawImage(ladder, x, y, 50, 50, null);
+                                if (wsq.isWumpus()) gd.drawImage(wumpus, x, y, 50, 50, null);
+                                if (wsq.isDeadWumpus()) gd.drawImage(deadWumpus, x, y, 50, 50, null);
 
-                            if (wsq.isStench() && !wsq.isPit()) gd.drawImage(stench, x, y, 50, 50, null);
-                            if (wsq.isBreeze() && !wsq.isPit()) gd.drawImage(breeze, x, y, 50, 50, null);
+                                if (wsq.isStench() && !wsq.isPit()) gd.drawImage(stench, x, y, 50, 50, null);
+                                if (wsq.isBreeze() && !wsq.isPit()) gd.drawImage(breeze, x, y, 50, 50, null);
+                            }
                         }
                     }
                 }
             }
-            int px = player.getRowPosition()*50+40;
-            int py = player.getColPosition()*50+20;
-            BufferedImage image = playerUp;
-            if (player.getDirection() == WumpusPlayer.NORTH) image = playerUp;
-            if (player.getDirection() == WumpusPlayer.WEST) image = playerLeft;
-            if (player.getDirection() == WumpusPlayer.SOUTH) image = playerDown;
-            if (player.getDirection() == WumpusPlayer.EAST) image = playerRight;
-            gd.drawImage(image, px, py, 50, 50, null);
-
-            g.drawImage(buffer, 0, 0, null);
-            gd.dispose();
+            //player
+            {
+                int px = player.getColPosition() * 50 + 40;
+                int py = player.getRowPosition() * 50 + 20;
+                BufferedImage image = playerUp;
+                if (player.getDirection() == WumpusPlayer.NORTH) image = playerUp;
+                if (player.getDirection() == WumpusPlayer.WEST) image = playerLeft;
+                if (player.getDirection() == WumpusPlayer.SOUTH) image = playerDown;
+                if (player.getDirection() == WumpusPlayer.EAST) image = playerRight;
+                gd.drawImage(image, px, py, 50, 50, null);
+            }
         }
 
-//        //player - may not be needed
-//        {
-//            int px = player.getColPosition()*50+40;
-//            int py = player.getRowPosition()*50;
+        //inventory and messages
+        {
+            //inventory
+            {
+                gd.setColor(Color.BLACK);
+                gd.fillRect(40, 560, 190, 140);
+                gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 25));
+                gd.setColor(Color.RED);
+                gd.drawString("Inventory:", 50, 590);
+                if (player.hasArrow())
+                {
+                    gd.drawImage(arrow, 65, 620, 65, 65, null);
+                }
+                if (player.hasGold())
+                {
+                    gd.drawImage(gold, 135, 620, 65, 65, null);
+                }
+            }
+
+            //messages
+            {
+
+            }
+        }
+
+        g.drawImage(buffer, 0, 0, null);
+        gd.dispose();
+
+    }
 //
-//            gd.drawImage(playerUp, px, py,50, 50, null);
-//            g.drawImage(buffer, 0, 0, null);
-//        }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        if (status != PLAYING)
-            return;
-
-        char c = e.getKeyChar();
-
-        //set the player directoin (the picture) ex: playerRight
-        //find out how to do it
-        if (c == 'W') {
-            player.setRowPosition(player.getRowPosition() - 1);
-            player.setDirection(WumpusPlayer.NORTH);
-        }
-        if (c == 'A') {
-            player.setColPosition(player.getColPosition() - 1);
-            player.setDirection(WumpusPlayer.EAST);
-        }
-        if (c == 'S') {
-            player.setRowPosition(player.getRowPosition() + 1);
-            player.setDirection(WumpusPlayer.SOUTH);
-        }
-        if (c == 'D') {
-            player.setColPosition(player.getColPosition() + 1);
-            player.setDirection(WumpusPlayer.EAST);
-        }
-
-        //check death
-        WumpusSquare sq = map.getWumpusSquare(player.getColPosition(), player.getRowPosition());
-
-        if (sq.isPit()) {
-            status = DEAD;
-            System.out.println("You fell into a pit");
-        }
-        else if (sq.isWumpus()) {
-            status = DEAD;
-            System.out.println("You got eaten");
-        }
-
-        repaint();
-        paint(this.getGraphics());
-        //handles all the player inputs
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+//    @Override
+//    public void keyPressed(KeyEvent e) {
+//
+//    }
+//
+//
+//
+//    @Override
+//    public void keyReleased(KeyEvent e) {
+//
+//    }
 
     public void addNotify()
     {
@@ -182,9 +344,9 @@ public class WumpusPanel extends JPanel implements KeyListener
             BufferedImage og = ImageIO.read(new File(path));
             Image scaled = og.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = bi.createGraphics();
-            g.drawImage(scaled, 0, 0, null);
-            g.dispose();
+            Graphics2D gd = bi.createGraphics();
+            gd.drawImage(scaled, 0, 0, null);
+            gd.dispose();
             return bi;
         } catch (IOException e) {
             e.printStackTrace();

@@ -11,12 +11,14 @@ import java.io.IOException;
 public class WumpusFrame extends JFrame
 {
 
-    public WumpusFrame() throws IOException {
+    public WumpusFrame()
+    {
         super("Wumpus World");
         System.out.println(getWidth());
-        setSize(600-4,790-1);
+        setSize(600-8,790-1);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBackground(Color.DARK_GRAY);
         JPanel panel = new WumpusPanel();
 //        panel.setBounds(0, 0, 580, 750);
         add(panel);

@@ -2,7 +2,6 @@ package WumpusWorld;
 
 public class WumpusSquare
 {
-
     private boolean gold;
     private boolean ladder;
     private boolean pit;
@@ -96,7 +95,7 @@ public class WumpusSquare
     }
 
     public void setPlayer(boolean player) {
-        this.visited = player;
+        this.player = player;
     }
 
     @Override

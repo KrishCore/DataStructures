@@ -31,8 +31,8 @@ public class CalcFrame extends JFrame
 
 
     public CalcFrame() {
-            super("Calculator");
-            //set up
+        super("Calculator");
+        //set up
         {
             setSize(325, 420);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -141,7 +141,6 @@ public class CalcFrame extends JFrame
             add(backspace);
             backspace.addActionListener(e -> backspaceClicked());
         }
-
         setVisible(true);
     }
 

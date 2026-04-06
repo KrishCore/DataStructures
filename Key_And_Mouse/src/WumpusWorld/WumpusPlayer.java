@@ -50,7 +50,7 @@ public class WumpusPlayer
     }
 
     public void setColPosition(int colPosition) {
-        if (colPosition >= 0 && rowPosition < WumpusMap.NUM_COLUMNS)
+        if (colPosition >= 0 && colPosition < WumpusMap.NUM_COLUMNS)
             this.colPosition = colPosition;
     }
 

@@ -36,7 +36,7 @@ public class WumpusMap
             int pitsPlaced = 0;
             while (pitsPlaced < NUM_PITS)
             {
-                int r = (int) (Math.random()* NUM_ROWS);
+                int r = (int) (Math.random()*NUM_ROWS);
                 int c = (int) (Math.random()*NUM_COLUMNS);
                 if (!grid[r][c].isPit() && !grid[r][c].isLadder()) {
                     grid[r][c].setPit(true);
@@ -52,7 +52,6 @@ public class WumpusMap
             {
                 int r = (int) (Math.random()* NUM_ROWS);
                 int c = (int) (Math.random()*NUM_COLUMNS);
-
                 if (!grid[r][c].isLadder() && !grid[r][c].isPit()) {
                     grid[r][c].setGold(true);
                     break;
@@ -67,7 +66,6 @@ public class WumpusMap
             {
                 int r = (int) (Math.random() * NUM_ROWS);
                 int c = (int) (Math.random() * NUM_COLUMNS);
-
                 if (!grid[r][c].isPit() && !grid[r][c].isGold() && !grid[r][c].isLadder()) {
                     grid[r][c].setWumpus(true);
                     addStench(r, c);
@@ -81,11 +79,11 @@ public class WumpusMap
     {
         if (r > 0)
             grid[r-1][c].setBreeze(true);
-        if (r+1 < NUM_ROWS -1)
+        if (r+1 <= NUM_ROWS -1)
             grid[r+1][c].setBreeze(true);
         if (c > 0)
             grid[r][c-1].setBreeze(true);
-        if (c+1 < NUM_COLUMNS-1)
+        if (c+1 <= NUM_COLUMNS-1)
             grid[r][c+1].setBreeze(true);
     }
 
@@ -93,11 +91,11 @@ public class WumpusMap
     {
         if (r > 0)
             grid[r-1][c].setStench(true);
-        if (r+1 < NUM_ROWS -1)
+        if (r+1 <= NUM_ROWS -1)
             grid[r+1][c].setStench(true);
         if (c > 0)
             grid[r][c-1].setStench(true);
-        if (c+1 < NUM_COLUMNS-1)
+        if (c+1 <= NUM_COLUMNS-1)
             grid[r][c+1].setStench(true);
     }
 
@@ -109,13 +107,13 @@ public class WumpusMap
         return ladderR;
     }
 
-    public WumpusSquare getWumpusSquare(int col, int row) {
+    public WumpusSquare getWumpusSquare(int row, int col) {
         return (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLUMNS) ? null : grid[row][col];
     }
 
     public String toString()
     {
-        //lpgdw
+        //lpgdw*
         String s = "";
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLUMNS; j++) {
