@@ -1,6 +1,5 @@
 package WumpusWorld;
 
-
 public class WumpusPlayer
 {
     public static final int NORTH = 0;

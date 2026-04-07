@@ -57,6 +57,36 @@ public class WumpusMap
                     break;
                 }
             }
+
+            //solvable check
+            //private ArrayList<String> getStrings(WumpusSquare sq) {
+            //        ArrayList<String> messages = new ArrayList<>();
+            //        //messages
+            //        {
+            //            if (status != WON && sq.isLadder())
+            //                messages.add("You bump into a ladder");
+            //            if (status != WON && wumpusKilled) {
+            //                messages.add("You hear a scream.");
+            //                wumpusKilled = false;
+            //            }
+            //            if (status == PLAYING && sq.isBreeze())
+            //                messages.add("You feel a breeze.");
+            //            if (status == PLAYING && sq.isStench() || sq.isDeadWumpus())
+            //                messages.add("You smell a stench.");
+            //            if (status == PLAYING && sq.isGold() && !player.hasGold())
+            //                messages.add("You see a glimmer.");
+            //
+            //            if (status == WON)
+            //                messages.add("You Win. (N for new game)");
+            //            if (sq.isPit())
+            //                messages.add("You fell down a pit to your death.");
+            //            if (sq.isWumpus())
+            //                messages.add("You are eaten by the Wumpus.");
+            //            if (status == DEAD)
+            //                messages.add("Game Over. (N for new game)");
+            //        }
+            //        return messages;
+            //    }
 //        bonus - place it in a solvable place
         }
 
@@ -116,14 +146,8 @@ public class WumpusMap
         //lpgdw*
         String s = "";
         for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLUMNS; j++) {
-                if (grid[i][j].isLadder()) s +="L";
-                else if (grid[i][j].isPit()) s +="P";
-                else if (grid[i][j].isGold()) s +="G";
-                else if (grid[i][j].isDeadWumpus()) s +="D";
-                else if (grid[i][j].isWumpus()) s +="W";
-                else s += "*";
-            }
+            for (int j = 0; j < NUM_COLUMNS; j++)
+                s += grid[i][j].toString();
             s += "\n";
         }
         return s;

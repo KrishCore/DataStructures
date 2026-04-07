@@ -5,10 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class WumpusPanel extends JPanel //implements KeyListener
 {
@@ -20,6 +20,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
     private WumpusMap map;
     private boolean toggleCheat = false;
     private Color bgColor = Color.DARK_GRAY;
+    private boolean wumpusKilled = false;
 
     private BufferedImage arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif",100, 100);
     private BufferedImage black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF", 100, 100);
@@ -53,9 +54,6 @@ public class WumpusPanel extends JPanel //implements KeyListener
                 int code = e.getKeyCode();
                 char c = e.getKeyChar();
                 System.out.println(c);
-
-//                if (status != PLAYING)
-//                    return;
 
                 //movement
                 {
@@ -95,6 +93,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                             if (ws.isWumpus()) {
                                 ws.setWumpus(false);
                                 ws.setDeadWumpus(true);
+                                wumpusKilled = true;
                                 System.out.println("You hear a scream " + ws.isDeadWumpus());
                             }
                         }
@@ -109,6 +108,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                             if (ws.isWumpus()) {
                                 ws.setWumpus(false);
                                 ws.setDeadWumpus(true);
+                                wumpusKilled = true;
                                 System.out.println("You hear a scream " + ws.isDeadWumpus());
                             }
                         }
@@ -123,6 +123,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                             if (ws.isWumpus()) {
                                 ws.setWumpus(false);
                                 ws.setDeadWumpus(true);
+                                wumpusKilled = true;
                                 System.out.println("You hear a scream " + ws.isDeadWumpus());
                             }
                         }
@@ -137,6 +138,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                             if (ws.isWumpus()) {
                                 ws.setWumpus(false);
                                 ws.setDeadWumpus(true);
+                                wumpusKilled = true;
                                 System.out.println("You hear a scream " + ws.isDeadWumpus());
                             }
                         }
@@ -166,6 +168,8 @@ public class WumpusPanel extends JPanel //implements KeyListener
                 }
                 //other actions
                 {
+                    if (sq.isLadder())
+                        System.out.println("You bump into a ladder");
                     if (sq.isBreeze())
                         System.out.println("You feel a breeze");
                     if (sq.isStench() || sq.isDeadWumpus())
@@ -175,8 +179,6 @@ public class WumpusPanel extends JPanel //implements KeyListener
                         if (code == KeyEvent.VK_P)
                             player.setGold(true);
                     }
-                    if (sq.isLadder())
-                        System.out.println("You bump into a ladder");
                 }
                 //check win
                 {
@@ -191,11 +193,12 @@ public class WumpusPanel extends JPanel //implements KeyListener
                         map = new WumpusMap();
                         status = PLAYING;
                         reset();
-                        System.out.println("New game\n");
+                        System.out.println("New game\n----------------------");
                     }
                 }
 
                 repaint();
+                System.out.println(map.toString());
 //                paint(super.getGraphics());
                 //handles all the player inputs
             }
@@ -211,6 +214,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
         player.setColPosition(map.getLadderC());
         player.setArrow(true);
         toggleCheat = false;
+        wumpusKilled = false;
         for (int i = 0; i < WumpusMap.NUM_ROWS; i++)
             for (int j = 0; j < WumpusMap.NUM_COLUMNS; j++)
                 map.getWumpusSquare(i, j).setVisited(false);
@@ -246,8 +250,6 @@ public class WumpusPanel extends JPanel //implements KeyListener
                         {
                             if (wsq.isVisited())
                             {
-//                                gd.drawImage(black, x, y, 50, 50, null);
-
                                 if (wsq.isPit()) gd.drawImage(pit, x, y, 50, 50, null);
                                 if (!player.hasGold() && wsq.isGold()) gd.drawImage(gold, x, y, 50, 50, null);
                                 if (wsq.isLadder()) gd.drawImage(ladder, x, y, 50, 50, null);
@@ -300,12 +302,10 @@ public class WumpusPanel extends JPanel //implements KeyListener
                 gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 25));
                 gd.setColor(Color.RED);
                 gd.drawString("Inventory:", 50, 590);
-                if (player.hasArrow()) {
-                    gd.drawImage(arrow, 65, 620, 65, 65, null);
-                }
-                if (player.hasGold()) {
-                    gd.drawImage(gold, 135, 620, 65, 65, null);
-                }
+                if (player.hasArrow())
+                    gd.drawImage(arrow, 50, 610, 65, 65, null);
+                if (player.hasGold())
+                    gd.drawImage(gold, 125, 615, 65, 65, null);
             }
 
             //messages
@@ -314,17 +314,61 @@ public class WumpusPanel extends JPanel //implements KeyListener
                 gd.fillRect(230, 560, 310, 140);
                 gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 25));
                 gd.setColor(Color.RED);
-                gd.drawString("Messages:", 245, 590);
+                gd.drawString("Messages:", 230, 590);
+
+                ArrayList<String> messages = getStrings(map.getWumpusSquare(player.getRowPosition(), player.getColPosition()));
+                System.out.println(messages);
+                String s = "";
+
+                gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 15));
+                gd.setColor(Color.WHITE);
+                int space = 0;
+                for (String message : messages) {
+                    gd.drawString(message, 230, 620 + space);
+                    space = space + 20;
+                }
+
+                String[] mes = messages.toString().substring(1, messages.toString().length()-1).split(", "); //why - may not be needed
+                System.out.println(Arrays.toString(mes));                                                          //why - may not be needed
 
             }
             gd.setColor(bgColor);
             gd.setStroke(new BasicStroke(.100f));
-            gd.drawLine(230, 560, 230, 700);
+            gd.drawLine(215, 560, 215, 700);
         }
 
         g.drawImage(buffer, 0, 0, null);
         gd.dispose();
 
+    }
+
+    private ArrayList<String> getStrings(WumpusSquare sq) {
+        ArrayList<String> messages = new ArrayList<>();
+        //messages
+        {
+            if (status == PLAYING && sq.isLadder())
+                messages.add("You bump into a ladder");
+            if (status == PLAYING && wumpusKilled) {
+                messages.add("You hear a scream.");
+                wumpusKilled = false;
+            }
+            if (status == PLAYING && sq.isBreeze())
+                messages.add("You feel a breeze.");
+            if (status == PLAYING && sq.isStench() || sq.isDeadWumpus())
+                messages.add("You smell a stench.");
+            if (status == PLAYING && sq.isGold() && !player.hasGold())
+                messages.add("You see a glimmer.");
+
+            if (status == WON)
+                messages.add("You Win. (N for new game)");
+            if (sq.isPit())
+                messages.add("You fell down a pit to your death.");
+            if (sq.isWumpus())
+                messages.add("You are eaten by the Wumpus.");
+            if (status == DEAD)
+                messages.add("Game Over. (N for new game)");
+        }
+        return messages;
     }
 //
 //    @Override
@@ -355,7 +399,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
             gd.drawImage(scaled, 0, 0, null);
             gd.dispose();
             return bi;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
