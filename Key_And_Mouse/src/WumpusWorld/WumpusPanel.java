@@ -19,6 +19,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
     private WumpusPlayer player;
     private WumpusMap map;
     private boolean toggleCheat = false;
+    private Color bgColor = Color.DARK_GRAY;
 
     private BufferedImage arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif",100, 100);
     private BufferedImage black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF", 100, 100);
@@ -227,7 +228,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
     {
         Graphics2D gd = buffer.createGraphics();
 
-        gd.setColor(Color.DARK_GRAY);
+        gd.setColor(bgColor);
         gd.fillRect(0, 0, getWidth(), getHeight()-50);
 
         //grid
@@ -299,20 +300,26 @@ public class WumpusPanel extends JPanel //implements KeyListener
                 gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 25));
                 gd.setColor(Color.RED);
                 gd.drawString("Inventory:", 50, 590);
-                if (player.hasArrow())
-                {
+                if (player.hasArrow()) {
                     gd.drawImage(arrow, 65, 620, 65, 65, null);
                 }
-                if (player.hasGold())
-                {
+                if (player.hasGold()) {
                     gd.drawImage(gold, 135, 620, 65, 65, null);
                 }
             }
 
             //messages
             {
+                gd.setColor(Color.BLACK);
+                gd.fillRect(230, 560, 310, 140);
+                gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 25));
+                gd.setColor(Color.RED);
+                gd.drawString("Messages:", 245, 590);
 
             }
+            gd.setColor(bgColor);
+            gd.setStroke(new BasicStroke(.100f));
+            gd.drawLine(230, 560, 230, 700);
         }
 
         g.drawImage(buffer, 0, 0, null);
