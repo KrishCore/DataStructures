@@ -15,7 +15,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
     public static final int PLAYING = 0;
     public static final int DEAD = 1;
     public static final int WON = 2;
-    private int status;
+    public int status;
     private WumpusPlayer player;
     private WumpusMap map;
     private boolean toggleCheat = false;
@@ -233,7 +233,10 @@ public class WumpusPanel extends JPanel //implements KeyListener
         Graphics2D gd = buffer.createGraphics();
 
         gd.setColor(bgColor);
-        gd.fillRect(0, 0, getWidth(), getHeight()-50);
+        gd.fillRect(0, 0, getWidth(), getHeight());//-50);
+        gd.setColor(Color.BLUE);
+        gd.setStroke(new BasicStroke(15));
+        gd.drawRect(0, 0, getWidth(), getHeight());
 
         //grid
         {
