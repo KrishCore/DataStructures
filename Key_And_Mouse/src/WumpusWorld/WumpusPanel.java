@@ -15,28 +15,28 @@ public class WumpusPanel extends JPanel //implements KeyListener
     public static final int PLAYING = 0;
     public static final int DEAD = 1;
     public static final int WON = 2;
-    public int status;
+    private int status;
     private WumpusPlayer player;
     private WumpusMap map;
     private boolean toggleCheat = false;
     private Color bgColor = Color.DARK_GRAY;
     private boolean wumpusKilled = false;
 
-    private BufferedImage arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif",100, 100);
-    private BufferedImage black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF", 100, 100);
-    private BufferedImage breeze = getScaledImage("src\\WumpusWorld\\Images\\breeze.gif", 100, 100);
-    private BufferedImage deadWumpus = getScaledImage("src\\WumpusWorld\\Images\\deadwumpus.GIF", 100, 100);
-    private BufferedImage flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif", 100, 100);
-    private BufferedImage gold = getScaledImage("src\\WumpusWorld\\Images\\gold.gif", 100, 100);
-    private BufferedImage ladder = getScaledImage("src\\WumpusWorld\\Images\\ladder.gif", 100, 100);
-    private BufferedImage picture1 = getScaledImage("src\\WumpusWorld\\Images\\Picture1.gif", 100, 100);
-    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif", 100, 100);
-    private BufferedImage playerDown = getScaledImage("src\\WumpusWorld\\Images\\playerDown.png", 100, 100);
-    private BufferedImage playerLeft = getScaledImage("src\\WumpusWorld\\Images\\playerLeft.png", 100, 100);
-    private BufferedImage playerRight = getScaledImage("src\\WumpusWorld\\Images\\playerRight.png", 100, 100);
-    private BufferedImage playerUp = getScaledImage("src\\WumpusWorld\\Images\\playerUp.png", 100, 100);
-    private BufferedImage stench = getScaledImage("src\\WumpusWorld\\Images\\stench.gif", 100, 100);
-    private BufferedImage wumpus = getScaledImage("src\\WumpusWorld\\Images\\wumpus.gif", 100, 100);
+    private BufferedImage arrow = getScaledImage("src\\WumpusWorld\\Images\\arrow.gif");
+    private BufferedImage black = getScaledImage("src\\WumpusWorld\\Images\\black.GIF");
+    private BufferedImage breeze = getScaledImage("src\\WumpusWorld\\Images\\breeze.gif");
+    private BufferedImage deadWumpus = getScaledImage("src\\WumpusWorld\\Images\\deadwumpus.GIF");
+    private BufferedImage flooor = getScaledImage("src\\WumpusWorld\\Images\\Floor.gif");
+    private BufferedImage gold = getScaledImage("src\\WumpusWorld\\Images\\gold.gif");
+    private BufferedImage ladder = getScaledImage("src\\WumpusWorld\\Images\\ladder.gif");
+    private BufferedImage picture1 = getScaledImage("src\\WumpusWorld\\Images\\Picture1.gif");
+    private BufferedImage pit = getScaledImage("src\\WumpusWorld\\Images\\pit.gif");
+    private BufferedImage playerDown = getScaledImage("src\\WumpusWorld\\Images\\playerDown.png");
+    private BufferedImage playerLeft = getScaledImage("src\\WumpusWorld\\Images\\playerLeft.png");
+    private BufferedImage playerRight = getScaledImage("src\\WumpusWorld\\Images\\playerRight.png");
+    private BufferedImage playerUp = getScaledImage("src\\WumpusWorld\\Images\\playerUp.png");
+    private BufferedImage stench = getScaledImage("src\\WumpusWorld\\Images\\stench.gif");
+    private BufferedImage wumpus = getScaledImage("src\\WumpusWorld\\Images\\wumpus.gif");
 
     BufferedImage buffer;
 
@@ -199,7 +199,6 @@ public class WumpusPanel extends JPanel //implements KeyListener
 
                 repaint();
                 System.out.println(map.toString());
-//                paint(super.getGraphics());
                 //handles all the player inputs
             }
         });
@@ -321,14 +320,13 @@ public class WumpusPanel extends JPanel //implements KeyListener
 
                 ArrayList<String> messages = getStrings(map.getWumpusSquare(player.getRowPosition(), player.getColPosition()));
                 System.out.println(messages);
-                String s = "";
 
                 gd.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 15));
                 gd.setColor(Color.WHITE);
                 int space = 0;
                 for (String message : messages) {
                     gd.drawString(message, 230, 620 + space);
-                    space = space + 20;
+                    space += 20;
                 }
 
                 String[] mes = messages.toString().substring(1, messages.toString().length()-1).split(", "); //why - may not be needed
@@ -392,12 +390,16 @@ public class WumpusPanel extends JPanel //implements KeyListener
         requestFocus();
     }
 
-    private BufferedImage getScaledImage (String path, int width, int height)
+    public int getStatus() {
+        return status;
+    }
+
+    private BufferedImage getScaledImage (String path)
     {
         try {
             BufferedImage og = ImageIO.read(new File(path));
-            Image scaled = og.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Image scaled = og.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            BufferedImage bi = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
             Graphics2D gd = bi.createGraphics();
             gd.drawImage(scaled, 0, 0, null);
             gd.dispose();
