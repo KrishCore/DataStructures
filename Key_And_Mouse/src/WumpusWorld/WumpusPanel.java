@@ -203,11 +203,9 @@ public class WumpusPanel extends JPanel //implements KeyListener
                     if (sq.isPit()) {
                         status = DEAD;
                         System.out.println("You fell down a pit to your death");
-                        deaths++;
                     } else if (sq.isWumpus()) {
                         status = DEAD;
                         System.out.println("You are eaten by the Wumpus");
-                        deaths++;
                     }
                 }
                 //other actions
@@ -229,7 +227,6 @@ public class WumpusPanel extends JPanel //implements KeyListener
                     if (player.hasGold() && sq.isLadder() && code == KeyEvent.VK_C) {
                         System.out.println("You won!!");
                         status = WON;
-                        wins++;
                     }
                 }
                 //new game
@@ -407,14 +404,18 @@ public class WumpusPanel extends JPanel //implements KeyListener
             if (status == PLAYING && sq.isGold() && !player.hasGold())
                 messages.add("You see a glimmer.");
 
-            if (status == WON)
+            if (status == WON) {
                 messages.add("You Win. (N for new game)");
+                wins++;
+            }
             if (sq.isPit())
                 messages.add("You fell down a pit to your death.");
             if (sq.isWumpus())
                 messages.add("You are eaten by the Wumpus.");
-            if (status == DEAD)
+            if (status == DEAD) {
                 messages.add("Game Over. (N for new game)");
+                deaths++;
+            }
         }
         return messages;
     }
