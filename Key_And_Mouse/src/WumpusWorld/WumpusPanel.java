@@ -109,7 +109,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                     if (status == PLAYING && code == KeyEvent.VK_I && player.hasArrow()) //up arrow
                     {
                         System.out.println("shoot arrow up");
-                        for (int i = 0; i < player.getRowPosition(); i++) {
+                        for (int i = 0; i <= player.getRowPosition(); i++) {
                             WumpusSquare ws = map.getWumpusSquare(player.getRowPosition() - i, player.getColPosition());
                             if (ws.isWumpus()) {
                                 ws.setWumpus(false);
@@ -125,7 +125,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                     if (status == PLAYING && code == KeyEvent.VK_J && player.hasArrow()) //left arrow
                     {
                         System.out.println("shoot arrow left");
-                        for (int i = 0; i < player.getColPosition(); i++) {
+                        for (int i = 0; i <= player.getColPosition(); i++) {
                             WumpusSquare ws = map.getWumpusSquare(player.getRowPosition(), player.getColPosition()-i);
                             if (ws.isWumpus()) {
                                 ws.setWumpus(false);
@@ -208,20 +208,6 @@ public class WumpusPanel extends JPanel //implements KeyListener
                         System.out.println("You are eaten by the Wumpus");
                     }
                 }
-                //other actions
-                {
-                    if (sq.isLadder())
-                        System.out.println("You bump into a ladder");
-                    if (sq.isBreeze())
-                        System.out.println("You feel a breeze");
-                    if (sq.isStench() || sq.isDeadWumpus())
-                        System.out.println("You smell a stench");
-                    if (sq.isGold()) {
-                        System.out.println("You see a glimmer");
-                        if (code == KeyEvent.VK_P)
-                            player.setGold(true);
-                    }
-                }
                 //check win
                 {
                     if (player.hasGold() && sq.isLadder() && code == KeyEvent.VK_C) {
@@ -236,6 +222,20 @@ public class WumpusPanel extends JPanel //implements KeyListener
                         status = PLAYING;
                         reset();
                         System.out.println("New game\n----------------------");
+                    }
+                }
+                //other actions
+                {
+                    if (sq.isLadder())
+                        System.out.println("You bump into a ladder");
+                    if (sq.isBreeze())
+                        System.out.println("You feel a breeze");
+                    if (sq.isStench() || sq.isDeadWumpus())
+                        System.out.println("You smell a stench");
+                    if (sq.isGold()) {
+                        System.out.println("You see a glimmer");
+                        if (status == PLAYING && code == KeyEvent.VK_P)
+                            player.setGold(true);
                     }
                 }
 

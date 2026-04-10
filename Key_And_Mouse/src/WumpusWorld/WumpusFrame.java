@@ -44,8 +44,8 @@ public class WumpusFrame extends JFrame
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    JOptionPane.showMessageDialog(null, "You have " + panel.wins + " wins with " + panel.kills + " kills and " + panel.deaths + " deaths!\nCongrats!!", "End Credits", JOptionPane.PLAIN_MESSAGE);
-                    JOptionPane.showMessageDialog(null, "Thank you for playing!!\nGame designed, made, choreographed, coded, and teseted by KrishCore.", "End Credits Continued", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "You have " + panel.wins*(int)(Math.random()*5) + " wins with " + panel.kills*(int)(Math.random()*5) + " kills and " + panel.deaths*(int)(Math.random()*5) + " deaths!\nCongrats!!", "End Credits", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Thank you for playing!!\nGame designed, made, choreographed, coded, and tested by KrishCore.", "End Credits Continued...", JOptionPane.PLAIN_MESSAGE);
                     super.windowClosing(e);
                     System.exit(0);
                 }
