@@ -101,12 +101,12 @@ public class WumpusSquare
     @Override
     public String toString() {
         if (deadWumpus && gold) return "!";
-        else if (wumpus && gold) return "@";
-        else if (deadWumpus) return "D";
-        else if (wumpus) return "W";
-        else if (ladder) return "L";
-        else if (pit) return "P";
-        else if (gold) return "G";
+        if (wumpus && gold) return "@";
+        if (deadWumpus) return "D";
+        if (wumpus) return "W";
+        if (ladder) return "L";
+        if (pit) return "P";
+        if (gold) return "G";
         return "*";
     }
 }
