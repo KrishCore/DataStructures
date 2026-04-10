@@ -45,6 +45,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
         setSize(580, 750);
         buffer = new BufferedImage(580, 750, BufferedImage.TYPE_INT_ARGB);
         map = new WumpusMap();
+        setLayout(null);
         reset();
         addKeyListener(new KeyAdapter() {
             @Override
@@ -55,7 +56,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                 char c = e.getKeyChar();
                 System.out.println(c);
 
-                //movement
+                //movement (WASD)
                 {
                     if (status == PLAYING && code == KeyEvent.VK_W) //up (w)
                     {
@@ -83,7 +84,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
                     }
                 }
 
-                //arrow
+                //arrow (IJKL)
                 {
                     if (status == PLAYING && code == KeyEvent.VK_I && player.hasArrow()) //up arrow
                     {
@@ -144,6 +145,17 @@ public class WumpusPanel extends JPanel //implements KeyListener
                         }
                         player.setDirection(WumpusPlayer.EAST);
                         player.setArrow(false);
+                    }
+                }
+
+                //show controls (space bar)
+                {
+                    if (code == KeyEvent.VK_SPACE) {
+                        //add a game rules JOP that shows up before this
+                        JOptionPane.showMessageDialog(null, "Controls:\n" +
+                                "W - Move one space up\nA - Move one space left\nS - Move one space down\nD - Move one space right" +
+                                "\n\nI - Shoot arrow up\nJ - Shoot arrow left\nK - Shoot arrow down\nL - Shoot arrow right\n\n" +
+                                "P - Pick up gold\nC - Climb the ladder\nN - New game", "Game Controls", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
 
@@ -339,6 +351,7 @@ public class WumpusPanel extends JPanel //implements KeyListener
         }
 
         g.drawImage(buffer, 0, 0, null);
+        super.paintChildren(g);
         gd.dispose();
 
     }
