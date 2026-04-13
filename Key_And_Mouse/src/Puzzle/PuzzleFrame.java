@@ -2,11 +2,11 @@ package Puzzle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class PuzzleFrame extends JFrame
 {
-    public PuzzleFrame()
-    {
+    public PuzzleFrame() throws IOException {
         super("15 Puzzle");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
