@@ -26,7 +26,7 @@ public class PuzzlePanel extends JPanel
 
     public PuzzlePanel()
     {
-//        setSize(500,500);
+        setSize(500,500);
         setLayout(new BorderLayout());
         board = new PuzzleBoard();
         loadImage();
@@ -61,12 +61,14 @@ public class PuzzlePanel extends JPanel
                 });
                 grid.add(butons[r][c]);
             }
-        add(grid, BorderLayout.CENTER);
+        grid.setBounds(0, 0, 450, 450);
+        add(grid);//, BorderLayout.CENTER);
 
         JPanel bottom = new JPanel();
         bottom.add(moveCount);
         bottom.add(newGame);
         bottom.add(toggle);
+        bottom.setBounds(0, 450, 500, 50);
         add(bottom, BorderLayout.SOUTH);
 
         SwingUtilities.invokeLater(() -> updateBoard());

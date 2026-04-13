@@ -9,9 +9,11 @@ public class PuzzleFrame extends JFrame
     {
         super("15 Puzzle");
         setLayout(new BorderLayout());
-        add(new PuzzlePanel(), BorderLayout.CENTER);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
+        setSize(700, 700);
+
+        JPanel panel = new PuzzlePanel();
+        add(panel, BorderLayout.CENTER);
 //        pack();
         setVisible(true);
     }
