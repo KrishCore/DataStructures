@@ -26,66 +26,78 @@ public class PuzzlePanel extends JPanel implements MouseListener
     private boolean imageMode;
 
     public PuzzlePanel() throws IOException {
-        setSize(500,500);
+        setSize(550,550);
         setLayout(null);//ew BorderLayout());
+        setBackground(Color.GREEN);
         board = new PuzzleBoard();
         loadImage();
         loadNumber();
-        winMessage.setBounds(0, 550, 500, 50);
+        winMessage.setText("You Won!");
+        winMessage.setBounds(0, 570, 500, 30);
         winMessage.setHorizontalAlignment(JLabel.CENTER);
         winMessage.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+        add(winMessage);
 
         //grid
         {
             JPanel grid = new JPanel(new GridLayout(4, 4));
+            grid.setBounds(0, 30, 500, 500);
             for (int r = 0; r < 4; r++)
                 for (int c = 0; c < 4; c++) {
                     butons[r][c] = new JButton();
                     butons[r][c].setPreferredSize(new Dimension(100, 100));
                     butons[r][c].setBorder(BorderFactory.createLineBorder(new Color(0, 60, 255), 6));
-                    int row = r;
-                    int col = c;
                     butons[r][c].setFont(new Font("Arial", Font.BOLD, 20));
                     butons[r][c].setFocusPainted(false);
-                    butons[r][c].addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            tileClicked(row, col);
-                        }
-                    });
-                    addKeyListener(new KeyAdapter() {
-                        @Override
-                        public void keyTyped(KeyEvent e) { //not needed, extra
-                            super.keyTyped(e);
-                            int code = e.getKeyCode();
-                            if (code == KeyEvent.VK_S) {
-                                //code to show the solved version
+                    butons[r][c].setSelected(false);
+                    //mouse listeners - mousePresed
+                    {
+                        int row = r;
+                        int col = c;
+                        butons[r][c].addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+                                tileClicked(row, col);
                             }
-                        }
-                    });
+                        });
+                    }
                     grid.add(butons[r][c]);
                 }
-            grid.setBounds(0, 50, 450, 450);
-
             add(grid);//, BorderLayout.CENTER);
         }
+        //extra
+        {
+            addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyTyped(KeyEvent e) { //not needed, extra
+                    super.keyTyped(e);
+                    int code = e.getKeyCode();
+                    if (code == KeyEvent.VK_S) {
+                        //code to show the solved version
+                    }
+                }
+            });
+        }
         addMouseListener(this);
-        moveCount.setBounds(0, 0, 500, 50);
+        moveCount.setBounds(0, 0, 500, 30);
         moveCount.setFont(new Font("Monospace", Font.BOLD, 20));
         moveCount.setHorizontalAlignment(JLabel.CENTER);
         add(moveCount);
 
         JPanel bottom = new JPanel();
+        bottom.setBounds(0, 530, 500, 40);
         bottom.add(newGame);
         newGame.setFont(new Font("Monospace", Font.BOLD, 15));
         bottom.add(toggle);
         toggle.setFont(new Font("Monospace", Font.BOLD, 15));
-        bottom.setBounds(-25, 500, 500, 50);
         bottom.setAlignmentY(JPanel.CENTER_ALIGNMENT);
-        add(bottom, BorderLayout.SOUTH);
+        add(bottom);//, BorderLayout.SOUTH);
 
-        SwingUtilities.invokeLater(() -> updateBoard());
-
+        SwingUtilities.invokeLater(() -> {
+            revalidate();
+            repaint();
+            updateBoard();
+        });
         //new game
         newGame.addActionListener(e -> {
             if (gameWon) //set as "true" for testing purposes
@@ -94,7 +106,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 moves = 0;
                 gameWon = false;
                 moveCount.setText("Move Count: 0");
-                winMessage.setVisible(false);
+                winMessage.setText("__");
                 updateBoard();
             }
         });
@@ -118,7 +130,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
         PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob.png");
             for (int r = 0; r < 4; r++)
                 for (int c = 0; c < 4; c++)
-                    images[r][c] = puzzleSquare.getImagePortion(r, c);
+                    images[r][c] = puzzleSquare.getPortion(r, c);
     }
 
     private void loadNumber() throws IOException
@@ -126,7 +138,8 @@ public class PuzzlePanel extends JPanel implements MouseListener
         PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\Numbes.png");
             for (int r = 0; r < 4; r++)
                 for (int c = 0; c < 4; c++)
-                    numbers[r][c] = puzzleSquare.getImagePortion(r, c);
+                    numbers[r][c] = puzzleSquare.getPortion(r, c);
+
     }
 
     private void tileClicked(int r, int c)
@@ -141,7 +154,6 @@ public class PuzzlePanel extends JPanel implements MouseListener
             if (board.isSolved())
             {
                 gameWon = true;
-                winMessage.setVisible(true);
                 winMessage.setText("You solved the puzzle in " + moves + " moves!");
 
                 JOptionPane.showMessageDialog(this, "You solved the puzzle in " + moves + " moves!");
@@ -168,13 +180,15 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
                         int w = butons[r][c].getWidth();
                         int h = butons[r][c].getHeight();
-
+                        System.out.println(w + ":" + h);
                         if (w <= 0 || h <= 0) {
-                            w = 100;
-                            h = 100;
+                            Dimension d = butons[r][c].getPreferredSize();
+                            w = d.width;
+                            h = d.height;
                         }
+                        System.out.println(w + ":" + h);
 
-                        Image scaled = numbers[row][col].getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                        Image scaled = numbers[row][col].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                         butons[r][c].setIcon(new ImageIcon(scaled));
                     }
                     else
