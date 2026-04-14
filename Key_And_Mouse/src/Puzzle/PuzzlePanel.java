@@ -123,22 +123,22 @@ public class PuzzlePanel extends JPanel implements MouseListener
         }
 
         setVisible(true);
-        }
+    }
 
     private void loadImage() throws IOException
     {
         PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob.png");
-            for (int r = 0; r < 4; r++)
-                for (int c = 0; c < 4; c++)
-                    images[r][c] = puzzleSquare.getPortion(r, c);
+        for (int r = 0; r < 4; r++)
+            for (int c = 0; c < 4; c++)
+                images[r][c] = puzzleSquare.getPortion(r, c);
     }
 
     private void loadNumber() throws IOException
     {
         PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\Numbes.png");
-            for (int r = 0; r < 4; r++)
-                for (int c = 0; c < 4; c++)
-                    numbers[r][c] = puzzleSquare.getPortion(r, c);
+        for (int r = 0; r < 4; r++)
+            for (int c = 0; c < 4; c++)
+                numbers[r][c] = puzzleSquare.getPortion(r, c);
 
     }
 
