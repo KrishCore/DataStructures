@@ -18,6 +18,9 @@ public class PuzzlePanel extends JPanel implements MouseListener
     private JButton newGame =  new JButton("New Game");
     private JToggleButton toggle = new JToggleButton("Images");
     private JLabel winMessage = new JLabel("You solved the puzzle in __ moves!");
+    private String[] messagesOfEncouragement = {"Keep going! You got this!", "Almost there!",
+            "Take a deep breath and remember how far you've come!",
+            "Trust yourself-you're on the right path", "This is tough, but you're tougher!", "One tile at a time!"};
 
     private PuzzleBoard board;
 
@@ -32,7 +35,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
         board = new PuzzleBoard();
         loadImage();
         loadNumber();
-        winMessage.setText("You Won!");
+        winMessage.setText(messagesOfEncouragement[(int) (Math.random()* messagesOfEncouragement.length)]);
         winMessage.setBounds(0, 570, 500, 30);
         winMessage.setHorizontalAlignment(JLabel.CENTER);
         winMessage.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
@@ -169,14 +172,16 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 if (val == 0)
                 {
                     butons[r][c].setText("");
+                    Image scaled = numbers[3][3].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
+                    butons[r][c].setIcon(new ImageIcon(scaled));
                     butons[r][c].setIcon(null);
                 }
                 else
                 {
                     if (!imageMode)
                     {
-                        int row = (val - 1) / 4;
-                        int col = (val - 1) % 4;
+                        int row = (val-1) / 4;
+                        int col = (val-1) % 4;
 
                         int w = butons[r][c].getWidth();
                         int h = butons[r][c].getHeight();
@@ -194,8 +199,8 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     else
                     {
                         butons[r][c].setText("");
-                        int row = (val - 1) / 4;
-                        int col = (val - 1) % 4;
+                        int row = (val-1) / 4;
+                        int col = (val-1) % 4;
 
                         int w = butons[r][c].getWidth();
                         int h = butons[r][c].getHeight();
