@@ -31,6 +31,7 @@ public class PuzzleBoard
                         zeroC = c;
                     }
                 }
+            if (!isSolvable()) System.out.println("It was not solvable");
         } while (!isSolvable());
     }
 

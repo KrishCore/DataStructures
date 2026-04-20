@@ -12,6 +12,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
 {
     private JButton[][] butons = new JButton[4][4];
     private BufferedImage image = ImageIO.read(new File("src\\Puzzle\\spongebob.png"));
+    private BufferedImage black = ImageIO.read(new File("src\\Puzzle\\black.png"));
     private BufferedImage[][] images = new BufferedImage[4][4];
     private BufferedImage[][] numbers = new BufferedImage[4][4];
     private JLabel moveCount = new JLabel("Move Count: 0");
@@ -20,7 +21,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
     private JLabel winMessage = new JLabel("You solved the puzzle in __ moves!");
     private String[] messagesOfEncouragement = {"Keep going! You got this!", "Almost there!",
             "Take a deep breath and remember how far you've come!",
-            "Trust yourself-you're on the right path", "This is tough, but you're tougher!", "One tile at a time!"};
+            "Trust yourself, you're on the right path", "This is tough, but you're tougher!", "One tile at a time!"};
 
     private PuzzleBoard board;
 
@@ -35,7 +36,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
         board = new PuzzleBoard();
         loadImage();
         loadNumber();
-        winMessage.setText(messagesOfEncouragement[(int) (Math.random()* messagesOfEncouragement.length)]);
+        winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
         winMessage.setBounds(0, 570, 500, 30);
         winMessage.setHorizontalAlignment(JLabel.CENTER);
         winMessage.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
@@ -73,10 +74,12 @@ public class PuzzlePanel extends JPanel implements MouseListener
             addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) { //not needed, extra
-                    super.keyTyped(e);
+//                    super.keyTyped(e);
                     int code = e.getKeyCode();
+                    System.out.println(e.getKeyCode());
                     if (code == KeyEvent.VK_S) {
                         //code to show the solved version
+                        System.out.println("s: " + code);
                     }
                 }
             });
@@ -103,13 +106,13 @@ public class PuzzlePanel extends JPanel implements MouseListener
         });
         //new game
         newGame.addActionListener(e -> {
-            if (gameWon) //set as "true" for testing purposes
+            if (gameWon) //set as "true" for testing purposes otherwise gameWon
             {
                 board.shuffle();
                 moves = 0;
                 gameWon = false;
                 moveCount.setText("Move Count: 0");
-                winMessage.setText("__");
+                winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
                 updateBoard();
             }
         });
@@ -133,7 +136,10 @@ public class PuzzlePanel extends JPanel implements MouseListener
         PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob.png");
         for (int r = 0; r < 4; r++)
             for (int c = 0; c < 4; c++)
-                images[r][c] = puzzleSquare.getPortion(r, c);
+                if (r == 3 && c == 3)
+                    images[r][c] = black;
+                else images[r][c] = puzzleSquare.getPortion(r, c);
+
     }
 
     private void loadNumber() throws IOException
@@ -154,12 +160,13 @@ public class PuzzlePanel extends JPanel implements MouseListener
             moves++;
             moveCount.setText("Move Count: " + moves);
             updateBoard();
+            winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
             if (board.isSolved())
             {
                 gameWon = true;
                 winMessage.setText("You solved the puzzle in " + moves + " moves!");
 
-                JOptionPane.showMessageDialog(this, "You solved the puzzle in " + moves + " moves!");
+//                JOptionPane.showMessageDialog(this, "You solved the puzzle in " + moves + " moves!");
             }
         }
     }
@@ -172,9 +179,10 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 if (val == 0)
                 {
                     butons[r][c].setText("");
-                    Image scaled = numbers[3][3].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
-                    butons[r][c].setIcon(new ImageIcon(scaled));
-                    butons[r][c].setIcon(null);
+                    Image scaled = imageMode ? images[3][3].getScaledInstance(125, 125, BufferedImage.SCALE_SMOOTH) : numbers[3][3].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
+                    ImageIcon ii = new ImageIcon(scaled);
+                    butons[r][c].setIcon(ii);
+//                    butons[r][c].setIcon(null);
                 }
                 else
                 {
@@ -185,13 +193,13 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
                         int w = butons[r][c].getWidth();
                         int h = butons[r][c].getHeight();
-                        System.out.println(w + ":" + h);
+//                        System.out.println(w + ":" + h);
                         if (w <= 0 || h <= 0) {
                             Dimension d = butons[r][c].getPreferredSize();
                             w = d.width;
                             h = d.height;
                         }
-                        System.out.println(w + ":" + h);
+//                        System.out.println(w + ":" + h);
 
                         Image scaled = numbers[row][col].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                         butons[r][c].setIcon(new ImageIcon(scaled));
