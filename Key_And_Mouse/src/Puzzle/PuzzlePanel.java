@@ -5,8 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class PuzzlePanel extends JPanel implements MouseListener
 {
@@ -19,9 +21,14 @@ public class PuzzlePanel extends JPanel implements MouseListener
     private JButton newGame =  new JButton("New Game");
     private JToggleButton toggle = new JToggleButton("Images");
     private JLabel winMessage = new JLabel("You solved the puzzle in __ moves!");
-    private String[] messagesOfEncouragement = {"Keep going! You got this!", "Almost there!",
-            "Take a deep breath and remember how far you've come!",
-            "Trust yourself, you're on the right path", "This is tough, but you're tougher!", "One tile at a time!"};
+    private String[] messagesOfEncouragement = {"Keep going! You got this!", "Almost there!", "Keep on keeping on!",
+            "Take a deep breath and remember how far you've come!", "You're capable of incredible things",
+            "Trust yourself, you're on the right path", "This is tough, but you're tougher!", "One tile at a time!",
+            "You're doing better than you realize"};
+    private ArrayList<String> mesagesOfEncouragement = new ArrayList<>();
+    private JLabel highScore = new JLabel("High Score: N/A");
+    private File file = new File("src\\Puzzle\\highSchore");
+    private int fScore;
 
     private PuzzleBoard board;
 
@@ -37,10 +44,35 @@ public class PuzzlePanel extends JPanel implements MouseListener
         loadImage();
         loadNumber();
         winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
+
+        highScore.setBounds(550, 100, 200, 30);
+        highScore.setFont(new Font("Monospace", Font.BOLD, 15));
+        add(highScore);
+
+        if (file.exists() && file.length() > 0) {
+            try (Scanner sc = new Scanner(file)) {
+                if (sc.hasNextInt()) {
+                    fScore = sc.nextInt();
+                    highScore.setText("High Score: " + fScore);
+                }
+            }
+        } else {
+            if (!file.exists()) file.createNewFile();
+            fScore = Integer.MAX_VALUE;
+        }
+
         winMessage.setBounds(0, 570, 500, 30);
         winMessage.setHorizontalAlignment(JLabel.CENTER);
         winMessage.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         add(winMessage);
+        mesagesOfEncouragement.addAll(Arrays.asList(messagesOfEncouragement));
+        if (!file.exists()) {
+            file.createNewFile();
+            fScore = 0;
+        }
+        Scanner sc = new Scanner(file);
+        fScore = Integer.parseInt(sc.next());
+        System.out.println(fScore);
 
         //grid
         {
@@ -61,7 +93,11 @@ public class PuzzlePanel extends JPanel implements MouseListener
                         butons[r][c].addMouseListener(new MouseAdapter() {
                             @Override
                             public void mousePressed(MouseEvent e) {
-                                tileClicked(row, col);
+                                try {
+                                    tileClicked(row, col);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
                             }
                         });
                     }
@@ -69,7 +105,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 }
             add(grid);//, BorderLayout.CENTER);
         }
-        //extra
+        //extra - does not work
         {
             addKeyListener(new KeyAdapter() {
                 @Override
@@ -112,12 +148,12 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 moves = 0;
                 gameWon = false;
                 moveCount.setText("Move Count: 0");
-                winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
                 updateBoard();
+                updateEncouragement();
             }
         });
 
-        //image on/of
+        //toggle image
         {
             toggle.addActionListener(e -> {
                 imageMode = !imageMode;
@@ -131,7 +167,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
         setVisible(true);
     }
 
-    private void loadImage() throws IOException
+    private void loadImage() throws IOException // the image grid contains the black square
     {
         PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob.png");
         for (int r = 0; r < 4; r++)
@@ -151,8 +187,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
     }
 
-    private void tileClicked(int r, int c)
-    {
+    private void tileClicked(int r, int c) throws IOException {
         if (gameWon) return;
 
         if (board.move(r, c))
@@ -160,14 +195,15 @@ public class PuzzlePanel extends JPanel implements MouseListener
             moves++;
             moveCount.setText("Move Count: " + moves);
             updateBoard();
-            winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
+            updateEncouragement();
+
             if (board.isSolved())
             {
                 gameWon = true;
                 winMessage.setText("You solved the puzzle in " + moves + " moves!");
-
-//                JOptionPane.showMessageDialog(this, "You solved the puzzle in " + moves + " moves!");
+                updateHighScore(moves);
             }
+            else updateEncouragement();
         }
     }
 
@@ -226,22 +262,44 @@ public class PuzzlePanel extends JPanel implements MouseListener
         }
     }
 
+    private void updateEncouragement()
+    {
+        String mesage = winMessage.getText();
+        System.out.println(mesage);
+        mesagesOfEncouragement.remove(mesage);
+        String s = mesagesOfEncouragement.get((int) (Math.random()*mesagesOfEncouragement.size()));
+        System.out.println(s);
+        winMessage.setText(s);
+        mesagesOfEncouragement.add(mesage);
+    }
+
+    private void updateHighScore(int newScore) {
+
+        if (newScore < fScore) {
+            fScore = newScore;
+            highScore.setText("High Score: " + newScore);
+            System.out.println(newScore);
+            repaint();
+
+            try {
+                PrintWriter pw = new PrintWriter(new FileWriter(file, false));
+                pw.print(newScore);
+                pw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("New High Score Saved: " + newScore);
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) { //implment this ----------------------------------------
-        int mouseX = e.getX();
-        int mouseY = e.getY();
-        System.out.println(mouseX + "____" + mouseY);
-
-        if (e.getButton() == MouseEvent.BUTTON1)
-        {
-            //if statement for each possible square?
-
-        }
+    public void mousePressed(MouseEvent e) {
     }
 
     @Override

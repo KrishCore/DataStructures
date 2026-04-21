@@ -95,19 +95,20 @@ public class PuzzleBoard
 
     public boolean isSolved()
     {
-        int count = 1;
+        if (board[3][3] != 0) return false;
 
+        int count = 1;
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 //checks the last number at the end
-                if (r == 3 && c == 3 && board[r][c] == 0)
-                    return true;
-                //noraml check
+                if (r == 3 && c == 3)
+                    continue;
+                //normal check
                 if (board[r][c] != count++)
                     return false;
             }
         }
-        return false;
+        return true;
     }
 
     public int getValue(int r, int c)
