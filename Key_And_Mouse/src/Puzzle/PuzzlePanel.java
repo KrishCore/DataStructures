@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class PuzzlePanel extends JPanel implements MouseListener
 {
     private JButton[][] butons = new JButton[4][4];
-    private BufferedImage image = ImageIO.read(new File("src\\Puzzle\\spongebob.png"));
+    private BufferedImage image = ImageIO.read(new File("src\\Puzzle\\spongebob-fish.png"));
     private BufferedImage black = ImageIO.read(new File("src\\Puzzle\\black.png"));
     private BufferedImage[][] images = new BufferedImage[4][4];
     private BufferedImage[][] numbers = new BufferedImage[4][4];
@@ -38,7 +38,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
     public PuzzlePanel() throws IOException {
         setSize(550,550);
-        setLayout(null);//ew BorderLayout());
+        setLayout(null);
         setBackground(Color.GREEN);
         board = new PuzzleBoard();
         loadImage();
@@ -76,11 +76,12 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
         //grid
         {
-            JPanel grid = new JPanel(new GridLayout(4, 4));
+            JPanel grid = new JPanel(null);//ew GridLayout(4, 4));
             grid.setBounds(0, 30, 500, 500);
             for (int r = 0; r < 4; r++)
                 for (int c = 0; c < 4; c++) {
                     butons[r][c] = new JButton();
+                    butons[r][c].setBounds(c*125, r*125, 125, 125);
                     butons[r][c].setPreferredSize(new Dimension(100, 100));
                     butons[r][c].setBorder(BorderFactory.createLineBorder(new Color(0, 60, 255), 6));
                     butons[r][c].setFont(new Font("Arial", Font.BOLD, 20));
@@ -103,7 +104,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     }
                     grid.add(butons[r][c]);
                 }
-            add(grid);//, BorderLayout.CENTER);
+            add(grid);
         }
         //extra - does not work
         {
@@ -133,7 +134,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
         bottom.add(toggle);
         toggle.setFont(new Font("Monospace", Font.BOLD, 15));
         bottom.setAlignmentY(JPanel.CENTER_ALIGNMENT);
-        add(bottom);//, BorderLayout.SOUTH);
+        add(bottom);
 
         SwingUtilities.invokeLater(() -> {
             revalidate();
@@ -148,6 +149,11 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 moves = 0;
                 gameWon = false;
                 moveCount.setText("Move Count: 0");
+                try {
+                    loadImage();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 updateBoard();
                 updateEncouragement();
             }
@@ -169,7 +175,18 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
     private void loadImage() throws IOException // the image grid contains the black square
     {
-        PuzzleSquare puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob.png");
+        double rand = Math.random(); // not needed
+        PuzzleSquare puzzleSquare;// = rand < .5 ? new PuzzleSquare("src\\Puzzle\\spongebob-fish.png") : new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
+        if (Math.random() >= .5)
+            puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-fish.png");
+        else {
+            try {
+                puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
         for (int r = 0; r < 4; r++)
             for (int c = 0; c < 4; c++)
                 if (r == 3 && c == 3)

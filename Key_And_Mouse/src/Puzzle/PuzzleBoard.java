@@ -73,13 +73,13 @@ public class PuzzleBoard
 
     public boolean move(int r, int c)
     {
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
-                if (board[i][j] == 0)
-                {
-                    zeroR = i;
-                    zeroC = j;
-                }
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 4; j++)
+//                if (board[i][j] == 0)
+//                {
+//                    zeroR = i;
+//                    zeroC = j;
+//                }
 
         if ((Math.abs(r - zeroR) == 1 && c == zeroC) || (Math.abs(c - zeroC) == 1 && r == zeroR))
         {
