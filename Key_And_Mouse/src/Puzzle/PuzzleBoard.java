@@ -98,16 +98,20 @@ public class PuzzleBoard
         if (board[3][3] != 0) return false;
 
         int count = 1;
-        for (int r = 0; r < 4; r++) {
-            for (int c = 0; c < 4; c++) {
-                //checks the last number at the end
-                if (r == 3 && c == 3)
-                    continue;
-                //normal check
-                if (board[r][c] != count++)
-                    return false;
-            }
+        int[] arr = new int[16];
+        for (int r = 0; r < 4; r++)
+            for (int c = 0; c < 4; c++)
+                arr[r*4+c] = board[r][c];
+
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+            if (arr[i] == 0) break;
+            if (arr[i] == i+1)
+                System.out.println("--it checks--");
+            else return false;
         }
+        System.out.println("--it checks--");
+        System.out.println("\n--all numbers checks--");
         return true;
     }
 

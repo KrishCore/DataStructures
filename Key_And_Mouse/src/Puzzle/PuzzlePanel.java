@@ -26,7 +26,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
             "Trust yourself, you're on the right path", "This is tough, but you're tougher!", "One tile at a time!",
             "You're doing better than you realize"};
     private ArrayList<String> mesagesOfEncouragement = new ArrayList<>();
-    private JLabel highScore = new JLabel("High Score: N/A");
+    private JLabel highScore = new JLabel("High Score: \nNone");
     private File file = new File("src\\Puzzle\\highSchore");
     private int fScore;
 
@@ -38,7 +38,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
     public PuzzlePanel() throws IOException {
         setSize(550,550);
-        setLayout(null);
+        setLayout(null);//ew BorderLayout());
         setBackground(Color.GREEN);
         board = new PuzzleBoard();
         loadImage();
@@ -49,30 +49,27 @@ public class PuzzlePanel extends JPanel implements MouseListener
         highScore.setFont(new Font("Monospace", Font.BOLD, 15));
         add(highScore);
 
-        if (file.exists() && file.length() > 0) {
+        if (!file.exists())
+        {
+            file.createNewFile();
+            fScore = Integer.MAX_VALUE;
+        }
+        else if (file.length() > 0)
+        {
             try (Scanner sc = new Scanner(file)) {
                 if (sc.hasNextInt()) {
                     fScore = sc.nextInt();
                     highScore.setText("High Score: " + fScore);
+                    System.out.println("High Score: " + fScore);
                 }
             }
-        } else {
-            if (!file.exists()) file.createNewFile();
-            fScore = Integer.MAX_VALUE;
-        }
+        } else fScore = Integer.MAX_VALUE;
 
         winMessage.setBounds(0, 570, 500, 30);
         winMessage.setHorizontalAlignment(JLabel.CENTER);
         winMessage.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         add(winMessage);
         mesagesOfEncouragement.addAll(Arrays.asList(messagesOfEncouragement));
-        if (!file.exists()) {
-            file.createNewFile();
-            fScore = 0;
-        }
-        Scanner sc = new Scanner(file);
-        fScore = Integer.parseInt(sc.next());
-        System.out.println(fScore);
 
         //grid
         {
@@ -104,7 +101,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     }
                     grid.add(butons[r][c]);
                 }
-            add(grid);
+            add(grid);//, BorderLayout.CENTER);
         }
         //extra - does not work
         {
@@ -134,7 +131,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
         bottom.add(toggle);
         toggle.setFont(new Font("Monospace", Font.BOLD, 15));
         bottom.setAlignmentY(JPanel.CENTER_ALIGNMENT);
-        add(bottom);
+        add(bottom);//, BorderLayout.SOUTH);
 
         SwingUtilities.invokeLater(() -> {
             revalidate();
@@ -148,6 +145,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 board.shuffle();
                 moves = 0;
                 gameWon = false;
+                System.out.println("New Game----------------\nMove Count: 0");
                 moveCount.setText("Move Count: 0");
                 try {
                     loadImage();
