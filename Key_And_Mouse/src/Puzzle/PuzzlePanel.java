@@ -16,6 +16,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
     private BufferedImage black = ImageIO.read(new File("src\\Puzzle\\black.png"));
     private BufferedImage[][] images = new BufferedImage[4][4];
     private BufferedImage[][] numbers = new BufferedImage[4][4];
+    private String path;
     private JLabel moveCount = new JLabel("Move Count: 0");
     private JButton newGame =  new JButton("New Game");
     private JToggleButton toggle = new JToggleButton("Images");
@@ -34,14 +35,16 @@ public class PuzzlePanel extends JPanel implements MouseListener
     private int moves;
     private boolean gameWon;
     private boolean imageMode;
+    private boolean imageSelected = false;
+    private boolean defaultImageSelected = true;
 
     public PuzzlePanel() throws IOException {
         setSize(550,550);
         setLayout(null);//ew BorderLayout());
         setBackground(Color.WHITE);
         board = new PuzzleBoard();
-        loadImage();
         loadNumber();
+//        loadImage();
         setFocusable(true);
         addMouseListener(this);
         requestFocusInWindow();
@@ -145,16 +148,41 @@ public class PuzzlePanel extends JPanel implements MouseListener
         newGame.addActionListener(e -> {
             if (gameWon) //set as "true" for testing purposes otherwise gameWon
             {
-                board.shuffle();
-                moves = 0;
-                gameWon = false;
-                System.out.println("New Game----------------\nMove Count: 0");
-                moveCount.setText("Move Count: 0");
+                if (imageMode)
+                {
+                    int result = JOptionPane.showConfirmDialog(this, "Do you want to use the same image?", "", JOptionPane.YES_NO_OPTION);
+                    System.out.println(result);
+                    imageSelected = false;
+                    if (result == 1)
+                    {
+                        int choose = JOptionPane.showConfirmDialog(this, "Do you want to choose another image of yours?", "", JOptionPane.YES_NO_OPTION);
+                        System.out.println(choose);
+                        if (choose == 0)
+                        {
+                            JFileChooser jfc = new JFileChooser();
+                            int j = jfc.showOpenDialog(this);
+
+                            if (j == JFileChooser.APPROVE_OPTION)
+                            {
+                                File f = jfc.getSelectedFile();
+                                path = f.getAbsolutePath();
+                                System.out.println(path);
+                                imageSelected = true;
+                            }
+                        }
+                        else defaultImageSelected = false;
+                    }
+                }
                 try {
                     loadImage();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+                board.shuffle();
+                moves = 0;
+                gameWon = false;
+                System.out.println("New Game----------------\nMove Count: 0");
+                moveCount.setText("Move Count: 0");
                 updateBoard();
                 updateEncouragement();
             }
@@ -163,33 +191,171 @@ public class PuzzlePanel extends JPanel implements MouseListener
         //toggle image
         {
             toggle.addActionListener(e -> {
+                if (!imageSelected)
+                {
+                    int response = JOptionPane.showConfirmDialog(this, "Do you want to use your own image?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    System.out.println(response);
+                    if (response == JOptionPane.YES_OPTION)
+                    {
+                        JFileChooser jfc = new JFileChooser();
+                        int j = jfc.showOpenDialog(this);
+
+                        if (j == JFileChooser.APPROVE_OPTION)
+                        {
+                            File f = jfc.getSelectedFile();
+                            path = f.getAbsolutePath();
+                            System.out.println(path);
+                            imageSelected = true;
+                        }
+                    }
+                }
                 imageMode = !imageMode;
                 if (imageMode)
                     toggle.setText("Numbers");
                 else toggle.setText("Images");
+
+                try {
+                    loadImage();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+
+                }
                 updateBoard();
             });
+//             // New game listener
+//        newGame.addActionListener(e -> {
+//            // FIX: If you want to allow a new game at any time (not just when won),
+//            // change 'if (gameWon)' to simply let them restart.
+//            if (gameWon)
+//            {
+//                if (imageMode)
+//                {
+//                    int result = JOptionPane.showConfirmDialog(this, "Do you want to use the same image?", "", JOptionPane.YES_NO_OPTION);
+//                    System.out.println(result);
+//                    imageSelected = false;
+//
+//                    // If they DO NOT want to use the same image
+//                    if (result == JOptionPane.NO_OPTION)
+//                    {
+//                        int choose = JOptionPane.showConfirmDialog(this, "Do you want to choose another image of yours?", "", JOptionPane.YES_NO_OPTION);
+//                        System.out.println(choose);
+//
+//                        // If they WANT to choose their own new image
+//                        if (choose == JOptionPane.YES_OPTION)
+//                        {
+//                            JFileChooser jfc = new JFileChooser();
+//                            int j = jfc.showOpenDialog(this);
+//
+//                            if (j == JFileChooser.APPROVE_OPTION)
+//                            {
+//                                File f = jfc.getSelectedFile();
+//                                path = f.getAbsolutePath();
+//                                System.out.println(path);
+//                                imageSelected = true;
+//                            }
+//                        }
+//                        // If they DO NOT want to choose their own image, use default game images
+//                        else
+//                        {
+//                            defaultImageSelected = true;
+//                        }
+//                    }
+//                }
+//                try {
+//                    loadImage();
+//                } catch (IOException ex) {
+//                    throw new RuntimeException(ex);
+//                }
+//
+//                board.shuffle();
+//                moves = 0;
+//                gameWon = false;
+//                System.out.println("New Game----------------\nMove Count: 0");
+//                moveCount.setText("Move Count: 0");
+//                updateBoard();
+//                updateEncouragement();
+//            }
+//        });
+//
+//        // Toggle image listener
+//        toggle.addActionListener(e -> {
+//            // FIX: Use toggle.isSelected() so the prompt only happens when turning images ON.
+//            // This stops the dialog from popping up when turning image mode OFF.
+//            if (toggle.isSelected() && !imageSelected && defaultImageSelected)
+//            {
+//                int response = JOptionPane.showConfirmDialog(this, "Do you want to use your own image?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//                System.out.println(response);
+//
+//                if (response == JOptionPane.YES_OPTION)
+//                {
+//                    JFileChooser jfc = new JFileChooser();
+//                    int j = jfc.showOpenDialog(this);
+//
+//                    if (j == JFileChooser.APPROVE_OPTION)
+//                    {
+//                        File f = jfc.getSelectedFile();
+//                        path = f.getAbsolutePath();
+//                        System.out.println(path);
+//                        imageSelected = true;
+//                    }
+//                }
+//                // If they say no, fallback securely to default program images
+//                else
+//                {
+//                    defaultImageSelected = true;
+//                }
+//            }
+//
+//            // Toggle the visual state
+//            imageMode = toggle.isSelected();
+//
+//            if (imageMode)
+//                toggle.setText("Numbers");
+//            else
+//                toggle.setText("Images");
+//
+//            try {
+//                loadImage();
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//            updateBoard();
+//        });
         }
         setVisible(true);
     }
 
     private void loadImage() throws IOException // the image grid contains the black square
     {
-        PuzzleSquare puzzleSquare;// = rand < .5 ? new PuzzleSquare("src\\Puzzle\\spongebob-fish.png") : new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
-        if (Math.random() >= .5)
-            puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-fish.png");
+        if (imageSelected || !defaultImageSelected)
+        {
+            System.out.println(path);
+            PuzzleSquare puzzleSquare = new PuzzleSquare(path);
+
+            for (int r = 0; r < 4; r++)
+                for (int c = 0; c < 4; c++)
+                    if (r == 3 && c == 3)
+                        images[r][c] = black;
+                    else images[r][c] = puzzleSquare.getPortion(r, c);
+        }
         else
-            try {
-                puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        for (int r = 0; r < 4; r++)
-            for (int c = 0; c < 4; c++)
-                if (r == 3 && c == 3)
-                    images[r][c] = black;
-                else images[r][c] = puzzleSquare.getPortion(r, c);
+        {
+            PuzzleSquare puzzleSquare;// = rand < .5 ? new PuzzleSquare("src\\Puzzle\\spongebob-fish.png") : new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
+            if (Math.random() >= .5)
+                puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-fish.png");
+            else
+                try {
+                    puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            for (int r = 0; r < 4; r++)
+                for (int c = 0; c < 4; c++)
+                    if (r == 3 && c == 3)
+                        images[r][c] = black;
+                    else images[r][c] = puzzleSquare.getPortion(r, c);
+        }
     }
 
     private void loadNumber() throws IOException
@@ -233,6 +399,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     Image scaled = imageMode ? images[3][3].getScaledInstance(125, 125, BufferedImage.SCALE_SMOOTH) : numbers[3][3].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                     ImageIcon ii = new ImageIcon(scaled);
                     butons[r][c].setIcon(ii);
+
                 }
                 else
                     if (!imageMode)
@@ -246,8 +413,8 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     else
                     {
                         butons[r][c].setText("");
-                        int row = (val-1) / 4;
-                        int col = (val-1) % 4;
+                        int row = (val - 1) / 4;
+                        int col = (val - 1) % 4;
 
                         Image scaled = images[row][col].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                         butons[r][c].setIcon(new ImageIcon(scaled));

@@ -55,9 +55,10 @@ public class PuzzleFrame extends JFrame
                 if (panel.getGameWon())
                     panel.setBackground(Color.GREEN);
                 else {
+                    Color temp = new Color(231, 185, 185);
                     Color rainbow = Color.getHSBColor(h[0], 1f, 1f);
                     panel.setBackground(rainbow);
-                    h[0] += 0.002f;
+                    h[0] +=  .001f;
                     if (h[0] > 1f)
                         h[0] = 0f;
                 }
