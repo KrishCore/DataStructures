@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class PuzzlePanel extends JPanel implements MouseListener
 {
     private JButton[][] butons = new JButton[4][4];
-    private BufferedImage image = ImageIO.read(new File("src\\Puzzle\\spongebob-fish.png"));
     private BufferedImage black = ImageIO.read(new File("src\\Puzzle\\black.png"));
     private BufferedImage[][] images = new BufferedImage[4][4];
     private BufferedImage[][] numbers = new BufferedImage[4][4];
@@ -39,14 +38,18 @@ public class PuzzlePanel extends JPanel implements MouseListener
     public PuzzlePanel() throws IOException {
         setSize(550,550);
         setLayout(null);//ew BorderLayout());
-        setBackground(Color.GREEN);
+        setBackground(Color.WHITE);
         board = new PuzzleBoard();
         loadImage();
         loadNumber();
+        setFocusable(true);
+        addMouseListener(this);
+        requestFocusInWindow();
         winMessage.setText(messagesOfEncouragement[(int) (Math.random()*messagesOfEncouragement.length)]);
 
-        highScore.setBounds(550, 100, 200, 30);
+        highScore.setBounds(525, 100, 200, 30);
         highScore.setFont(new Font("Monospace", Font.BOLD, 15));
+        highScore.setForeground(Color.BLACK);
         add(highScore);
 
         if (!file.exists())
@@ -55,7 +58,6 @@ public class PuzzlePanel extends JPanel implements MouseListener
             fScore = Integer.MAX_VALUE;
         }
         else if (file.length() > 0)
-        {
             try (Scanner sc = new Scanner(file)) {
                 if (sc.hasNextInt()) {
                     fScore = sc.nextInt();
@@ -63,11 +65,12 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     System.out.println("High Score: " + fScore);
                 }
             }
-        } else fScore = Integer.MAX_VALUE;
+        else fScore = Integer.MAX_VALUE;
 
         winMessage.setBounds(0, 570, 500, 30);
         winMessage.setHorizontalAlignment(JLabel.CENTER);
         winMessage.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+        winMessage.setForeground(Color.BLACK);
         add(winMessage);
         mesagesOfEncouragement.addAll(Arrays.asList(messagesOfEncouragement));
 
@@ -84,7 +87,8 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     butons[r][c].setFont(new Font("Arial", Font.BOLD, 20));
                     butons[r][c].setFocusPainted(false);
                     butons[r][c].setSelected(false);
-                    //mouse listeners - mousePresed
+                    butons[r][c].setFocusable(false);
+                    //mouse listener - mousePresed
                     {
                         int row = r;
                         int col = c;
@@ -103,25 +107,22 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 }
             add(grid);//, BorderLayout.CENTER);
         }
+
         //extra - does not work
         {
             addKeyListener(new KeyAdapter() {
                 @Override
-                public void keyTyped(KeyEvent e) { //not needed, extra
-//                    super.keyTyped(e);
-                    int code = e.getKeyCode();
-                    System.out.println(e.getKeyCode());
-                    if (code == KeyEvent.VK_S) {
-                        //code to show the solved version
-                        System.out.println("s: " + code);
-                    }
+                public void keyPressed(KeyEvent e) { //not needed, extra
+                    keyPresed(e);
                 }
             });
         }
+
         addMouseListener(this);
         moveCount.setBounds(0, 0, 500, 30);
         moveCount.setFont(new Font("Monospace", Font.BOLD, 20));
         moveCount.setHorizontalAlignment(JLabel.CENTER);
+        moveCount.setForeground(Color.BLACK);
         add(moveCount);
 
         JPanel bottom = new JPanel();
@@ -136,8 +137,10 @@ public class PuzzlePanel extends JPanel implements MouseListener
         SwingUtilities.invokeLater(() -> {
             revalidate();
             repaint();
+            requestFocusInWindow();
             updateBoard();
         });
+
         //new game
         newGame.addActionListener(e -> {
             if (gameWon) //set as "true" for testing purposes otherwise gameWon
@@ -167,30 +170,26 @@ public class PuzzlePanel extends JPanel implements MouseListener
                 updateBoard();
             });
         }
-
         setVisible(true);
     }
 
     private void loadImage() throws IOException // the image grid contains the black square
     {
-        double rand = Math.random(); // not needed
         PuzzleSquare puzzleSquare;// = rand < .5 ? new PuzzleSquare("src\\Puzzle\\spongebob-fish.png") : new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
         if (Math.random() >= .5)
             puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-fish.png");
-        else {
+        else
             try {
                 puzzleSquare = new PuzzleSquare("src\\Puzzle\\spongebob-pfp.png");
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        }
         for (int r = 0; r < 4; r++)
             for (int c = 0; c < 4; c++)
                 if (r == 3 && c == 3)
                     images[r][c] = black;
                 else images[r][c] = puzzleSquare.getPortion(r, c);
-
     }
 
     private void loadNumber() throws IOException
@@ -202,7 +201,8 @@ public class PuzzlePanel extends JPanel implements MouseListener
 
     }
 
-    private void tileClicked(int r, int c) throws IOException {
+    private void tileClicked(int r, int c)
+    {
         if (gameWon) return;
 
         if (board.move(r, c))
@@ -233,24 +233,12 @@ public class PuzzlePanel extends JPanel implements MouseListener
                     Image scaled = imageMode ? images[3][3].getScaledInstance(125, 125, BufferedImage.SCALE_SMOOTH) : numbers[3][3].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                     ImageIcon ii = new ImageIcon(scaled);
                     butons[r][c].setIcon(ii);
-//                    butons[r][c].setIcon(null);
                 }
                 else
-                {
                     if (!imageMode)
                     {
                         int row = (val-1) / 4;
                         int col = (val-1) % 4;
-
-                        int w = butons[r][c].getWidth();
-                        int h = butons[r][c].getHeight();
-//                        System.out.println(w + ":" + h);
-                        if (w <= 0 || h <= 0) {
-                            Dimension d = butons[r][c].getPreferredSize();
-                            w = d.width;
-                            h = d.height;
-                        }
-//                        System.out.println(w + ":" + h);
 
                         Image scaled = numbers[row][col].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                         butons[r][c].setIcon(new ImageIcon(scaled));
@@ -261,18 +249,9 @@ public class PuzzlePanel extends JPanel implements MouseListener
                         int row = (val-1) / 4;
                         int col = (val-1) % 4;
 
-                        int w = butons[r][c].getWidth();
-                        int h = butons[r][c].getHeight();
-
-                        if (w <= 0 || h <= 0) {
-                            w = 100;
-                            h = 100;
-                        }
-
-                        Image scaled = images[row][col].getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                        Image scaled = images[row][col].getScaledInstance(125, 125, Image.SCALE_SMOOTH);
                         butons[r][c].setIcon(new ImageIcon(scaled));
                     }
-                }
             }
         }
     }
@@ -286,10 +265,11 @@ public class PuzzlePanel extends JPanel implements MouseListener
         System.out.println(s);
         winMessage.setText(s);
         mesagesOfEncouragement.add(mesage);
+        System.out.println(mesagesOfEncouragement);
     }
 
-    private void updateHighScore(int newScore) {
-
+    private void updateHighScore(int newScore)
+    {
         if (newScore < fScore) {
             fScore = newScore;
             highScore.setText("High Score: " + newScore);
@@ -303,8 +283,43 @@ public class PuzzlePanel extends JPanel implements MouseListener
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             System.out.println("New High Score Saved: " + newScore);
+        }
+    }
+
+    public boolean getGameWon()
+    {
+        return gameWon;
+    }
+
+    public void keyPresed(KeyEvent e) // used AI for the summary, same as in PuzzleFrame class
+    {
+        int code = e.getKeyCode();
+        System.out.println(e.getKeyCode());
+        if (code == KeyEvent.VK_R) {
+            //code to show the solved version
+            System.out.println("s: " + e.getKeyChar());
+            JOptionPane.showMessageDialog(this, "Welcome to 15 Puzzle." +
+                    "\nThe 15 Puzzle Game is a classic sliding puzzle that challenges players to arrange tiles in the correct order." +
+                    "\nThe game consists of a 4×4 grid with 15 numbered tiles and one empty space." +
+                    "\nPlayers move tiles into the empty space to reorder them into ascending order or to complete a full image." +
+                    "\nThis program recreates the 15 puzzle in a digital format." +
+                    "\nIt allows users to interact with the puzzle by clicking tiles, track their number of moves, switch between number and image modes, and start a new game once the puzzle is solved." +
+                    "\nThe goal is to solve the puzzle in the fewest moves possible.", "Intro", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, "The 15 Puzzle is played on a 4×4 grid containing 15 tiles and one empty space." +
+                    "\nAt the start of the game, the tiles are arranged randomly." +
+                    "\nThe player moves tiles by clicking on them, but a tile will only move if it is directly next to the empty space, either above, below, to the left, or to the right." +
+                    "\nWhen a valid tile is clicked, it moves into the empty space and the move counter increases by one." +
+                    "\nIf a tile is not next to the empty space, clicking it will have no effect." +
+                    "\nThe objective of the game is to arrange the tiles in the correct order." +
+                    "\nThe puzzle is solved when the numbers are in ascending order from 1 to 15, or when the image is fully completed in image mode." +
+                    "\nOnce the puzzle is solved, a winning message is displayed that shows how many moves were taken to complete the puzzle." +
+                    "\nAfter the puzzle has been solved, the player is no longer allowed to move any tiles." +
+                    "\nThe only actions that can be performed are switching between number and image modes or starting a new game." +
+                    "\nThe game starts in number mode, where each tile displays a number. The toggle button allows the player to switch between numbers and images." +
+                    "\nWhen the button labeled “Images” is clicked, the grid changes to display pieces of an image and the button text changes to “Numbers.” Clicking the button again switches the grid back to numbers and updates the button text to “Images.”\n" +
+                    "\nThe new game button only becomes active after the puzzle has been solved." +
+                    "\nWhen pressed, it resets the move counter to zero, shuffles the tiles into a new random arrangement, and starts a new game.", "Rules", JOptionPane.PLAIN_MESSAGE);
         }
     }
 

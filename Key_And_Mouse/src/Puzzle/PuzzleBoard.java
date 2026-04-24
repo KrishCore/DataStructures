@@ -54,13 +54,12 @@ public class PuzzleBoard
         int rowOfZero = -1;
         for (int r = 0; r < 4; r++) {
             boolean found = false;
-            for (int c = 0; c < 4; c++) {
+            for (int c = 0; c < 4; c++)
                 if (board[r][c] == 0) {
                     rowOfZero = r;
                     found = true;
                     break;
                 }
-            }
             if (found) break;
         }
 
@@ -73,14 +72,6 @@ public class PuzzleBoard
 
     public boolean move(int r, int c)
     {
-//        for (int i = 0; i < 4; i++)
-//            for (int j = 0; j < 4; j++)
-//                if (board[i][j] == 0)
-//                {
-//                    zeroR = i;
-//                    zeroC = j;
-//                }
-
         if ((Math.abs(r - zeroR) == 1 && c == zeroC) || (Math.abs(c - zeroC) == 1 && r == zeroR))
         {
             int temp = board[r][c];
@@ -97,7 +88,6 @@ public class PuzzleBoard
     {
         if (board[3][3] != 0) return false;
 
-        int count = 1;
         int[] arr = new int[16];
         for (int r = 0; r < 4; r++)
             for (int c = 0; c < 4; c++)
