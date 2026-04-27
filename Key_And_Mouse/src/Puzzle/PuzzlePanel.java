@@ -145,103 +145,20 @@ public class PuzzlePanel extends JPanel implements MouseListener
         });
 
         //new game
-        newGame.addActionListener(e -> {
-            if (gameWon) //set as "true" for testing purposes otherwise gameWon
-            {
-                if (imageMode)
-                {
-                    int result = JOptionPane.showConfirmDialog(this, "Do you want to use the same image?", "", JOptionPane.YES_NO_OPTION);
-                    System.out.println(result);
-                    imageSelected = false;
-                    if (result == 1)
-                    {
-                        int choose = JOptionPane.showConfirmDialog(this, "Do you want to choose another image of yours?", "", JOptionPane.YES_NO_OPTION);
-                        System.out.println(choose);
-                        if (choose == 0)
-                        {
-                            JFileChooser jfc = new JFileChooser();
-                            int j = jfc.showOpenDialog(this);
-
-                            if (j == JFileChooser.APPROVE_OPTION)
-                            {
-                                File f = jfc.getSelectedFile();
-                                path = f.getAbsolutePath();
-                                System.out.println(path);
-                                imageSelected = true;
-                            }
-                        }
-                        else defaultImageSelected = false;
-                    }
-                }
-                try {
-                    loadImage();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                board.shuffle();
-                moves = 0;
-                gameWon = false;
-                System.out.println("New Game----------------\nMove Count: 0");
-                moveCount.setText("Move Count: 0");
-                updateBoard();
-                updateEncouragement();
-            }
-        });
-
-        //toggle image
         {
-            toggle.addActionListener(e -> {
-                if (!imageSelected)
-                {
-                    int response = JOptionPane.showConfirmDialog(this, "Do you want to use your own image?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    System.out.println(response);
-                    if (response == JOptionPane.YES_OPTION)
-                    {
-                        JFileChooser jfc = new JFileChooser();
-                        int j = jfc.showOpenDialog(this);
-
-                        if (j == JFileChooser.APPROVE_OPTION)
-                        {
-                            File f = jfc.getSelectedFile();
-                            path = f.getAbsolutePath();
-                            System.out.println(path);
-                            imageSelected = true;
-                        }
-                    }
-                }
-                imageMode = !imageMode;
-                if (imageMode)
-                    toggle.setText("Numbers");
-                else toggle.setText("Images");
-
-                try {
-                    loadImage();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-
-                }
-                updateBoard();
-            });
-//             // New game listener
 //        newGame.addActionListener(e -> {
-//            // FIX: If you want to allow a new game at any time (not just when won),
-//            // change 'if (gameWon)' to simply let them restart.
-//            if (gameWon)
+//            if (gameWon) //set as "true" for testing purposes otherwise gameWon
 //            {
 //                if (imageMode)
 //                {
 //                    int result = JOptionPane.showConfirmDialog(this, "Do you want to use the same image?", "", JOptionPane.YES_NO_OPTION);
 //                    System.out.println(result);
 //                    imageSelected = false;
-//
-//                    // If they DO NOT want to use the same image
-//                    if (result == JOptionPane.NO_OPTION)
+//                    if (result == 1)
 //                    {
 //                        int choose = JOptionPane.showConfirmDialog(this, "Do you want to choose another image of yours?", "", JOptionPane.YES_NO_OPTION);
 //                        System.out.println(choose);
-//
-//                        // If they WANT to choose their own new image
-//                        if (choose == JOptionPane.YES_OPTION)
+//                        if (choose == 0)
 //                        {
 //                            JFileChooser jfc = new JFileChooser();
 //                            int j = jfc.showOpenDialog(this);
@@ -254,11 +171,7 @@ public class PuzzlePanel extends JPanel implements MouseListener
 //                                imageSelected = true;
 //                            }
 //                        }
-//                        // If they DO NOT want to choose their own image, use default game images
-//                        else
-//                        {
-//                            defaultImageSelected = true;
-//                        }
+//                        else defaultImageSelected = false;
 //                    }
 //                }
 //                try {
@@ -266,7 +179,6 @@ public class PuzzlePanel extends JPanel implements MouseListener
 //                } catch (IOException ex) {
 //                    throw new RuntimeException(ex);
 //                }
-//
 //                board.shuffle();
 //                moves = 0;
 //                gameWon = false;
@@ -276,51 +188,139 @@ public class PuzzlePanel extends JPanel implements MouseListener
 //                updateEncouragement();
 //            }
 //        });
-//
-//        // Toggle image listener
-//        toggle.addActionListener(e -> {
-//            // FIX: Use toggle.isSelected() so the prompt only happens when turning images ON.
-//            // This stops the dialog from popping up when turning image mode OFF.
-//            if (toggle.isSelected() && !imageSelected && defaultImageSelected)
-//            {
-//                int response = JOptionPane.showConfirmDialog(this, "Do you want to use your own image?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//                System.out.println(response);
-//
-//                if (response == JOptionPane.YES_OPTION)
+            newGame.addActionListener(e -> {
+                // FIX: If you want to allow a new game at any time (not just when won),
+                // change 'if (gameWon)' to simply let them restart.
+                if (gameWon)
+                {
+                    if (imageMode)
+                    {
+                        int result = JOptionPane.showConfirmDialog(this, "Do you want to use the same image?", "", JOptionPane.YES_NO_OPTION);
+                        System.out.println(result);
+                        imageSelected = false;
+
+                        // If they DO NOT want to use the same image
+                        if (result == JOptionPane.NO_OPTION)
+                        {
+                            int choose = JOptionPane.showConfirmDialog(this, "Do you want to choose another image of yours?", "", JOptionPane.YES_NO_OPTION);
+                            System.out.println(choose);
+
+                            // If they WANT to choose their own new image
+                            if (choose == JOptionPane.YES_OPTION)
+                            {
+                                JFileChooser jfc = new JFileChooser();
+                                int j = jfc.showOpenDialog(this);
+
+                                if (j == JFileChooser.APPROVE_OPTION)
+                                {
+                                    File f = jfc.getSelectedFile();
+                                    path = f.getAbsolutePath();
+                                    System.out.println(path);
+                                    imageSelected = true;
+                                }
+                            }
+                            // If they DO NOT want to choose their own image, use default game images
+                            else
+                            {
+                                defaultImageSelected = true;
+                            }
+                        }
+                    }
+                    try {
+                        loadImage();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                    board.shuffle();
+                    moves = 0;
+                    gameWon = false;
+                    System.out.println("New Game----------------\nMove Count: 0");
+                    moveCount.setText("Move Count: 0");
+                    updateBoard();
+                    updateEncouragement();
+                }
+            });
+        }
+
+        //toggle image
+        {
+//            toggle.addActionListener(e -> {
+//                if (!imageSelected)
 //                {
-//                    JFileChooser jfc = new JFileChooser();
-//                    int j = jfc.showOpenDialog(this);
-//
-//                    if (j == JFileChooser.APPROVE_OPTION)
+//                    int response = JOptionPane.showConfirmDialog(this, "Do you want to use your own image?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//                    System.out.println(response);
+//                    if (response == JOptionPane.YES_OPTION)
 //                    {
-//                        File f = jfc.getSelectedFile();
-//                        path = f.getAbsolutePath();
-//                        System.out.println(path);
-//                        imageSelected = true;
+//                        JFileChooser jfc = new JFileChooser();
+//                        int j = jfc.showOpenDialog(this);
+//
+//                        if (j == JFileChooser.APPROVE_OPTION)
+//                        {
+//                            File f = jfc.getSelectedFile();
+//                            path = f.getAbsolutePath();
+//                            System.out.println(path);
+//                            imageSelected = true;
+//                        }
 //                    }
 //                }
-//                // If they say no, fallback securely to default program images
-//                else
-//                {
-//                    defaultImageSelected = true;
+//                imageMode = !imageMode;
+//                if (imageMode)
+//                    toggle.setText("Numbers");
+//                else toggle.setText("Images");
+//
+//                try {
+//                    loadImage();
+//                } catch (IOException ex) {
+//                    throw new RuntimeException(ex);
+//
 //                }
-//            }
-//
-//            // Toggle the visual state
-//            imageMode = toggle.isSelected();
-//
-//            if (imageMode)
-//                toggle.setText("Numbers");
-//            else
-//                toggle.setText("Images");
-//
-//            try {
-//                loadImage();
-//            } catch (IOException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//            updateBoard();
-//        });
+//                updateBoard();
+//            });
+             // New game listener
+        toggle.addActionListener(e -> {
+            // FIX: Use toggle.isSelected() so the prompt only happens when turning images ON.
+            // This stops the dialog from popping up when turning image mode OFF.
+            if (toggle.isSelected() && !imageSelected && defaultImageSelected)
+            {
+                int response = JOptionPane.showConfirmDialog(this, "Do you want to use your own image?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                System.out.println(response);
+
+                if (response == JOptionPane.YES_OPTION)
+                {
+                    JFileChooser jfc = new JFileChooser();
+                    int j = jfc.showOpenDialog(this);
+
+                    if (j == JFileChooser.APPROVE_OPTION)
+                    {
+                        File f = jfc.getSelectedFile();
+                        path = f.getAbsolutePath();
+                        System.out.println(path);
+                        imageSelected = true;
+                    }
+                }
+                // If they say no, fallback securely to default program images
+                else
+                {
+                    defaultImageSelected = true;
+                }
+            }
+
+            // Toggle the visual state
+            imageMode = toggle.isSelected();
+
+            if (imageMode)
+                toggle.setText("Numbers");
+            else
+                toggle.setText("Images");
+
+            try {
+                loadImage();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            updateBoard();
+        });
         }
         setVisible(true);
     }
