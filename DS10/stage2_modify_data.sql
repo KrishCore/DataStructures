@@ -1,5 +1,5 @@
 USE library_management;
-SET SQL_SAFE_UPDATES = 0;
+-- SET SQL_SAFE_UPDATES = 0;
 
 ALTER TABLE Members CHANGE COLUMN email email_address VARCHAR(50);
 ALTER TABLE Books DROP genre;
@@ -26,8 +26,8 @@ UPDATE Books SET copies_total = 5 WHERE book_id = 204;
 UPDATE Books SET copies_available = 3 WHERE book_id = 205;
 
 -- Loan statuesees
-UPDATE Loans SET loan_status = 'Returned' WHERE return_date IS NOT NULL;
-UPDATE Loans SET loan_status = 'Checked Out' WHERE return_date IS NULL;
+UPDATE Loans SET loan_status = 'Returned' WHERE return_date IS NOT NULL AND member_id > 0;
+UPDATE Loans SET loan_status = 'Checked Out' WHERE return_date IS NULL AND member_id > 0;
 
 -- Deletes
 DELETE FROM Loans WHERE loan_id = 302;

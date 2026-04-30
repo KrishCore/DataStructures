@@ -1,21 +1,16 @@
--- @block
-DROP DATABASE IF EXISTS library_management;
-CREATE DATABASE library_management;
 USE library_management;
 
--- DROP TABLE Loans;
--- DROP TABLE Books;
--- DROP TABLE Members;
--- DROP TABLE Authors;
+DROP TABLE Loans;
+DROP TABLE Books;
+DROP TABLE Members;
+DROP TABLE Authors;
 
--- @block
 CREATE TABLE Authors (
 	author_id INT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     birth_year INT
 );
--- @block
 CREATE TABLE Members (
 	member_id INT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
@@ -23,7 +18,6 @@ CREATE TABLE Members (
     email VARCHAR(50),
     join_date DATE
 );
--- @block
 CREATE TABLE Books (
 	book_id INT PRIMARY KEY,
 	title VARCHAR(60) NOT NULL,
@@ -34,7 +28,6 @@ CREATE TABLE Books (
 	copies_available INT,
     FOREIGN KEY (author_id) REFERENCES Authors(author_id)
 );
--- @block
 CREATE TABLE Loans (
 	loan_id INT PRIMARY KEY,
 	member_id INT,
@@ -46,7 +39,7 @@ CREATE TABLE Loans (
     FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
 
--- @block
+-- add authors
 INSERT INTO Authors VALUES
 (1, 'George', 'Orwell', 1903),
 (2,	'Harper', 'Lee', 1926),
@@ -54,14 +47,14 @@ INSERT INTO Authors VALUES
 (4,	'F. Scott', 'Fitzgerald', 1896),
 (5,	'Mary', 'Shelley', 1797);
 
--- @block
+-- add members
 INSERT INTO Members VALUES
 (101, 'Alice', 'Johnson', 'alice.johnson@email.com', '2024-01-15'),
 (102, 'Brian', 'Smith', 'brian.smith@email.com', '2024-02-10'),
 (103, 'Carla', 'Gomez', 'carla.gomez@email.com', '2024-03-05'),
 (104, 'David', 'Lee', 'david.lee@email.com', '2024-03-20');
 
--- @block
+-- add books
 INSERT INTO Books VALUES
 (201, '1984', 1, 'Dystopian', 1949, 5, 3),
 (202, 'To Kill a Mockingbird', 2, 'Fiction', 1960, 4, 2),
@@ -69,15 +62,15 @@ INSERT INTO Books VALUES
 (204, 'The Great Gatsby', 4, 'Fiction', 1925, 3, 1),
 (205, 'Frankenstein', 5, 'Horror', 1818, 2, 2);
 
--- @block
+-- add loans
 INSERT INTO Loans VALUES
 (301, 101, 201, '2026-01-10', '2026-01-24', '2026-01-20'),
 (302, 102, 202, '2026-02-01', '2026-02-15', NULL),
 (303, 103, 204, '2026-02-08', '2026-02-22', NULL),
 (304, 101, 203,	'2026-02-11', '2026-02-25', '2026-02-18');
 
--- @block
-SELECT * FROM Authors;
+-- Output tests
+SELECT * FROM Authors;-- WHERE author_id IS NOT NULL;
 SELECT * FROM Members;
 SELECT * FROM Books;
 SELECT * FROM Loans;
