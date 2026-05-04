@@ -3,8 +3,8 @@ USE library_management;
 
 ALTER TABLE Members CHANGE COLUMN email email_address VARCHAR(50);
 ALTER TABLE Books DROP genre;
-ALTER TABLE Books ADD COLUMN shelf_location VARCHAR(10);
-ALTER TABLE Members ADD COLUMN membership_level VARCHAR(20);
+ALTER TABLE Books ADD COLUMN shelf_location VARCHAR(20);
+ALTER TABLE Members ADD COLUMN membership_level VARCHAR(15);
 ALTER TABLE Loans ADD COLUMN loan_status VARCHAR(15);
 
 
