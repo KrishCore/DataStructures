@@ -1,3 +1,4 @@
+import java.security.spec.RSAOtherPrimeInfo;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -8,7 +9,7 @@ public class TeamManager
     public static void main(String[] args) throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "SQLPa55w0rd");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -58,14 +59,17 @@ public class TeamManager
 
             //easy method
             System.out.println(menu);
+            System.out.print("\nEnter choice: ");
             resM = scan.nextInt();
             while (resM < 1 || resM > 10)
             {
-                System.out.println("Enter a number between 1 and 10\n" + menu);
+                System.out.println("\nEnter a number between 1 and 10");
+                System.out.print("Enter choice: ");
                 resM = scan.nextInt();
             }
 
             //safe mode
+            System.out.print("");
 //        boolean tf = true;
 //
 //            try
@@ -79,32 +83,129 @@ public class TeamManager
 //            } catch (Exception e) {
 //                System.out.println("Enter numbers only");
 //            }
-            System.out.println(resM);
-            if (resM == 1) {
+//            System.out.println(resM);
+            if (resM == 1) // add team
+            {
                 scan.nextLine();
-                System.out.println("Enter Team Name:");
+                System.out.print("Enter team name: ");
                 String name = scan.nextLine();
-                System.out.println("Enter Team Coach:");
+                if (name.equals("-1")) break;
+                System.out.print("Enter team coach: ");
                 String coach = scan.nextLine();
+                if (coach.equals("-1")) break;
                 statement.executeUpdate("INSERT INTO team (team_name, coach_name) VALUES ('" + name + "', '" + coach + "');");
+                System.out.println("\nTeam added.\n");
             }
-            if (resM == 2) {
+            if (resM == 2) // add player
+            {
                 scan.nextLine();
-                System.out.println("Enter First Name:");
+                System.out.print("Enter team ID: ");
+                int id = scan.nextInt();
+                if (id == -1) break;
+                System.out.print("Enter first name: ");
+                scan.nextLine();
                 String first = scan.nextLine();
-                System.out.println("Enter Last Name:");
+                if    (first.equals("-1")) break;
+                System.out.print("Enter last name: ");
                 String last = scan.nextLine();
-                System.out.println("Enter Jersey Number:");
-                int num = scan.nextInt();
-                statement.executeUpdate("INSERT INTO team (team_name, last_name, jersey_number) VALUES ('" + first + "', '" + last + "', " + num + ");");
+                if    (last.equals("-1")) break;
+                System.out.print("Enter jersey number: ");
+                int jNum = scan.nextInt();
+                if (jNum == -1) break;
+                try {
+                    statement.executeUpdate("INSERT INTO player (team_id, first_name, last_name, jersey_number) VALUES ('" + id + "', '" + first + "', '" + last + "', '" + jNum + "');");
+                    System.out.println("\nPlayer added.\n");
+                } catch (SQLException e)
+                {
+                    System.out.println("Team id " + id + " not found.\n");
+                }
             }
-            if (resM == 3) { // work from here
+            if (resM == 3) // add game
+            {
                 scan.nextLine();
-                System.out.println("Enter Team Name:");
-                String name = scan.nextLine();
-                System.out.println("Enter Team Coach:");
-                String coach = scan.nextLine();
-                statement.executeUpdate("INSERT INTO team (team_name, coach_name) VALUES ('" + name + "', '" + coach + "');");
+                System.out.print("Enter team 1 ID: ");
+                int t1 = scan.nextInt();
+                if (t1 == -1) break;
+                System.out.print("Enter team 2 ID: ");
+                int t2 = scan.nextInt();
+                if (t2 == -1) break;
+                System.out.print("Enter team 1 score: ");
+                int s1 = scan.nextInt();
+                if (s1 == -1) break;
+                System.out.print("Enter team 2 score: ");
+                int s2 = scan.nextInt();
+                if (s2 == -1) break;
+                try {
+                    statement.executeUpdate("INSERT INTO game (team1_id, team2_id, team1_score, team2_score) VALUES ('" + t1 + "', '" + t2 + "', '" + s1 + "', '" + s2 + "');");
+                    System.out.println("\nGame added.\n");
+                } catch (SQLException e) {
+                    System.out.println("Enter valid team ids.");
+                }
+            }
+            if (resM == 4) // edit player jersey number
+            {
+                scan.nextLine();
+                System.out.print("Enter player ID: ");
+                int id = scan.nextInt();
+                if (id == -1) break;
+                System.out.print("Enter new jersey number: ");
+                int jNum = scan.nextInt();
+                if (jNum == -1) break;
+                try {
+                    statement.executeUpdate("UPDATE player SET jersey_number = " + jNum + "WHERE player_id = " + id + ";");
+                    System.out.println("Player updated.");
+                } catch (SQLException e) {
+                    System.out.println("Player id " + id + " not found.");
+                }
+            }
+            if (resM == 5) // remove player
+            {
+                scan.nextLine();
+                System.out.print("Enter player ID: ");
+                int id = scan.nextInt();
+                if (id == -1) break;
+                try {
+                    statement.executeUpdate("DELETE FROM Loans WHERE loan_id = " + id + ";");
+                    System.out.println("Player removed.");
+                } catch (SQLException e) {
+                    System.out.println("Player id " + id + " not found.");
+                }
+            }
+            if (resM == 6) // display teams
+            {
+                try {
+                    ResultSet rs = statement.executeQuery("SELECT * FROM team;");
+                    System.out.printf("%-4s %-11s %s\n", "ID", "Team Name", "Coach");
+                    while (rs.next())
+                        System.out.printf("%-4s %-11s %s\n", rs.getInt("team_id"), rs.getString("team_name"), rs.getString("coach_name"));
+                    System.out.println();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (resM == 7) // display players
+            {
+                try {
+                    ResultSet rs = statement.executeQuery("SELECT * FROM player;");
+                    System.out.printf("%-4s %-13s %-9s %-3s\n", "ID", "Player Name", "Jersey", "Team");
+//                    while (rs.next())
+//                        System.out.printf("%-4s %-11s %s\n", rs.getInt("team_id"), rs.getString("team_name"), rs.getString("coach_name"));
+                    System.out.println();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (resM == 8) // display games
+            {
+
+            }
+            if (resM == 9) // print team report
+            {
+
+            }
+            if (resM == 10) // exit
+            {
+                System.exit(0);
             }
 
         }
