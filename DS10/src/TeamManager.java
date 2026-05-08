@@ -9,7 +9,7 @@ public class TeamManager
     public static void main(String[] args) throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "SQLPa55w0rd");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -51,7 +51,7 @@ public class TeamManager
                 "6. Display Teams\n" +
                 "7. Display Players\n" +
                 "8. Display Games\n" +
-                "9.Print Team Report\n" +
+                "9. Print Team Report\n" +
                 "10. Exit";
         int resM = -1;
         while (resM != 10) {
@@ -152,7 +152,7 @@ public class TeamManager
                 int jNum = scan.nextInt();
                 if (jNum == -1) break;
                 try {
-                    statement.executeUpdate("UPDATE player SET jersey_number = " + jNum + "WHERE player_id = " + id + ";");
+                    statement.executeUpdate("UPDATE player SET jersey_number = " + jNum + " WHERE player_id = " + id + ";");
                     System.out.println("Player updated.");
                 } catch (SQLException e) {
                     System.out.println("Player id " + id + " not found.");
@@ -165,7 +165,7 @@ public class TeamManager
                 int id = scan.nextInt();
                 if (id == -1) break;
                 try {
-                    statement.executeUpdate("DELETE FROM Loans WHERE loan_id = " + id + ";");
+                    statement.executeUpdate("DELETE FROM player WHERE loan_id = " + id + ";");
                     System.out.println("Player removed.");
                 } catch (SQLException e) {
                     System.out.println("Player id " + id + " not found.");
@@ -186,15 +186,15 @@ public class TeamManager
             if (resM == 7) // display players
             {
                 try {
-                    ResultSet rs = statement.executeQuery("SELECT * FROM player;");
-                    System.out.printf("%-4s %-13s %-9s %-3s\n", "ID", "Player Name", "Jersey", "Team");
-//                    while (rs.next())
-//                        System.out.printf("%-4s %-11s %s\n", rs.getInt("team_id"), rs.getString("team_name"), rs.getString("coach_name"));
+                    ResultSet rs = statement.executeQuery("SELECT player_id, first_name, last_name, jersey_number, team.team_name FROM player JOIN team ON player.team_id = team.team_id;");
+                    System.out.printf("%-4s %-13s %-8s %-3s\n", "ID", "Player Name", "Jersey", "Team");
+                    while (rs.next())
+                        System.out.printf("%-4s %-13s %-8s %-3s\n", rs.getInt("player_id"), rs.getString("first_name") + " " + rs.getString("last_name"), rs.getInt("jersey_number"), rs.getString("team_name"));
                     System.out.println();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            } // work from 8
             if (resM == 8) // display games
             {
 
