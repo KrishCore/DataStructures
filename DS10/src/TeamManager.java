@@ -9,7 +9,7 @@ public class TeamManager
     public static void main(String[] args) throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "SQLPa55w0rd");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -17,9 +17,9 @@ public class TeamManager
 
         statement.execute("CREATE DATABASE IF NOT EXISTS team_manager_3");
         statement.execute("USE team_manager_3");
-        statement.execute("DROP TABLE IF EXISTS game");
-        statement.execute("DROP TABLE IF EXISTS player");
-        statement.execute("DROP TABLE IF EXISTS team");
+//        statement.execute("DROP TABLE IF EXISTS game");
+//        statement.execute("DROP TABLE IF EXISTS player");
+//        statement.execute("DROP TABLE IF EXISTS team");
         statement.execute("CREATE TABLE IF NOT EXISTS team (" +
                 "team_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL," +
                 "team_name VARCHAR(50) NOT NULL," +
@@ -139,7 +139,7 @@ public class TeamManager
                     statement.executeUpdate("INSERT INTO game (team1_id, team2_id, team1_score, team2_score) VALUES ('" + t1 + "', '" + t2 + "', '" + s1 + "', '" + s2 + "');");
                     System.out.println("\nGame added.\n");
                 } catch (SQLException e) {
-                    System.out.println("Enter valid team ids.");
+                    System.out.println("Enter valid team ids.\n");
                 }
             }
             if (resM == 4) // edit player jersey number
@@ -153,9 +153,9 @@ public class TeamManager
                 if (jNum == -1) break;
                 try {
                     statement.executeUpdate("UPDATE player SET jersey_number = " + jNum + " WHERE player_id = " + id + ";");
-                    System.out.println("Player updated.");
+                    System.out.println("\nPlayer updated.\n");
                 } catch (SQLException e) {
-                    System.out.println("Player id " + id + " not found.");
+                    System.out.println("Player id " + id + " not found.\n");
                 }
             }
             if (resM == 5) // remove player
@@ -165,10 +165,10 @@ public class TeamManager
                 int id = scan.nextInt();
                 if (id == -1) break;
                 try {
-                    statement.executeUpdate("DELETE FROM player WHERE loan_id = " + id + ";");
+                    statement.executeUpdate("DELETE FROM player WHERE player_id = " + id + ";");
                     System.out.println("Player removed.");
                 } catch (SQLException e) {
-                    System.out.println("Player id " + id + " not found.");
+                    System.out.println("Player id " + id + " not found.\n");
                 }
             }
             if (resM == 6) // display teams
@@ -186,7 +186,7 @@ public class TeamManager
             if (resM == 7) // display players
             {
                 try {
-                    ResultSet rs = statement.executeQuery("SELECT player_id, first_name, last_name, jersey_number, team.team_name FROM player JOIN team ON player.team_id = team.team_id;");
+                    ResultSet rs = statement.executeQuery("SELECT player.player_id, player.first_name, player.last_name, player.jersey_number, team.team_name FROM player JOIN team ON player.team_id = team.team_id;");
                     System.out.printf("%-4s %-13s %-8s %-3s\n", "ID", "Player Name", "Jersey", "Team");
                     while (rs.next())
                         System.out.printf("%-4s %-13s %-8s %-3s\n", rs.getInt("player_id"), rs.getString("first_name") + " " + rs.getString("last_name"), rs.getInt("jersey_number"), rs.getString("team_name"));
@@ -197,18 +197,84 @@ public class TeamManager
             } // work from 8
             if (resM == 8) // display games
             {
-
+                //
             }
             if (resM == 9) // print team report
             {
+                scan.nextLine();
+                System.out.print("Enter team ID: ");
+                int id = scan.nextInt();
+                try {
+                    Statement stmt1 = connection.createStatement();
 
+                    ResultSet tr = stmt1.executeQuery("SELECT team.team_name, team.coach_name FROM team  JOIN player ON team.team_id = player.team_id WHERE team.team_id = " + id);
+                    tr.next();
+                    System.out.println("\nTeam Report: " + tr.getString("team_name") + "\nCoach: " + tr.getString("coach_name"));
+
+                    Statement stmt2 = connection.createStatement();
+                    ResultSet pl = stmt2.executeQuery( "SELECT jersey_number, first_name, last_name FROM player WHERE team_id = " + id);
+                    System.out.println("\nPlayers:");
+                    while (pl.next())
+                        System.out.printf("%-4s %-13s \n", pl.getInt("jersey_number"), pl.getString("first_name") + " " + pl.getString("last_name"));
+
+                    Statement stmt3 = connection.createStatement();
+                    ResultSet gr = stmt3.executeQuery( "SELECT * FROM game WHERE team1_id = " + id + " OR team2_id = " + id);
+
+                    System.out.println("\nGame Results:");
+                    int wins = 0, losses = 0, gameCount = 0, totalPoints = 0;
+                    while (gr.next())
+                    {
+                        int t1id = gr.getInt("team1_id");
+                        int t2id = gr.getInt("team2_id");
+                        int s1 = gr.getInt("team1_score");
+                        int s2 = gr.getInt("team1_score");
+
+                        int opponentId, ms, os;
+
+                        if (t1id == id) //which team are we
+                        {
+                            opponentId = t2id;
+                            ms = s1;
+                            os = s2;
+                        }
+                        else {
+                            opponentId = t1id;
+                            ms = s2;
+                            os = s1;
+                        }
+
+                        Statement stmt = connection.createStatement();
+                        ResultSet rs = stmt.executeQuery("SELECT team_name FROM team WHERE team_id = " + opponentId); //find opp team name
+                        rs.next();
+                        String opName = rs.getString("team_name");
+                        //work from here
+
+                        char wl;
+                        if (ms > os) {
+                            wl = 'W';
+                            wins++;
+                        }
+                        else if (ms < os) {
+                            wl = 'L';
+                            losses++;
+                        }
+                        else wl = 'T';
+                        System.out.printf("vs %s %-11s %-14s", gr.getString("team"), wl, gr.getString("team1_score" + "-" + gr.getString("team2_score")));
+                    }
+
+                    System.out.println("\nRecord: " + wins + "-" + losses);
+                    double avg = (double) totalPoints /gameCount;
+                    System.out.println("Average Points Scored: " + avg);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
             if (resM == 10) // exit
             {
                 System.exit(0);
+                connection.close();
             }
 
         }
-        connection.close();
     }
 }
