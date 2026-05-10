@@ -1,4 +1,3 @@
-import java.security.spec.RSAOtherPrimeInfo;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -9,7 +8,7 @@ public class TeamManager
     public static void main(String[] args) throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "SQLPa55w0rd");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -53,19 +52,23 @@ public class TeamManager
                 "8. Display Games\n" +
                 "9. Print Team Report\n" +
                 "10. Exit";
-        int resM = -1;
-        while (resM != 10) {
-            Scanner scan = new Scanner(System.in);
 
-            //easy method
+        Scanner scan = new Scanner(System.in);
+        int resM = -1;
+        while (true) {
             System.out.println(menu);
-            System.out.print("\nEnter choice: ");
-            resM = scan.nextInt();
-            while (resM < 1 || resM > 10)
-            {
-                System.out.println("\nEnter a number between 1 and 10");
+            resM = -1;
+            while (resM < 1 || resM > 10) {
                 System.out.print("Enter choice: ");
-                resM = scan.nextInt();
+                String resMString = scan.next();
+                try {
+                    resM = Integer.parseInt(resMString);
+                    if (resM < 1 || resM > 10)
+                        System.out.println("Enter a number between 1 and 10.");
+                } catch (Exception e) {
+                    System.out.println("Invalid input.");
+                    resM = -1;
+                }
             }
 
             //safe mode
@@ -89,29 +92,42 @@ public class TeamManager
                 scan.nextLine();
                 System.out.print("Enter team name: ");
                 String name = scan.nextLine();
-                if (name.equals("-1")) break;
                 System.out.print("Enter team coach: ");
                 String coach = scan.nextLine();
-                if (coach.equals("-1")) break;
                 statement.executeUpdate("INSERT INTO team (team_name, coach_name) VALUES ('" + name + "', '" + coach + "');");
                 System.out.println("\nTeam added.\n");
             }
             if (resM == 2) // add player
             {
                 scan.nextLine();
-                System.out.print("Enter team ID: ");
-                int id = scan.nextInt();
-                if (id == -1) break;
+                int id;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String idString = scan.next();
+                    try {
+                        id = Integer.parseInt(idString);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 System.out.print("Enter first name: ");
                 scan.nextLine();
                 String first = scan.nextLine();
-                if    (first.equals("-1")) break;
                 System.out.print("Enter last name: ");
                 String last = scan.nextLine();
-                if    (last.equals("-1")) break;
                 System.out.print("Enter jersey number: ");
-                int jNum = scan.nextInt();
-                if (jNum == -1) break;
+                int jNum;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String jNumString = scan.next();
+                    try {
+                        jNum = Integer.parseInt(jNumString);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 try {
                     statement.executeUpdate("INSERT INTO player (team_id, first_name, last_name, jersey_number) VALUES ('" + id + "', '" + first + "', '" + last + "', '" + jNum + "');");
                     System.out.println("\nPlayer added.\n");
@@ -124,20 +140,56 @@ public class TeamManager
             {
                 scan.nextLine();
                 System.out.print("Enter team 1 ID: ");
-                int t1 = scan.nextInt();
-                if (t1 == -1) break;
+                int t1;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String t1String = scan.next();
+                    try {
+                        t1 = Integer.parseInt(t1String);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 System.out.print("Enter team 2 ID: ");
-                int t2 = scan.nextInt();
-                if (t2 == -1) break;
+                int t2;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String t2String = scan.next();
+                    try {
+                        t2 = Integer.parseInt(t2String);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 System.out.print("Enter team 1 score: ");
-                int s1 = scan.nextInt();
-                if (s1 == -1) break;
+                int s1;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String s1String = scan.next();
+                    try {
+                        s1 = Integer.parseInt(s1String);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 System.out.print("Enter team 2 score: ");
-                int s2 = scan.nextInt();
-                if (s2 == -1) break;
+                int s2;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String s2String = scan.next();
+                    try {
+                        s2 = Integer.parseInt(s2String);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 try {
                     statement.executeUpdate("INSERT INTO game (team1_id, team2_id, team1_score, team2_score) VALUES ('" + t1 + "', '" + t2 + "', '" + s1 + "', '" + s2 + "');");
-                    System.out.println("\nGame added.\n");
+                    System.out.println("\nGame result added.\n");
                 } catch (SQLException e) {
                     System.out.println("Enter valid team ids.\n");
                 }
@@ -146,11 +198,30 @@ public class TeamManager
             {
                 scan.nextLine();
                 System.out.print("Enter player ID: ");
-                int id = scan.nextInt();
-                if (id == -1) break;
+                int id;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String idString = scan.next();
+                    try {
+                        id = Integer.parseInt(idString);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
+
                 System.out.print("Enter new jersey number: ");
-                int jNum = scan.nextInt();
-                if (jNum == -1) break;
+                int jNum;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String jNumString = scan.next();
+                    try {
+                        jNum = Integer.parseInt(jNumString);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 try {
                     statement.executeUpdate("UPDATE player SET jersey_number = " + jNum + " WHERE player_id = " + id + ";");
                     System.out.println("\nPlayer updated.\n");
@@ -162,11 +233,20 @@ public class TeamManager
             {
                 scan.nextLine();
                 System.out.print("Enter player ID: ");
-                int id = scan.nextInt();
-                if (id == -1) break;
+                int id;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String idString = scan.next();
+                    try {
+                        id = Integer.parseInt(idString);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 try {
                     statement.executeUpdate("DELETE FROM player WHERE player_id = " + id + ";");
-                    System.out.println("Player removed.");
+                    System.out.println("\nPlayer removed.\n");
                 } catch (SQLException e) {
                     System.out.println("Player id " + id + " not found.\n");
                 }
@@ -174,6 +254,7 @@ public class TeamManager
             if (resM == 6) // display teams
             {
                 try {
+                    System.out.println("\nTeams:");
                     ResultSet rs = statement.executeQuery("SELECT * FROM team;");
                     System.out.printf("%-4s %-11s %s\n", "ID", "Team Name", "Coach");
                     while (rs.next())
@@ -186,6 +267,7 @@ public class TeamManager
             if (resM == 7) // display players
             {
                 try {
+                    System.out.println("\nPlayers:");
                     ResultSet rs = statement.executeQuery("SELECT player.player_id, player.first_name, player.last_name, player.jersey_number, team.team_name FROM player JOIN team ON player.team_id = team.team_id;");
                     System.out.printf("%-4s %-13s %-8s %-3s\n", "ID", "Player Name", "Jersey", "Team");
                     while (rs.next())
@@ -197,17 +279,50 @@ public class TeamManager
             } // work from 8
             if (resM == 8) // display games
             {
-                //
+                try {
+                    System.out.println("\nGames:");
+                    ResultSet rs = statement.executeQuery("SELECT * FROM game;");
+                    System.out.printf("%-4s %s\n", "ID", "Game");
+                    while (rs.next())
+                    {
+                        int t1 =  rs.getInt("team1_id");
+                        int t2 =  rs.getInt("team2_id");
+
+                        Statement stmt1 = connection.createStatement();
+                        ResultSet tn1 = stmt1.executeQuery("SELECT team_name FROM team WHERE team_id = " + t1 + ";");
+                        tn1.next();
+                        String team1 = tn1.getString("team_name");
+
+                        Statement stmt2 = connection.createStatement();
+                        ResultSet tn2 = stmt2.executeQuery("SELECT team_name FROM team WHERE team_id = " + t2 + ";");
+                        tn2.next();
+                        String team2 = tn2.getString("team_name");
+
+                        System.out.printf("%-4d %s-%d vs %s-%d\n", rs.getInt("game_id"), team1, rs.getInt("team1_score"), team2, rs.getInt("team2_score"));
+                    }
+                    System.out.println();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             if (resM == 9) // print team report
             {
                 scan.nextLine();
-                System.out.print("Enter team ID: ");
-                int id = scan.nextInt();
+                int id;
+                while (true) {
+                    System.out.print("Enter team ID: ");
+                    String idString = scan.next();
+                    try {
+                        id = Integer.parseInt(idString);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                    }
+                }
                 try {
                     Statement stmt1 = connection.createStatement();
 
-                    ResultSet tr = stmt1.executeQuery("SELECT team.team_name, team.coach_name FROM team  JOIN player ON team.team_id = player.team_id WHERE team.team_id = " + id);
+                    ResultSet tr = stmt1.executeQuery("SELECT team_name, coach_name FROM team WHERE team_id = " + id);
                     tr.next();
                     System.out.println("\nTeam Report: " + tr.getString("team_name") + "\nCoach: " + tr.getString("coach_name"));
 
@@ -221,13 +336,14 @@ public class TeamManager
                     ResultSet gr = stmt3.executeQuery( "SELECT * FROM game WHERE team1_id = " + id + " OR team2_id = " + id);
 
                     System.out.println("\nGame Results:");
-                    int wins = 0, losses = 0, gameCount = 0, totalPoints = 0;
+                    int wins = 0, losses = 0, ties = 0;
+                    double gameCount = 0, totalPoints = 0;
                     while (gr.next())
                     {
                         int t1id = gr.getInt("team1_id");
                         int t2id = gr.getInt("team2_id");
                         int s1 = gr.getInt("team1_score");
-                        int s2 = gr.getInt("team1_score");
+                        int s2 = gr.getInt("team2_score");
 
                         int opponentId, ms, os;
 
@@ -253,28 +369,35 @@ public class TeamManager
                         if (ms > os) {
                             wl = 'W';
                             wins++;
-                        }
+                        } //win
                         else if (ms < os) {
                             wl = 'L';
                             losses++;
-                        }
-                        else wl = 'T';
-                        System.out.printf("vs %s %-11s %-14s", gr.getString("team"), wl, gr.getString("team1_score" + "-" + gr.getString("team2_score")));
+                        } //loss
+                        else {
+                            wl = 'T';
+                            ties++;
+                        } // tie
+
+                        System.out.printf("vs %-8s %-3c %d-%d\n", opName, wl, ms, os);// work on this lien
+                        System.out.println();
+                        totalPoints += ms;
+                        gameCount++;
                     }
 
-                    System.out.println("\nRecord: " + wins + "-" + losses);
-                    double avg = (double) totalPoints /gameCount;
-                    System.out.println("Average Points Scored: " + avg);
+                    System.out.println("Record: " + wins + "-" + losses + "-" + ties);
+                    double avg = gameCount != 0 ? totalPoints /gameCount : 0;
+                    System.out.printf("Average Points Scored: %.2f\n\n", avg);
                 } catch (SQLException e) {
+                    System.out.println("Team not found.");
                     e.printStackTrace();
                 }
             }
             if (resM == 10) // exit
             {
-                System.exit(0);
                 connection.close();
+                System.exit(0);
             }
-
         }
     }
 }
