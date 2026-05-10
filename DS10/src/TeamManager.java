@@ -10,6 +10,7 @@ public class TeamManager
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e);
         }
         Statement statement = connection.createStatement();
