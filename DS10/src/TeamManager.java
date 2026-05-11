@@ -8,7 +8,7 @@ public class TeamManager
     public static void main(String[] args) throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "SQLPa55w0rd");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
@@ -60,7 +60,7 @@ public class TeamManager
             System.out.println(menu);
             resM = -1;
             while (resM < 1 || resM > 10) {
-                System.out.print("Enter choice: ");
+                System.out.print("\nEnter choice: ");
                 String resMString = scan.next();
                 try {
                     resM = Integer.parseInt(resMString);
@@ -117,10 +117,9 @@ public class TeamManager
                 String first = scan.nextLine();
                 System.out.print("Enter last name: ");
                 String last = scan.nextLine();
-                System.out.print("Enter jersey number: ");
                 int jNum;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter jersey number: ");
                     String jNumString = scan.next();
                     try {
                         jNum = Integer.parseInt(jNumString);
@@ -140,10 +139,9 @@ public class TeamManager
             if (resM == 3) // add game
             {
                 scan.nextLine();
-                System.out.print("Enter team 1 ID: ");
                 int t1;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter team 1 ID: ");
                     String t1String = scan.next();
                     try {
                         t1 = Integer.parseInt(t1String);
@@ -152,10 +150,9 @@ public class TeamManager
                         System.out.println("Invalid input.");
                     }
                 }
-                System.out.print("Enter team 2 ID: ");
                 int t2;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter team 2 ID: ");
                     String t2String = scan.next();
                     try {
                         t2 = Integer.parseInt(t2String);
@@ -164,10 +161,9 @@ public class TeamManager
                         System.out.println("Invalid input.");
                     }
                 }
-                System.out.print("Enter team 1 score: ");
                 int s1;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter team 1 score: ");
                     String s1String = scan.next();
                     try {
                         s1 = Integer.parseInt(s1String);
@@ -176,10 +172,9 @@ public class TeamManager
                         System.out.println("Invalid input.");
                     }
                 }
-                System.out.print("Enter team 2 score: ");
                 int s2;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter team 2 score: ");
                     String s2String = scan.next();
                     try {
                         s2 = Integer.parseInt(s2String);
@@ -198,10 +193,9 @@ public class TeamManager
             if (resM == 4) // edit player jersey number
             {
                 scan.nextLine();
-                System.out.print("Enter player ID: ");
                 int id;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter player ID: ");
                     String idString = scan.next();
                     try {
                         id = Integer.parseInt(idString);
@@ -211,10 +205,9 @@ public class TeamManager
                     }
                 }
 
-                System.out.print("Enter new jersey number: ");
                 int jNum;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter new jersey number: ");
                     String jNumString = scan.next();
                     try {
                         jNum = Integer.parseInt(jNumString);
@@ -233,10 +226,9 @@ public class TeamManager
             if (resM == 5) // remove player
             {
                 scan.nextLine();
-                System.out.print("Enter player ID: ");
                 int id;
                 while (true) {
-                    System.out.print("Enter team ID: ");
+                    System.out.print("Enter player ID: ");
                     String idString = scan.next();
                     try {
                         id = Integer.parseInt(idString);
