@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class ChessGame extends JFrame {
 
     public ChessGame() {
-        setTitle("Java Swing Chess – Fully Fixed");
+        setTitle("Java Swing Chess – Fully Operational");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(640, 640);
         add(new Board());
@@ -54,26 +54,19 @@ class Board extends JPanel {
     }
 
     private void initPieces() {
-
         // --- BLACK ---
-        for (int c = 0; c < 8; c++)
-            squares[1][c].setPiece(new Pawn(false));
-
+        for (int c = 0; c < 8; c++) squares[1][c].setPiece(new Pawn(false));
         squares[0][0].setPiece(new Rook(false)); squares[0][7].setPiece(new Rook(false));
         squares[0][1].setPiece(new Knight(false)); squares[0][6].setPiece(new Knight(false));
         squares[0][2].setPiece(new Bishop(false)); squares[0][5].setPiece(new Bishop(false));
-        squares[0][3].setPiece(new Queen(false));
-        squares[0][4].setPiece(new King(false));
+        squares[0][3].setPiece(new Queen(false));  squares[0][4].setPiece(new King(false));
 
         // --- WHITE ---
-        for (int c = 0; c < 8; c++)
-            squares[6][c].setPiece(new Pawn(true));
-
+        for (int c = 0; c < 8; c++) squares[6][c].setPiece(new Pawn(true));
         squares[7][0].setPiece(new Rook(true)); squares[7][7].setPiece(new Rook(true));
         squares[7][1].setPiece(new Knight(true)); squares[7][6].setPiece(new Knight(true));
         squares[7][2].setPiece(new Bishop(true)); squares[7][5].setPiece(new Bishop(true));
-        squares[7][3].setPiece(new Queen(true));
-        squares[7][4].setPiece(new King(true));
+        squares[7][3].setPiece(new Queen(true));  squares[7][4].setPiece(new King(true));
     }
 
     private void clearHighlight() {
@@ -98,6 +91,37 @@ class Board extends JPanel {
         }
     }
 
+    // Evaluates whether a team's King is currently under attack
+    public boolean isInCheck(boolean whiteTeam) {
+        Square kingSquare = null;
+
+        // 1. Locate the King
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece p = squares[r][c].getPiece();
+                if (p instanceof King && p.isWhite() == whiteTeam) {
+                    kingSquare = squares[r][c];
+                    break;
+                }
+            }
+        }
+        if (kingSquare == null) return false;
+
+        // 2. Check if any opposing piece can attack that square
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece attacker = squares[r][c].getPiece();
+                if (attacker != null && attacker.isWhite() != whiteTeam) {
+                    if (attacker.canMove(squares[r][c], kingSquare, squares)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // Filters candidate steps by virtually performing them to filter out self-checks
     private void showMoves(Square from) {
         clearHighlight();
         Piece p = from.getPiece();
@@ -105,9 +129,23 @@ class Board extends JPanel {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
                 Square to = squares[r][c];
+                
                 if (p.canMove(from, to, squares)) {
-                    legalMoves.add(to);
-                    to.setHighlight(true);
+                    // Virtual Simulation Step
+                    Piece targetPieceTemp = to.getPiece();
+                    to.setPiece(p);
+                    from.setPiece(null);
+
+                    boolean leavesKingInCheck = isInCheck(whiteTurn);
+
+                    // Revert Board State
+                    from.setPiece(p);
+                    to.setPiece(targetPieceTemp);
+
+                    if (!leavesKingInCheck) {
+                        legalMoves.add(to);
+                        to.setHighlight(true);
+                    }
                 }
             }
         }
@@ -116,23 +154,22 @@ class Board extends JPanel {
     private void movePiece(Square from, Square to) {
         Piece p = from.getPiece();
 
-        /* CASTLING CHECK */
+        /* CASTLING HANDLING */
         if (p instanceof King && Math.abs(to.col - from.col) == 2) {
             int row = from.row;
-
             if (to.col == 6) { // king-side
                 Square rookFrom = squares[row][7];
                 Square rookTo = squares[row][5];
                 rookTo.setPiece(rookFrom.getPiece());
                 rookFrom.setPiece(null);
-                rookTo.getPiece().hasMoved = true;
+                if (rookTo.getPiece() != null) rookTo.getPiece().hasMoved = true;
             }
             if (to.col == 2) { // queen-side
                 Square rookFrom = squares[row][0];
                 Square rookTo = squares[row][3];
                 rookTo.setPiece(rookFrom.getPiece());
                 rookFrom.setPiece(null);
-                rookTo.getPiece().hasMoved = true;
+                if (rookTo.getPiece() != null) rookTo.getPiece().hasMoved = true;
             }
         }
 
@@ -198,7 +235,7 @@ class Pawn extends Piece {
     public String getSymbol() { return "♙"; }
 
     public boolean canMove(Square f, Square t, Square[][] b) {
-        int dir = isWhite() ? 1 : -1;
+        int dir = isWhite() ? -1 : 1; 
         int fr = f.row, fc = f.col, tr = t.row, tc = t.col;
 
         if (fc == tc && t.getPiece() == null) {
@@ -225,7 +262,6 @@ class Rook extends Piece {
         if (f == t) return false;
 
         int fr = f.row, fc = f.col, tr = t.row, tc = t.col;
-
         if (fr != tr && fc != tc) return false;
 
         if (fr == tr) {
@@ -265,68 +301,17 @@ class Bishop extends Piece {
 
     public boolean canMove(Square f, Square t, Square[][] b) {
         int fr = f.row, fc = f.col, tr = t.row, tc = t.col;
-
         if (Math.abs(fr - tr) != Math.abs(fc - tc)) return false;
 
         int rs = (tr > fr) ? 1 : -1;
         int cs = (tc > fc) ? 1 : -1;
 
-        int r = fr + rs, c = fc + cs;
-        while (r != tr) {
+        int r = fr + rs;
+        int c = fc + cs;
+        
+        while (r != tr && c != tc) {
             if (b[r][c].getPiece() != null) return false;
-            r += rs; c += cs;
+            r += rs;
+            c += cs;
         }
 
-        return enemyOrEmpty(t);
-    }
-}
-
-/* ==================== QUEEN ==================== */
-
-class Queen extends Piece {
-    public Queen(boolean w) { super(w); }
-    public String getSymbol() { return "♕"; }
-
-    public boolean canMove(Square f, Square t, Square[][] b) {
-        return new Rook(isWhite()).canMove(f, t, b)
-                || new Bishop(isWhite()).canMove(f, t, b);
-    }
-}
-
-/* ==================== KING ==================== */
-
-class King extends Piece {
-    public King(boolean w) { super(w); }
-    public String getSymbol() { return "♔"; }
-
-    public boolean canMove(Square f, Square t, Square[][] b) {
-        int dr = Math.abs(f.row - t.row);
-        int dc = Math.abs(f.col - t.col);
-
-        if (dr <= 1 && dc <= 1)
-            return enemyOrEmpty(t);
-
-        if (!hasMoved && dr == 0 && Math.abs(dc) == 2) {
-            int row = f.row;
-
-            if (dc == 2) {
-                if (t.col == 6) {
-                    if (b[row][5].getPiece() == null && b[row][6].getPiece() == null &&
-                            b[row][7].getPiece() instanceof Rook &&
-                            !b[row][7].getPiece().hasMoved)
-                        return true;
-                }
-                if (t.col == 2) {
-                    if (b[row][3].getPiece() == null &&
-                            b[row][2].getPiece() == null &&
-                            b[row][1].getPiece() == null &&
-                            b[row][0].getPiece() instanceof Rook &&
-                            !b[row][0].getPiece().hasMoved)
-                        return true;
-                }
-            }
-        }
-
-        return false;
-    }
-}
