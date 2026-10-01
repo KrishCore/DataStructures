@@ -3,76 +3,87 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MarioGame extends JPanel implements Runnable, KeyListener {
 
-    // Screen Dimensions
+    // Display / Tile Config
     private static final int TILE_SIZE = 32;
-    private static final int SCREEN_COLUMNS = 25;
-    private static final int SCREEN_ROWS = 15;
-    private static final int SCREEN_WIDTH = TILE_SIZE * SCREEN_COLUMNS; // 800px
-    private static final int SCREEN_HEIGHT = TILE_SIZE * SCREEN_ROWS; // 480px
+    private static final int VIEWPORT_COLS = 25;
+    private static final int VIEWPORT_ROWS = 15;
+    private static final int SCREEN_WIDTH = TILE_SIZE * VIEWPORT_COLS; // 800px
+    private static final int SCREEN_HEIGHT = TILE_SIZE * VIEWPORT_ROWS; // 480px
 
-    // Custom Color Definitions
-    private static final Color SKY_BLUE = new Color(107, 140, 255);
-    private static final Color BRICK_RED = new Color(184, 50, 0);
-    private static final Color GOLD = new Color(255, 215, 0); // TRUE GOLD COLOR
-
-    // Game Thread
+    // Loop Settings
     private Thread gameThread;
     private boolean isRunning = false;
     private final int FPS = 60;
 
+    // Camera Tracking
+    private float cameraX = 0;
+
     // Controls
     private boolean leftPressed, rightPressed, jumpPressed;
 
-    // Player State
-    private float playerX = 60;
+    // Player Stats & Physics
+    private float playerX = 100;
     private float playerY = 300;
-    private final int playerWidth = 28;
+    private final int playerWidth = 26;
     private final int playerHeight = 32;
     private float velocityX = 0;
     private float velocityY = 0;
     private boolean isGrounded = false;
+    private boolean isDead = false;
     private int score = 0;
     private boolean levelCleared = false;
 
-    // Physics Constants
-    private final float GRAVITY = 0.5f;
-    private final float JUMP_STRENGTH = -11.0f;
-    private final float MOVE_SPEED = 3.5f;
+    // Physics Constants (Faster, Snappier Feel)
+    private final float GRAVITY = 0.65f;
+    private final float JUMP_STRENGTH = -13.5f;
+    private final float MOVE_SPEED = 5.2f;
 
-    // Level Representation (1: Ground/Block, 2: Coin, 3: Goal Flag)
+    // Level Layout (40 columns wide)
+    // 1: Ground/Brick, 2: Coin, 3: Goal Flag, 4: Question Block, 5: Pipe
     private final int[][] levelMap = {
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,4,2,4,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,3,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0},
+        {0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0},
+        {0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
+        {0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
     };
+
+    private final int levelWidthCols = levelMap[0].length;
+    private final int levelWidthPixels = levelWidthCols * TILE_SIZE;
+
+    // Enemies
+    private final List<Goomba> goombas = new ArrayList<>();
 
     public MarioGame() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.setBackground(SKY_BLUE); // Use named constant
+        this.setBackground(new Color(107, 140, 255)); // Sky Blue
         this.setFocusable(true);
         this.addKeyListener(this);
+
+        // Spawn Goombas
+        goombas.add(new Goomba(450, 352));
+        goombas.add(new Goomba(750, 352));
+        goombas.add(new Goomba(900, 192));
     }
 
     public void startGameThread() {
         isRunning = true;
         gameThread = new Thread(this);
-        gameThread.setName("GameLoop"); // Helpful for debugging
         gameThread.start();
     }
 
@@ -92,25 +103,17 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
                 repaint();
                 delta--;
             }
-
-            // Optional: Add a small sleep to prevent 100% CPU usage
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
         }
     }
 
     private void update() {
-        if (levelCleared) return;
+        if (levelCleared || isDead) return;
 
-        // Horizontal Movement
+        // Player Inputs
         velocityX = 0;
         if (leftPressed) velocityX -= MOVE_SPEED;
         if (rightPressed) velocityX += MOVE_SPEED;
 
-        // Jump
         if (jumpPressed && isGrounded) {
             velocityY = JUMP_STRENGTH;
             isGrounded = false;
@@ -119,38 +122,41 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
         // Apply Gravity
         velocityY += GRAVITY;
 
-        // Move Horizontal & Resolve Collisions
+        // X Movement & Collisions
         playerX += velocityX;
+        if (playerX < 0) playerX = 0;
         checkHorizontalCollisions();
 
-        // Move Vertical & Resolve Collisions
+        // Y Movement & Collisions
         playerY += velocityY;
         checkVerticalCollisions();
 
-        // Check Items & Objectives
+        // Update Camera Position
+        cameraX = playerX - (SCREEN_WIDTH / 3.0f);
+        if (cameraX < 0) cameraX = 0;
+        if (cameraX > levelWidthPixels - SCREEN_WIDTH) cameraX = levelWidthPixels - SCREEN_WIDTH;
+
+        // Interactables (Coins & Goal)
         checkInteractables();
+
+        // Update Goombas
+        updateGoombas();
+
+        // Pitfall Death Check
+        if (playerY > SCREEN_HEIGHT + 100) {
+            isDead = true;
+        }
     }
 
     private void checkHorizontalCollisions() {
-        Rectangle playerBounds = getPlayerBounds();
-
-        // Optimization: Only check tiles near the player
-        int leftCol = Math.max(0, (int) (playerX / TILE_SIZE) - 1);
-        int rightCol = Math.min(SCREEN_COLUMNS - 1, (int) ((playerX + playerWidth) / TILE_SIZE) + 1);
-        int topRow = Math.max(0, (int) (playerY / TILE_SIZE) - 1);
-        int bottomRow = Math.min(SCREEN_ROWS - 1, (int) ((playerY + playerHeight) / TILE_SIZE) + 1);
-
-        for (int r = topRow; r <= bottomRow; r++) {
-            for (int c = leftCol; c <= rightCol; c++) {
-                if (levelMap[r][c] == 1) { // Block
-                    Rectangle blockBounds = new Rectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                    if (playerBounds.intersects(blockBounds)) {
-                        if (velocityX > 0) {
-                            playerX = blockBounds.x - playerWidth;
-                        } else if (velocityX < 0) {
-                            playerX = blockBounds.x + blockBounds.width;
-                        }
-                        velocityX = 0; // Stop horizontal movement on collision
+        Rectangle pBounds = getPlayerBounds();
+        for (int r = 0; r < VIEWPORT_ROWS; r++) {
+            for (int c = 0; c < levelWidthCols; c++) {
+                if (isSolid(levelMap[r][c])) {
+                    Rectangle block = new Rectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    if (pBounds.intersects(block)) {
+                        if (velocityX > 0) playerX = block.x - playerWidth;
+                        else if (velocityX < 0) playerX = block.x + block.width;
                     }
                 }
             }
@@ -158,26 +164,20 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
     }
 
     private void checkVerticalCollisions() {
-        Rectangle playerBounds = getPlayerBounds();
+        Rectangle pBounds = getPlayerBounds();
         isGrounded = false;
 
-        // Optimization: Only check tiles near the player
-        int leftCol = Math.max(0, (int) (playerX / TILE_SIZE) - 1);
-        int rightCol = Math.min(SCREEN_COLUMNS - 1, (int) ((playerX + playerWidth) / TILE_SIZE) + 1);
-        int topRow = Math.max(0, (int) (playerY / TILE_SIZE) - 1);
-        int bottomRow = Math.min(SCREEN_ROWS - 1, (int) ((playerY + playerHeight) / TILE_SIZE) + 1);
-
-        for (int r = topRow; r <= bottomRow; r++) {
-            for (int c = leftCol; c <= rightCol; c++) {
-                if (levelMap[r][c] == 1) { // Block
-                    Rectangle blockBounds = new Rectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                    if (playerBounds.intersects(blockBounds)) {
-                        if (velocityY > 0) { // Landing on top
-                            playerY = blockBounds.y - playerHeight;
+        for (int r = 0; r < VIEWPORT_ROWS; r++) {
+            for (int c = 0; c < levelWidthCols; c++) {
+                if (isSolid(levelMap[r][c])) {
+                    Rectangle block = new Rectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    if (pBounds.intersects(block)) {
+                        if (velocityY > 0) {
+                            playerY = block.y - playerHeight;
                             velocityY = 0;
                             isGrounded = true;
-                        } else if (velocityY < 0) { // Hitting ceiling
-                            playerY = blockBounds.y + blockBounds.height;
+                        } else if (velocityY < 0) {
+                            playerY = block.y + block.height;
                             velocityY = 0;
                         }
                     }
@@ -186,29 +186,47 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
         }
     }
 
+    private boolean isSolid(int tile) {
+        return tile == 1 || tile == 4 || tile == 5;
+    }
+
     private void checkInteractables() {
-        Rectangle playerBounds = getPlayerBounds();
-
-        // Optimization: Only check tiles near the player
-        int leftCol = Math.max(0, (int) (playerX / TILE_SIZE) - 1);
-        int rightCol = Math.min(SCREEN_COLUMNS - 1, (int) ((playerX + playerWidth) / TILE_SIZE) + 1);
-        int topRow = Math.max(0, (int) (playerY / TILE_SIZE) - 1);
-        int bottomRow = Math.min(SCREEN_ROWS - 1, (int) ((playerY + playerHeight) / TILE_SIZE) + 1);
-
-        for (int r = topRow; r <= bottomRow; r++) {
-            for (int c = leftCol; c <= rightCol; c++) {
-                int tile = levelMap[r][c];
-                if (tile == 2) { // Coin
-                    Rectangle coinBounds = new Rectangle(c * TILE_SIZE + 8, r * TILE_SIZE + 8, 16, 16);
-                    if (playerBounds.intersects(coinBounds)) {
-                        levelMap[r][c] = 0; // Collect coin
+        Rectangle pBounds = getPlayerBounds();
+        for (int r = 0; r < VIEWPORT_ROWS; r++) {
+            for (int c = 0; c < levelWidthCols; c++) {
+                if (levelMap[r][c] == 2) { // Coin
+                    Rectangle coin = new Rectangle(c * TILE_SIZE + 8, r * TILE_SIZE + 8, 16, 16);
+                    if (pBounds.intersects(coin)) {
+                        levelMap[r][c] = 0;
                         score += 100;
                     }
-                } else if (tile == 3) { // Goal Flag
-                    Rectangle flagBounds = new Rectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                    if (playerBounds.intersects(flagBounds)) {
+                } else if (levelMap[r][c] == 3) { // Goal
+                    Rectangle flag = new Rectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    if (pBounds.intersects(flag)) {
                         levelCleared = true;
                     }
+                }
+            }
+        }
+    }
+
+    private void updateGoombas() {
+        Rectangle pBounds = getPlayerBounds();
+        Iterator<Goomba> it = goombas.iterator();
+
+        while (it.hasNext()) {
+            Goomba goomba = it.next();
+            goomba.update();
+
+            Rectangle gBounds = goomba.getBounds();
+            if (pBounds.intersects(gBounds)) {
+                // Check if Mario stomped on top
+                if (velocityY > 0 && playerY + playerHeight - velocityY <= goomba.y + 10) {
+                    it.remove();
+                    velocityY = JUMP_STRENGTH * 0.6f; // Bounce
+                    score += 200;
+                } else {
+                    isDead = true; // Mario touched from side/below
                 }
             }
         }
@@ -223,36 +241,74 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        // Enable anti-aliasing for smoother graphics
+        // Enable Anti-Aliasing for smoother text
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        // Translate Camera
+        g2.translate(-cameraX, 0);
+
+        // Background Decor (Clouds)
+        drawBackgroundDetails(g2);
+
         // Draw Map
-        for (int r = 0; r < SCREEN_ROWS; r++) {
-            for (int c = 0; c < SCREEN_COLUMNS; c++) {
+        for (int r = 0; r < VIEWPORT_ROWS; r++) {
+            for (int c = 0; c < levelWidthCols; c++) {
                 int tile = levelMap[r][c];
                 int x = c * TILE_SIZE;
                 int y = r * TILE_SIZE;
 
-                if (tile == 1) { // Ground / Brick
-                    g2.setColor(BRICK_RED);
+                // Culling: Only draw tiles visible in camera frame
+                if (x + TILE_SIZE < cameraX || x > cameraX + SCREEN_WIDTH) continue;
+
+                if (tile == 1) { // Ground / Brick pattern
+                    g2.setColor(new Color(184, 50, 0));
+                    g2.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    g2.setColor(Color.DARK_GRAY);
+                    g2.drawRect(x, y, TILE_SIZE, TILE_SIZE);
+                    g2.drawLine(x, y + 16, x + TILE_SIZE, y + 16);
+                } else if (tile == 2) { // Gold Coin
+                    g2.setColor(Color.GOLD);
+                    g2.fillOval(x + 8, y + 8, 16, 16);
+                    g2.setColor(Color.ORANGE);
+                    g2.drawOval(x + 8, y + 8, 16, 16);
+                } else if (tile == 3) { // Goal Flag
+                    g2.setColor(Color.GREEN);
+                    g2.fillRect(x + 14, y, 4, TILE_SIZE);
+                    g2.setColor(Color.RED);
+                    g2.fillPolygon(new int[]{x + 18, x + 32, x + 18}, new int[]{y, y + 8, y + 16}, 3);
+                } else if (tile == 4) { // Question Block
+                    g2.setColor(new Color(230, 140, 0));
                     g2.fillRect(x, y, TILE_SIZE, TILE_SIZE);
                     g2.setColor(Color.BLACK);
                     g2.drawRect(x, y, TILE_SIZE, TILE_SIZE);
-                } else if (tile == 2) { // Coin
-                    g2.setColor(GOLD); // FIXED: Using custom GOLD constant
-                    g2.fillOval(x + 8, y + 8, 16, 16);
-                } else if (tile == 3) { // Goal Pole
-                    g2.setColor(Color.GREEN);
-                    g2.fillRect(x + 12, y, 8, TILE_SIZE);
+                    g2.setFont(new Font("Arial", Font.BOLD, 18));
+                    g2.drawString("?", x + 10, y + 24);
+                } else if (tile == 5) { // Pipe
+                    g2.setColor(new Color(0, 180, 0));
+                    g2.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    g2.setColor(Color.BLACK);
+                    g2.drawRect(x, y, TILE_SIZE, TILE_SIZE);
                 }
             }
         }
 
-        // Draw Mario (Player)
-        g2.setColor(Color.RED);
-        g2.fillRect((int) playerX, (int) playerY, playerWidth, playerHeight);
+        // Draw Goombas
+        for (Goomba goomba : goombas) {
+            goomba.draw(g2);
+        }
 
-        // Draw Overlays / HUD
+        // Draw Mario
+        if (!isDead) {
+            g2.setColor(Color.RED); // Shirt/Hat
+            g2.fillRect((int) playerX, (int) playerY, playerWidth, playerHeight);
+            g2.setColor(Color.BLUE); // Overalls
+            g2.fillRect((int) playerX + 4, (int) playerY + 16, playerWidth - 8, playerHeight - 16);
+        }
+
+        // Reset Translation for Screen Overlay (HUD)
+        g2.translate(cameraX, 0);
+
+        // HUD
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 18));
         g2.drawString("SCORE: " + score, 20, 30);
@@ -260,13 +316,23 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
         if (levelCleared) {
             g2.setColor(Color.YELLOW);
             g2.setFont(new Font("Arial", Font.BOLD, 36));
-            String message = "STAGE CLEARED!";
-            int messageWidth = g2.getFontMetrics().stringWidth(message);
-            g2.drawString(message, (SCREEN_WIDTH - messageWidth) / 2, SCREEN_HEIGHT / 2);
+            g2.drawString("STAGE CLEARED!", SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2);
+        } else if (isDead) {
+            g2.setColor(Color.RED);
+            g2.setFont(new Font("Arial", Font.BOLD, 36));
+            g2.drawString("GAME OVER", SCREEN_WIDTH / 2 - 110, SCREEN_HEIGHT / 2);
         }
     }
 
-    // Key Listener Overrides
+    private void drawBackgroundDetails(Graphics2D g2) {
+        g2.setColor(Color.WHITE);
+        g2.fillOval(200, 60, 60, 30);
+        g2.fillOval(220, 50, 50, 30);
+        g2.fillOval(600, 80, 70, 35);
+        g2.fillOval(1000, 50, 60, 30);
+    }
+
+    // Key Listener Inputs
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
@@ -284,25 +350,58 @@ public class MarioGame extends JPanel implements Runnable, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        // Not used but required by KeyListener interface
+    public void keyTyped(KeyEvent e) {}
+
+    // Inner Goomba Enemy Class
+    private static class Goomba {
+        float x, y;
+        float speed = 1.2f;
+        int width = 28;
+        int height = 28;
+        int walkDistance = 0;
+        int maxWalkDistance = 100;
+
+        public Goomba(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public void update() {
+            x += speed;
+            walkDistance += Math.abs(speed);
+            if (walkDistance >= maxWalkDistance) {
+                speed = -speed; // Reverse direction
+                walkDistance = 0;
+            }
+        }
+
+        public Rectangle getBounds() {
+            return new Rectangle((int) x, (int) y, width, height);
+        }
+
+        public void draw(Graphics2D g2) {
+            g2.setColor(new Color(139, 69, 19)); // Brown Body
+            g2.fillRect((int) x, (int) y, width, height);
+            g2.setColor(Color.WHITE); // Eyes
+            g2.fillRect((int) x + 4, (int) y + 6, 6, 8);
+            g2.fillRect((int) x + 18, (int) y + 6, 6, 8);
+            g2.setColor(Color.BLACK);
+            g2.fillRect((int) x + 6, (int) y + 8, 2, 4);
+            g2.fillRect((int) x + 20, (int) y + 8, 2, 4);
+        }
     }
 
-    // Main Method Entry Point
     public static void main(String[] args) {
-        // Ensure UI is created on Event Dispatch Thread
-        SwingUtilities.invokeLater(() -> {
-            JFrame window = new JFrame("2D Java Mario");
-            MarioGame gamePanel = new MarioGame();
+        JFrame window = new JFrame("2D Java Mario - Scrolling Edition");
+        MarioGame gamePanel = new MarioGame();
 
-            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            window.setResizable(false);
-            window.add(gamePanel);
-            window.pack();
-            window.setLocationRelativeTo(null);
-            window.setVisible(true);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
+        window.add(gamePanel);
+        window.pack();
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
 
-            gamePanel.startGameThread();
-        });
+        gamePanel.startGameThread();
     }
 }
